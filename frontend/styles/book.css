@@ -1,0 +1,17 @@
+/* Book style preset – comfortable reading */
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.6;
+  margin: 1.5em 2em;
+  max-width: 35em;
+}
+
+h1, h2, h3 {
+  margin-top: 1.5em;
+  page-break-after: avoid;
+}
+
+p {
+  margin-bottom: 1em;
+  text-align: justify;
+}

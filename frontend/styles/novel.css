@@ -1,0 +1,30 @@
+/* Novel style preset – fiction reading */
+body {
+  font-family: "Bookerly", "Literata", Georgia, serif;
+  font-size: 1em;
+  line-height: 1.7;
+  margin: 2em 1.5em;
+}
+
+h1 {
+  font-size: 1.5em;
+  margin: 2em 0 1em;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.2em;
+  margin: 1.5em 0 0.75em;
+  page-break-after: avoid;
+}
+
+p {
+  margin-bottom: 1.2em;
+  text-indent: 1.5em;
+}
+
+p:first-of-type,
+h1 + p,
+h2 + p {
+  text-indent: 0;
+}

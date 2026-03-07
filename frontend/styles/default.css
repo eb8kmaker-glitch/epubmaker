@@ -1,0 +1,6 @@
+/* Default EPUB style preset */
+body {
+  font-family: serif;
+  line-height: 1.5;
+  margin: 1em;
+}

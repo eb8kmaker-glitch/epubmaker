@@ -1,0 +1,27 @@
+/* Academic style preset – papers and non-fiction */
+body {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 12pt;
+  line-height: 1.5;
+  margin: 1in;
+}
+
+h1, h2, h3, h4 {
+  font-weight: bold;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  page-break-after: avoid;
+}
+
+h1 { font-size: 1.5em; }
+h2 { font-size: 1.3em; }
+h3 { font-size: 1.1em; }
+
+p {
+  margin-bottom: 0.75em;
+}
+
+blockquote {
+  margin: 1em 2em;
+  font-style: italic;
+}
