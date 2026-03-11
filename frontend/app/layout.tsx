@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import FeedbackButton from "@/app/components/FeedbackButton";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,6 +32,11 @@ export default function RootLayout({
       >
         {children}
         <Analytics />
+        <FeedbackButton />
+        <Script
+          src="https://tally.so/widgets/embed.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
