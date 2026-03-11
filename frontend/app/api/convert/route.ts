@@ -1,3 +1,4 @@
+import { execSync } from "child_process";
 import { NextResponse } from "next/server";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
@@ -5,6 +6,17 @@ import { normalizeToHtml } from "@/app/lib/normalizeToHtml";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
+
+const CONVERTER_NAME = "pandoc-wasm";
+
+function logPandocSystemCheck(): void {
+  try {
+    execSync("pandoc --version", { encoding: "utf8" });
+    console.log("[convert] System pandoc is available (conversion uses pandoc-wasm, not system pandoc).");
+  } catch {
+    console.warn("[convert] System pandoc is NOT installed on this server. Conversion uses pandoc-wasm only.");
+  }
+}
 
 const INPUT_FILENAME = "input.docx";
 const OUTPUT_FILENAME = "output.epub";
@@ -70,6 +82,9 @@ interface ConversionOptionsBody {
 }
 
 export async function POST(request: Request) {
+  console.log("[convert] Converter in use:", CONVERTER_NAME);
+  logPandocSystemCheck();
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");
@@ -187,14 +202,28 @@ export async function POST(request: Request) {
     ]
       .filter(Boolean)
       .join(" ");
-    console.log("[pandoc] Effective command (conceptual):", pandocCommandLog);
-    console.log("[pandoc] Options passed to convert():", JSON.stringify(pandocOptions, null, 2));
+    console.log("[convert] Effective command (conceptual):", pandocCommandLog);
+    console.log("[convert] Options passed to convert():", JSON.stringify(pandocOptions, null, 2));
 
-    const result = await convert(pandocOptions, stdin, files);
+    let result: Awaited<ReturnType<typeof convert>>;
+    try {
+      result = await convert(pandocOptions, stdin, files);
+    } catch (conversionErr) {
+      console.error("[convert] Conversion error:", conversionErr);
+      if (conversionErr instanceof Error && conversionErr.stack) {
+        console.error("[convert] Stack:", conversionErr.stack);
+      }
+      const errObj = conversionErr as { message?: string; stderr?: string };
+      const message = errObj?.message || (conversionErr instanceof Error ? conversionErr.message : "Conversion failed");
+      const stderr = typeof errObj?.stderr === "string" ? errObj.stderr : "";
+      const detail = stderr ? `${message}. ${stderr}` : message;
+      return NextResponse.json({ error: detail }, { status: 500 });
+    }
 
     const epubBlob = result.files?.[OUTPUT_FILENAME];
     if (!epubBlob || !(epubBlob instanceof Blob)) {
       const errMsg = result.stderr || "Conversion produced no output.";
+      console.error("[convert] No output blob:", result.stderr);
       return NextResponse.json({ error: errMsg }, { status: 500 });
     }
 
@@ -208,7 +237,11 @@ export async function POST(request: Request) {
       },
     });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Conversion failed";
+    console.error("[convert] Request/convert error:", err);
+    if (err instanceof Error && err.stack) {
+      console.error("[convert] Stack:", err.stack);
+    }
+    const message = err instanceof Error ? err.message : String(err) || "Conversion failed";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
