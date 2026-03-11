@@ -82,15 +82,15 @@
     "errorTextLength": "文本须在 {max} 字以内（当前：{current}）。",
     "errorCoverSize": "封面图片须在 10MB 以内。"
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "DOCX 上传指南",
-    "intro": "要生成 EPUB 目录，请在 Word 文档中使用标题样式。",
-    "h1": "标题 1 → 章节标题",
-    "h2": "标题 2 → 节标题",
-    "h3": "标题 3 → 小节",
-    "howToTitle": "在 Word 中的设置方法",
-    "howTo": "开始 → 样式 → 标题 1 / 标题 2 / 标题 3",
-    "warning": "未使用标题样式的文档可能无法生成 EPUB 目录。"
+    "description": "要生成 EPUB 目录，请在 Word 文档中使用标题样式。",
+    "heading1": "标题 1 → 章节标题",
+    "heading2": "标题 2 → 节标题",
+    "heading3": "标题 3 → 小节",
+    "howTo": "在 Word 中的设置方法",
+    "path": "开始 → 样式 → 标题 1 / 标题 2 / 标题 3",
+    "note": "未使用标题样式的文档可能无法生成 EPUB 目录。"
   },
   "ConversionSettings": {
     "heading": "转换设置",

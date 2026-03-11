@@ -82,15 +82,15 @@
     "errorTextLength": "O texto deve ter {max} caracteres ou menos (atual: {current}).",
     "errorCoverSize": "A capa deve ter 10 MB ou menos."
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "Guia de envio DOCX",
-    "intro": "Para gerar o sumário do EPUB, use estilos de título (Heading) no seu documento Word.",
-    "h1": "Heading 1 → Título do capítulo",
-    "h2": "Heading 2 → Título da seção",
-    "h3": "Heading 3 → Subseção",
-    "howToTitle": "Como configurar no Word",
-    "howTo": "Início → Estilos → Título 1 / Título 2 / Título 3",
-    "warning": "Documentos sem estilos Heading podem não gerar sumário no EPUB."
+    "description": "Para gerar o sumário do EPUB, use estilos de título (Heading) no seu documento Word.",
+    "heading1": "Heading 1 → Título do capítulo",
+    "heading2": "Heading 2 → Título da seção",
+    "heading3": "Heading 3 → Subseção",
+    "howTo": "Como configurar no Word",
+    "path": "Início → Estilos → Título 1 / Título 2 / Título 3",
+    "note": "Documentos sem estilos Heading podem não gerar sumário no EPUB."
   },
   "ConversionSettings": {
     "heading": "Configurações de conversão",

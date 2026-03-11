@@ -1,8 +1,23 @@
 @import "tailwindcss";
 
+/* Deep Green: natural, premium green SaaS color system */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --primary: #1f5d3b;
+  --primary-hover: #174a2f;
+  --accent: #e4f0e8;
+  --accent-soft: #3e8e63;
+  --page-bg: #f5f7f4;
+  --secondary-bg: #ecf2ee;
+  --card: #ffffff;
+  --border: #e2e8e5;
+  --content: #1f2933;
+  --content-muted: #6b7280;
+  --guide-bg: #e4f0e8;
+  --guide-border: #3e8e63;
+  --dropzone-hover: #e4f0e8;
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --background: var(--page-bg);
+  --foreground: var(--content);
 }
 
 @theme inline {
@@ -12,15 +27,10 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
 }

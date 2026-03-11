@@ -70,7 +70,7 @@ function canConvertToEpub(file: File): boolean {
 
 export default function FileUpload() {
   const t = useTranslations("FileUpload");
-  const tDocx = useTranslations("DocxGuide");
+  const tDocx = useTranslations("docxGuide");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -217,11 +217,11 @@ export default function FileUpload() {
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
           className={`
-            relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-10
-            transition-colors duration-150
+            relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-[12px] border-2 border-dashed px-6 py-10
+            transition-all duration-200 ease-in-out
             ${isDragging
-              ? "border-emerald-500 bg-emerald-500/10"
-              : "border-zinc-300 bg-zinc-50/80 hover:border-zinc-400 hover:bg-zinc-100/80 dark:border-zinc-600 dark:bg-zinc-900/50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800/50"
+              ? "border-[var(--accent-soft)] bg-[var(--dropzone-hover)]"
+              : "border-[var(--accent-soft)] bg-[var(--secondary-bg)] hover:bg-[var(--dropzone-hover)]"
             }
           `}
         >
@@ -235,10 +235,10 @@ export default function FileUpload() {
           <span className="mb-2 text-4xl" aria-hidden>
             📄
           </span>
-          <p className="text-center text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <p className="text-center text-sm font-medium text-[var(--content-muted)]">
             {isDragging ? t("dropHere") : t("dropText")}
           </p>
-          <p className="mt-1 text-center text-xs text-zinc-500 dark:text-zinc-500">
+          <p className="mt-1 text-center text-xs text-[var(--content-muted)]">
             {t("browse", { extensions: ACCEPTED_STRING })}
           </p>
         </div>
@@ -247,37 +247,37 @@ export default function FileUpload() {
       <div
         role="region"
         aria-label={tDocx("title")}
-        className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 dark:border-sky-800 dark:bg-sky-950/40"
+        className="rounded-[12px] border border-[var(--guide-border)] bg-[var(--guide-bg)] px-4 py-3 transition-all duration-200"
       >
-        <p className="flex items-start gap-2 text-sm font-medium text-sky-800 dark:text-sky-200">
-          <span className="mt-0.5 shrink-0 text-base" aria-hidden>
+        <p className="flex items-start gap-2 text-sm font-medium text-[var(--content)]">
+          <span className="mt-0.5 shrink-0 text-base text-[var(--accent)]" aria-hidden>
             📋
           </span>
           <span>{tDocx("title")}</span>
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-sky-700 dark:text-sky-300">
-          {tDocx("intro")}
+        <p className="mt-2 text-xs leading-relaxed text-[var(--content-muted)]">
+          {tDocx("description")}
         </p>
-        <ul className="mt-2 list-inside list-disc space-y-0.5 text-xs text-sky-700 dark:text-sky-300">
-          <li>{tDocx("h1")}</li>
-          <li>{tDocx("h2")}</li>
-          <li>{tDocx("h3")}</li>
+        <ul className="mt-2 list-inside list-disc space-y-0.5 text-xs text-[var(--content-muted)]">
+          <li>{tDocx("heading1")}</li>
+          <li>{tDocx("heading2")}</li>
+          <li>{tDocx("heading3")}</li>
         </ul>
-        <p className="mt-2 text-xs font-medium text-sky-800 dark:text-sky-200">
-          {tDocx("howToTitle")}
-        </p>
-        <p className="mt-0.5 text-xs leading-relaxed text-sky-700 dark:text-sky-300">
+        <p className="mt-2 text-xs font-medium text-[var(--content)]">
           {tDocx("howTo")}
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-sky-600 dark:text-sky-400">
-          {tDocx("warning")}
+        <p className="mt-0.5 text-xs leading-relaxed text-[var(--content-muted)]">
+          {tDocx("path")}
+        </p>
+        <p className="mt-2 text-xs leading-relaxed text-[var(--content-muted)]">
+          {tDocx("note")}
         </p>
       </div>
 
       {error && (
         <div
           role="alert"
-          className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200"
+          className="rounded-[12px] border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
         >
           {error}
         </div>
@@ -286,7 +286,7 @@ export default function FileUpload() {
       {convertError && (
         <div
           role="alert"
-          className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/40 dark:text-red-200"
+          className="rounded-[12px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800"
         >
           {convertError}
         </div>
@@ -294,15 +294,15 @@ export default function FileUpload() {
 
       {file && (
         <>
-          <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/80">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)] transition-all duration-200">
+            <p className="text-xs font-medium uppercase tracking-wider text-[var(--content-muted)]">
               {t("uploadedFile")}
             </p>
             <div className="mt-2 flex items-center justify-between gap-3">
-              <p className="min-w-0 truncate font-medium text-zinc-900 dark:text-zinc-100">
+              <p className="min-w-0 truncate font-medium text-[var(--content)]">
                 {file.name}
               </p>
-              <span className="shrink-0 rounded bg-zinc-100 px-2 py-1 font-mono text-sm text-zinc-600 dark:bg-zinc-700 dark:text-zinc-300">
+              <span className="shrink-0 rounded-lg bg-[var(--guide-bg)] px-2 py-1 font-mono text-sm text-[var(--content-muted)]">
                 {formatBytes(file.size)}
               </span>
             </div>
@@ -310,7 +310,7 @@ export default function FileUpload() {
               <button
                 type="button"
                 onClick={clearFile}
-                className="text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                className="text-sm text-[var(--content-muted)] underline underline-offset-2 transition-colors duration-200 hover:text-[var(--primary)]"
               >
                 {t("removeFile")}
               </button>
@@ -326,7 +326,7 @@ export default function FileUpload() {
                 onCoverFileChange={handleCoverFileChange}
               />
               {atBetaDailyLimit && (
-                <p className="text-sm text-amber-700 dark:text-amber-300">
+                <p className="text-sm text-amber-700">
                   {t("dailyLimit")}
                 </p>
               )}
@@ -335,7 +335,7 @@ export default function FileUpload() {
                   type="button"
                   onClick={convertToEpub}
                   disabled={converting || atBetaDailyLimit}
-                  className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+                  className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--primary-hover)] disabled:opacity-50"
                 >
                   {converting ? t("converting") : t("convertButton")}
                 </button>

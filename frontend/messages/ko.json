@@ -82,15 +82,15 @@
     "errorTextLength": "텍스트는 {max}자 이하여야 합니다 (현재: {current}).",
     "errorCoverSize": "표지 이미지는 10MB 이하여야 합니다."
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "DOCX 업로드 안내",
-    "intro": "EPUB 목차(Table of Contents)를 생성하려면 Word 문서에서 Heading 스타일을 사용해야 합니다.",
-    "h1": "Heading 1 → 챕터 제목",
-    "h2": "Heading 2 → 섹션 제목",
-    "h3": "Heading 3 → 하위 섹션",
-    "howToTitle": "Word에서 설정 방법",
-    "howTo": "홈(Home) → 스타일 → 제목1 / 제목2 / 제목3",
-    "warning": "Heading 스타일이 적용되지 않은 문서는 EPUB 목차가 생성되지 않을 수 있습니다."
+    "description": "EPUB 목차(Table of Contents)를 생성하려면 Word 문서에서 Heading 스타일을 사용해야 합니다.",
+    "heading1": "Heading 1 → 챕터 제목",
+    "heading2": "Heading 2 → 섹션 제목",
+    "heading3": "Heading 3 → 하위 섹션",
+    "howTo": "Word에서 설정 방법",
+    "path": "홈(Home) → 스타일 → 제목1 / 제목2 / 제목3",
+    "note": "Heading 스타일이 적용되지 않은 문서는 EPUB 목차가 생성되지 않을 수 있습니다."
   },
   "ConversionSettings": {
     "heading": "변환 설정",

@@ -1,11 +1,11 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { useTransition, useState, useRef, useEffect } from "react";
 
-const LOCALE_LABELS: Record<string, string> = {
+const languageNames: Record<string, string> = {
   en: "English",
   ko: "한국어",
   es: "Español",
@@ -16,14 +16,35 @@ const LOCALE_LABELS: Record<string, string> = {
   fr: "Français",
 };
 
+/** Strip leading locale segment to avoid duplicate prefixes (e.g. /en/convert -> /convert). */
+function getPathnameWithoutLocale(pathname: string): string {
+  if (!pathname || pathname === "/") return pathname;
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments.length > 0 && routing.locales.includes(segments[0])) {
+    const rest = segments.slice(1).join("/");
+    return rest ? `/${rest}` : "/";
+  }
+  return pathname;
+}
+
+function getLocaleFromPath(): string | null {
+  if (typeof window === "undefined") return null;
+  const seg = window.location.pathname.split("/")[1];
+  return seg && routing.locales.includes(seg) ? seg : null;
+}
+
 export default function LanguageSwitcher() {
   const locale = useLocale();
-  const t = useTranslations("common.languages");
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [displayLocale, setDisplayLocale] = useState(() => getLocaleFromPath() ?? locale);
+
+  useEffect(() => {
+    setDisplayLocale(locale);
+  }, [locale]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -40,9 +61,13 @@ export default function LanguageSwitcher() {
       setIsOpen(false);
       return;
     }
+    setDisplayLocale(newLocale);
+    setIsOpen(false);
     startTransition(() => {
-      router.replace(pathname, { locale: newLocale });
-      setIsOpen(false);
+      const rawPath =
+        typeof window !== "undefined" ? window.location.pathname : pathname;
+      const pathWithoutLocale = getPathnameWithoutLocale(rawPath);
+      router.replace(pathWithoutLocale, { locale: newLocale });
     });
   }
 
@@ -51,13 +76,13 @@ export default function LanguageSwitcher() {
       <button
         type="button"
         onClick={() => setIsOpen((o) => !o)}
-        className="flex items-center gap-1.5 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+        className="flex items-center gap-1.5 rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--content)] shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--dropzone-hover)]"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label="Select language"
       >
         <span className="max-w-[7rem] truncate sm:max-w-none">
-          {(t(locale) || LOCALE_LABELS[locale]) ?? locale}
+          {languageNames[displayLocale] ?? displayLocale}
         </span>
         <svg
           className="h-4 w-4 shrink-0 opacity-70"
@@ -77,21 +102,21 @@ export default function LanguageSwitcher() {
       {isOpen && (
         <ul
           role="listbox"
-          className="absolute right-0 top-full z-20 mt-1 max-h-64 w-44 overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-800"
+          className="absolute right-0 top-full z-20 mt-1 max-h-64 w-44 overflow-auto rounded-[12px] border border-[var(--border)] bg-[var(--card)] py-1 shadow-[var(--shadow-card)]"
         >
           {routing.locales.map((loc) => (
-            <li key={loc} role="option" aria-selected={loc === locale}>
+            <li key={loc} role="option" aria-selected={loc === displayLocale}>
               <button
                 type="button"
                 onClick={() => selectLocale(loc)}
                 disabled={isPending}
-                className={`w-full px-3 py-2 text-left text-sm hover:bg-zinc-100 dark:hover:bg-zinc-700 disabled:opacity-50 ${
-                  loc === locale
-                    ? "bg-emerald-50 font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200"
-                    : "text-zinc-700 dark:text-zinc-200"
+                className={`w-full px-3 py-2 text-left text-sm transition-all duration-200 disabled:opacity-50 ${
+                  loc === displayLocale
+                    ? "bg-[var(--guide-bg)] font-medium text-[var(--primary)]"
+                    : "text-[var(--content)] hover:bg-[var(--dropzone-hover)]"
                 }`}
               >
-                {(t(loc) || LOCALE_LABELS[loc]) ?? loc}
+                {languageNames[loc] ?? loc}
               </button>
             </li>
           ))}

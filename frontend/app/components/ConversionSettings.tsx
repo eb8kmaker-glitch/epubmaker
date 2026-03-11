@@ -53,9 +53,13 @@ export default function ConversionSettings({
     onChange({ ...options, [key]: value });
   };
 
+  const inputClass =
+    "w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--content)] placeholder-[var(--content-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]";
+  const labelClass = "mb-1 block text-xs font-medium text-[var(--content-muted)]";
+
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/80">
-      <h3 className="mb-3 text-sm font-semibold text-zinc-800 dark:text-zinc-200">
+    <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)] transition-all duration-200">
+      <h3 className="mb-3 text-sm font-semibold text-[var(--content)]">
         {t("heading")}
       </h3>
 
@@ -65,21 +69,19 @@ export default function ConversionSettings({
             type="checkbox"
             checked={options.toc}
             onChange={(e) => setOption("toc", e.target.checked)}
-            className="h-4 w-4 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700"
+            className="h-4 w-4 rounded border-[var(--border)] text-[var(--primary)] transition-all duration-200 focus:ring-[var(--primary)]"
           />
-          <span className="text-sm text-zinc-700 dark:text-zinc-300">
+          <span className="text-sm text-[var(--content)]">
             {t("includeToc")}
           </span>
         </label>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("tocDepth")}
-          </label>
+          <label className={labelClass}>{t("tocDepth")}</label>
           <select
             value={options.tocDepth}
             onChange={(e) => setOption("tocDepth", Number(e.target.value) as 1 | 2 | 3)}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100"
+            className={inputClass}
           >
             <option value={1}>1</option>
             <option value={2}>2</option>
@@ -88,57 +90,49 @@ export default function ConversionSettings({
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("epubVersion")}
-          </label>
+          <label className={labelClass}>{t("epubVersion")}</label>
           <select
             value={options.epubVersion}
             onChange={(e) => setOption("epubVersion", e.target.value as "epub3" | "epub2")}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100"
+            className={inputClass}
           >
             <option value="epub3">{t("epub3")}</option>
             <option value="epub2">{t("epub2")}</option>
           </select>
         </div>
 
-        <p className="border-t border-zinc-200 pt-4 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-600 dark:text-zinc-400">
+        <p className="border-t border-[var(--border)] pt-4 text-xs font-semibold uppercase tracking-wider text-[var(--content-muted)]">
           {t("metadata")}
         </p>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("title")}
-          </label>
+          <label className={labelClass}>{t("title")}</label>
           <input
             type="text"
             value={options.title}
             onChange={(e) => setOption("title", e.target.value)}
             placeholder={t("titlePlaceholder")}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("author")}
-          </label>
+          <label className={labelClass}>{t("author")}</label>
           <input
             type="text"
             value={options.author}
             onChange={(e) => setOption("author", e.target.value)}
             placeholder={t("authorPlaceholder")}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("language")}
-          </label>
+          <label className={labelClass}>{t("language")}</label>
           <select
             value={options.language}
             onChange={(e) => setOption("language", e.target.value as ConversionOptions["language"])}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100"
+            className={inputClass}
           >
             <option value="ko">Korean (ko)</option>
             <option value="en">English (en)</option>
@@ -148,39 +142,33 @@ export default function ConversionSettings({
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("publisher")}
-          </label>
+          <label className={labelClass}>{t("publisher")}</label>
           <input
             type="text"
             value={options.publisher}
             onChange={(e) => setOption("publisher", e.target.value)}
             placeholder={t("publisherPlaceholder")}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("date")}
-          </label>
+          <label className={labelClass}>{t("date")}</label>
           <input
             type="text"
             value={options.date}
             onChange={(e) => setOption("date", e.target.value)}
             placeholder={t("datePlaceholder")}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100 dark:placeholder-zinc-400"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="mb-1 block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("stylePreset")}
-          </label>
+          <label className={labelClass}>{t("stylePreset")}</label>
           <select
             value={options.style}
             onChange={(e) => setOption("style", e.target.value as ConversionOptions["style"])}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-700 dark:text-zinc-100"
+            className={inputClass}
           >
             <option value="default">{t("styleDefault")}</option>
             <option value="book">{t("styleBook")}</option>
@@ -190,9 +178,7 @@ export default function ConversionSettings({
         </div>
 
         <div>
-          <p className="mb-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            {t("coverImage")}
-          </p>
+          <p className={labelClass}>{t("coverImage")}</p>
           {!coverFile ? (
             <label className="flex cursor-pointer items-center gap-2">
               <input
@@ -203,21 +189,21 @@ export default function ConversionSettings({
                   if (f) onCoverFileChange(f);
                   e.target.value = "";
                 }}
-                className="text-sm text-zinc-600 file:mr-2 file:rounded file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100 dark:file:bg-emerald-900/30 dark:file:text-emerald-300 dark:hover:file:bg-emerald-900/50"
+                className="text-sm text-[var(--content-muted)] file:mr-2 file:rounded-lg file:border-0 file:bg-[var(--guide-bg)] file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-[var(--primary)] file:transition-all file:duration-200 hover:file:bg-[var(--guide-border)]"
               />
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              <span className="text-xs text-[var(--content-muted)]">
                 {t("coverHint")}
               </span>
             </label>
           ) : (
-            <div className="flex items-center justify-between gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-700/50">
-              <span className="min-w-0 truncate text-sm text-zinc-700 dark:text-zinc-300">
+            <div className="flex items-center justify-between gap-2 rounded-[10px] border border-[var(--border)] bg-[var(--guide-bg)] px-3 py-2">
+              <span className="min-w-0 truncate text-sm text-[var(--content)]">
                 {coverFile.name}
               </span>
               <button
                 type="button"
                 onClick={() => onCoverFileChange(null)}
-                className="shrink-0 text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                className="shrink-0 text-sm text-[var(--content-muted)] underline underline-offset-2 transition-colors duration-200 hover:text-[var(--primary)]"
               >
                 {t("remove")}
               </button>

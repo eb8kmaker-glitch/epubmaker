@@ -82,15 +82,15 @@
     "errorTextLength": "El texto debe tener {max} caracteres o menos (actual: {current}).",
     "errorCoverSize": "La portada debe ser de 10 MB o menos."
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "Guía de subida DOCX",
-    "intro": "Para generar el índice del EPUB, usa estilos de encabezado (Heading) en tu documento Word.",
-    "h1": "Heading 1 → Título de capítulo",
-    "h2": "Heading 2 → Título de sección",
-    "h3": "Heading 3 → Subsección",
-    "howToTitle": "Cómo configurar en Word",
-    "howTo": "Inicio → Estilos → Título 1 / Título 2 / Título 3",
-    "warning": "Los documentos sin estilos Heading pueden no generar índice en el EPUB."
+    "description": "Para generar el índice del EPUB, usa estilos de encabezado (Heading) en tu documento Word.",
+    "heading1": "Heading 1 → Título de capítulo",
+    "heading2": "Heading 2 → Título de sección",
+    "heading3": "Heading 3 → Subsección",
+    "howTo": "Cómo configurar en Word",
+    "path": "Inicio → Estilos → Título 1 / Título 2 / Título 3",
+    "note": "Los documentos sin estilos Heading pueden no generar índice en el EPUB."
   },
   "ConversionSettings": {
     "heading": "Configuración de conversión",

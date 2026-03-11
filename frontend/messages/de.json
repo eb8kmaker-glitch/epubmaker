@@ -82,15 +82,15 @@
     "errorTextLength": "Text darf maximal {max} Zeichen haben (aktuell: {current}).",
     "errorCoverSize": "Cover darf maximal 10 MB groß sein."
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "DOCX-Upload-Anleitung",
-    "intro": "Für ein EPUB-Inhaltsverzeichnis musst du in Word Überschriften-Stile verwenden.",
-    "h1": "Überschrift 1 → Kapiteltitel",
-    "h2": "Überschrift 2 → Abschnittstitel",
-    "h3": "Überschrift 3 → Unterabschnitt",
-    "howToTitle": "So stellst du es in Word ein",
-    "howTo": "Start → Formatvorlagen → Überschrift 1 / 2 / 3",
-    "warning": "Dokumente ohne Überschriften-Stile erhalten ggf. kein EPUB-Inhaltsverzeichnis."
+    "description": "Für ein EPUB-Inhaltsverzeichnis musst du in Word Überschriften-Stile verwenden.",
+    "heading1": "Überschrift 1 → Kapiteltitel",
+    "heading2": "Überschrift 2 → Abschnittstitel",
+    "heading3": "Überschrift 3 → Unterabschnitt",
+    "howTo": "So stellst du es in Word ein",
+    "path": "Start → Formatvorlagen → Überschrift 1 / 2 / 3",
+    "note": "Dokumente ohne Überschriften-Stile erhalten ggf. kein EPUB-Inhaltsverzeichnis."
   },
   "ConversionSettings": {
     "heading": "Konvertierungseinstellungen",

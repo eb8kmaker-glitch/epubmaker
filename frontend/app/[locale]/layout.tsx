@@ -19,11 +19,11 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <>
-      <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/95 px-4 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95 sm:px-6">
+      <header className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--card)]/95 px-4 py-3 backdrop-blur transition-all duration-200 sm:px-6">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <Link
             href="/"
-            className="text-sm font-semibold text-zinc-900 dark:text-zinc-50"
+            className="text-sm font-semibold text-[var(--content)] transition-colors duration-200 hover:text-[var(--primary)]"
           >
             {t("siteName")}
           </Link>

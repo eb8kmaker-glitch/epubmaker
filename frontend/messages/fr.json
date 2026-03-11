@@ -82,15 +82,15 @@
     "errorTextLength": "Le texte doit contenir {max} caractères ou moins (actuel : {current}).",
     "errorCoverSize": "La couverture doit faire 10 Mo ou moins."
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "Guide d'upload DOCX",
-    "intro": "Pour générer la table des matières de l'EPUB, utilisez les styles Titre dans votre document Word.",
-    "h1": "Titre 1 → Titre de chapitre",
-    "h2": "Titre 2 → Titre de section",
-    "h3": "Titre 3 → Sous-section",
-    "howToTitle": "Comment configurer dans Word",
-    "howTo": "Accueil → Styles → Titre 1 / Titre 2 / Titre 3",
-    "warning": "Les documents sans styles Titre peuvent ne pas générer de table des matières EPUB."
+    "description": "Pour générer la table des matières de l'EPUB, utilisez les styles Titre dans votre document Word.",
+    "heading1": "Titre 1 → Titre de chapitre",
+    "heading2": "Titre 2 → Titre de section",
+    "heading3": "Titre 3 → Sous-section",
+    "howTo": "Comment configurer dans Word",
+    "path": "Accueil → Styles → Titre 1 / Titre 2 / Titre 3",
+    "note": "Les documents sans styles Titre peuvent ne pas générer de table des matières EPUB."
   },
   "ConversionSettings": {
     "heading": "Paramètres de conversion",

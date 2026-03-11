@@ -82,15 +82,15 @@
     "errorTextLength": "Text must be {max} characters or less (current: {current}).",
     "errorCoverSize": "Cover image must be 10MB or less."
   },
-  "DocxGuide": {
+  "docxGuide": {
     "title": "DOCX Upload Guide",
-    "intro": "To generate an EPUB table of contents (TOC), use Heading styles in your Word document.",
-    "h1": "Heading 1 → Chapter title",
-    "h2": "Heading 2 → Section title",
-    "h3": "Heading 3 → Subsection",
-    "howToTitle": "How to set in Word",
-    "howTo": "Home → Styles → Heading 1 / Heading 2 / Heading 3",
-    "warning": "Documents without Heading styles may not generate an EPUB table of contents."
+    "description": "To generate an EPUB table of contents (TOC), use Heading styles in your Word document.",
+    "heading1": "Heading 1 → Chapter title",
+    "heading2": "Heading 2 → Section title",
+    "heading3": "Heading 3 → Subsection",
+    "howTo": "How to set in Word",
+    "path": "Home → Styles → Heading 1 / Heading 2 / Heading 3",
+    "note": "Documents without Heading styles may not generate an EPUB table of contents."
   },
   "ConversionSettings": {
     "heading": "Conversion Settings",

@@ -96,13 +96,13 @@ export default async function PricingPage() {
   const tCommon = await getTranslations("common");
 
   return (
-    <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <section className="border-b border-zinc-200 bg-white px-6 py-16 dark:border-zinc-800 dark:bg-zinc-900/50 sm:py-20">
+    <div className="min-h-screen bg-[var(--page-bg)] font-sans text-[var(--content)]">
+      <section className="border-b border-[var(--border)] bg-[var(--card)] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
             {t("title")}
           </h1>
-          <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
+          <p className="mt-4 text-lg text-[var(--content-muted)]">
             {t("subtitle")}
           </p>
         </div>
@@ -116,34 +116,34 @@ export default async function PricingPage() {
               return (
                 <div
                   key={plan.name}
-                  className={`flex flex-col rounded-2xl border bg-white p-6 shadow-sm dark:bg-zinc-800/50 ${
+                  className={`flex flex-col rounded-[12px] border bg-[var(--card)] p-6 shadow-[var(--shadow-card)] transition-all duration-200 ${
                     highlighted
-                      ? "border-emerald-500 ring-2 ring-emerald-500/20 dark:border-emerald-400 dark:ring-emerald-400/20"
-                      : "border-zinc-200 dark:border-zinc-700"
+                      ? "border-[var(--accent)] ring-2 ring-[var(--accent-soft)]"
+                      : "border-[var(--border)]"
                   }`}
                 >
                   {highlighted && (
-                    <span className="mb-2 inline-block w-fit rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">
+                    <span className="mb-2 inline-block w-fit rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 text-xs font-medium text-[var(--accent)]">
                       Recommended
                     </span>
                   )}
-                  <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                  <h2 className="text-lg font-semibold text-[var(--content)]">
                     {plan.name}
                   </h2>
                   {plan.description && (
-                    <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                    <p className="mt-1 text-sm text-[var(--content-muted)]">
                       {plan.description}
                     </p>
                   )}
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                    <span className="text-3xl font-bold tracking-tight text-[var(--content)]">
                       {plan.price}
                     </span>
                   </div>
-                  <ul className="mt-6 flex-1 space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  <ul className="mt-6 flex-1 space-y-3 text-sm text-[var(--content-muted)]">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-2">
-                        <span className="mt-0.5 text-emerald-600 dark:text-emerald-400">
+                        <span className="mt-0.5 text-[var(--accent)]">
                           ✓
                         </span>
                         {f}
@@ -158,10 +158,10 @@ export default async function PricingPage() {
                           rel: "noopener noreferrer",
                         }
                       : {})}
-                    className={`mt-8 block w-full rounded-lg py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-zinc-900 ${
+                    className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                       highlighted
-                        ? "bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500"
-                        : "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 focus:ring-emerald-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700"
+                        ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
+                        : "border border-[var(--border)] bg-[var(--card)] text-[var(--content)] hover:bg-[var(--dropzone-hover)] focus:ring-[var(--primary)]"
                     }`}
                   >
                     {plan.cta}
@@ -173,7 +173,7 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      <section className="border-t border-zinc-200 bg-white px-6 py-16 dark:border-zinc-800 dark:bg-zinc-900/30 sm:py-20">
+      <section className="border-t border-[var(--border)] bg-[var(--card)] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-center text-2xl font-semibold tracking-tight sm:text-3xl">
             Frequently asked questions
@@ -181,10 +181,10 @@ export default async function PricingPage() {
           <dl className="mt-12 space-y-8">
             {FAQ.map((item) => (
               <div key={item.q}>
-                <dt className="text-base font-medium text-zinc-900 dark:text-zinc-100">
+                <dt className="text-base font-medium text-[var(--content)]">
                   {item.q}
                 </dt>
-                <dd className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                <dd className="mt-2 text-sm text-[var(--content-muted)]">
                   {item.a}
                 </dd>
               </div>
@@ -193,14 +193,14 @@ export default async function PricingPage() {
         </div>
       </section>
 
-      <section className="border-t border-zinc-200 bg-emerald-600 px-6 py-16 dark:border-zinc-800 sm:py-20">
+      <section className="border-t border-[var(--border)] bg-[var(--primary)] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-xl font-semibold text-white sm:text-2xl">
             Start converting your manuscript today
           </h2>
           <I18nLink
             href="/convert"
-            className="mt-6 inline-block rounded-lg bg-white px-8 py-3.5 text-base font-semibold text-emerald-700 shadow-sm hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-emerald-600"
+            className="mt-6 inline-block rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-[var(--primary)] shadow-sm transition-all duration-200 hover:bg-[var(--dropzone-hover)] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[var(--primary)]"
           >
             Start Converting
           </I18nLink>
@@ -211,7 +211,7 @@ export default async function PricingPage() {
         <div className="mx-auto max-w-5xl">
           <I18nLink
             href="/"
-            className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="text-sm font-medium text-[var(--content-muted)] transition-colors duration-200 hover:text-[var(--primary)]"
           >
             {tCommon("backToHome")}
           </I18nLink>
