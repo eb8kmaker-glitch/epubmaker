@@ -183,5 +183,14 @@
     },
     "ctaTitle": "Start converting your manuscript today",
     "ctaButton": "Start Converting"
+  },
+  "newsletter": {
+    "title": "Stay updated with EPUBMaker",
+    "subtitle": "Get notified when new features launch and when the beta expands.",
+    "placeholder": "Enter your email",
+    "button": "Get updates",
+    "trust": "No spam. Unsubscribe anytime.",
+    "success": "You're on the list 🚀 We'll notify you when new features launch.",
+    "error": "Something went wrong or you're already subscribed."
   }
 }

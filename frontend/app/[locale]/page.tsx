@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import HeroEmailSignup from "@/app/components/HeroEmailSignup";
 
 export default async function HomePage() {
   const t = await getTranslations("Home");
@@ -49,6 +50,9 @@ export default async function HomePage() {
           >
             {t("hero.cta")}
           </Link>
+          <div className="mt-12">
+            <HeroEmailSignup />
+          </div>
         </div>
       </section>
 
