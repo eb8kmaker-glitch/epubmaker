@@ -1,9 +1,12 @@
 import { hasLocale } from "next-intl";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
+import SetHtmlLang from "@/app/components/SetHtmlLang";
 
 type Props = {
   children: React.ReactNode;
@@ -15,10 +18,13 @@ export default async function LocaleLayout({ children, params }: Props) {
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  setRequestLocale(locale);
+  const messages = await getMessages();
   const t = await getTranslations("common");
 
   return (
-    <>
+    <NextIntlClientProvider locale={locale} messages={messages}>
+      <SetHtmlLang locale={locale} />
       <header className="sticky top-0 z-10 border-b border-[var(--border)] bg-[var(--card)]/95 px-4 py-3 backdrop-blur transition-all duration-200 sm:px-6">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
           <Link
@@ -31,7 +37,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         </div>
       </header>
       {children}
-    </>
+    </NextIntlClientProvider>
   );
 }
 

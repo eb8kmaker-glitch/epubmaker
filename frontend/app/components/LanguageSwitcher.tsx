@@ -16,21 +16,10 @@ const languageNames: Record<string, string> = {
   fr: "Français",
 };
 
-/** Strip leading locale segment to avoid duplicate prefixes (e.g. /en/convert -> /convert). */
-function getPathnameWithoutLocale(pathname: string): string {
-  if (!pathname || pathname === "/") return pathname;
-  const segments = pathname.split("/").filter(Boolean);
-  if (segments.length > 0 && routing.locales.includes(segments[0])) {
-    const rest = segments.slice(1).join("/");
-    return rest ? `/${rest}` : "/";
-  }
-  return pathname;
-}
-
 function getLocaleFromPath(): string | null {
   if (typeof window === "undefined") return null;
   const seg = window.location.pathname.split("/")[1];
-  return seg && routing.locales.includes(seg) ? seg : null;
+  return seg && (routing.locales as readonly string[]).includes(seg) ? seg : null;
 }
 
 export default function LanguageSwitcher() {
@@ -64,10 +53,7 @@ export default function LanguageSwitcher() {
     setDisplayLocale(newLocale);
     setIsOpen(false);
     startTransition(() => {
-      const rawPath =
-        typeof window !== "undefined" ? window.location.pathname : pathname;
-      const pathWithoutLocale = getPathnameWithoutLocale(rawPath);
-      router.replace(pathWithoutLocale, { locale: newLocale });
+      router.replace(pathname, { locale: newLocale });
     });
   }
 
