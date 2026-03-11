@@ -188,7 +188,7 @@ export default function ConversionSettings({
 
         <div>
           <p className="mb-1 text-xs font-medium text-zinc-600 dark:text-zinc-400">
-            Cover Image
+            Cover Image (max 10MB)
           </p>
           {!coverFile ? (
             <label className="flex cursor-pointer items-center gap-2">
@@ -203,7 +203,7 @@ export default function ConversionSettings({
                 className="text-sm text-zinc-600 file:mr-2 file:rounded file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-emerald-700 hover:file:bg-emerald-100 dark:file:bg-emerald-900/30 dark:file:text-emerald-300 dark:hover:file:bg-emerald-900/50"
               />
               <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                JPEG or PNG
+                JPEG or PNG, max 10MB
               </span>
             </label>
           ) : (

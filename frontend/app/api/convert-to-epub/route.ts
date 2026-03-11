@@ -1,20 +1,13 @@
-import { getServerSession } from "next-auth";
 import { spawnSync } from "child_process";
 import fs from "fs/promises";
 import os from "os";
 import path from "path";
 import { NextResponse } from "next/server";
-import { authOptions } from "@/app/lib/auth";
-import { getPlanConfig } from "@/app/lib/plans";
-import { prisma } from "@/app/lib/prisma";
 
 export const runtime = "nodejs";
 
 const ALLOWED_EXTENSIONS = [".docx", ".txt"];
-
-function getStartOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
-}
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
 
 interface ConversionOptions {
   toc?: boolean;
@@ -54,21 +47,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (file.size > MAX_FILE_SIZE_BYTES) {
       return NextResponse.json(
-        { error: "Login required." },
-        { status: 401 }
-      );
-    }
-
-    const dbUser = await prisma.user.findUnique({
-      where: { email: session.user.email },
-    });
-    if (!dbUser) {
-      return NextResponse.json(
-        { error: "User not found. Please sign in again." },
-        { status: 401 }
+        { error: "File size must be 10MB or less." },
+        { status: 400 }
       );
     }
 
@@ -80,26 +62,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const planConfig = getPlanConfig(dbUser.plan);
-    const limit = planConfig.conversions;
-    const startOfMonth = getStartOfMonth(new Date());
-    const conversionCount = await prisma.conversion.count({
-      where: {
-        userId: dbUser.id,
-        createdAt: { gte: startOfMonth },
-      },
-    });
-
-    let useCredit = false;
-    if (limit !== Infinity && conversionCount >= limit) {
-      if (dbUser.credits > 0) {
-        useCredit = true;
-      } else {
-        return NextResponse.json(
-          { error: "Conversion limit reached. Please upgrade your plan or add credits." },
-          { status: 403 }
-        );
-      }
+    const cover = formData.get("cover");
+    if (cover && cover instanceof File && cover.size > MAX_FILE_SIZE_BYTES) {
+      return NextResponse.json(
+        { error: "Cover image must be 10MB or less." },
+        { status: 400 }
+      );
     }
 
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), "epub-"));
@@ -110,7 +78,6 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(await file.arrayBuffer());
     await fs.writeFile(inputPath, buffer);
 
-    const cover = formData.get("cover");
     if (cover && cover instanceof File) {
       const coverExt = getExtension(cover.name).toLowerCase() === ".png" ? ".png" : ".jpg";
       coverPath = path.join(dir, `cover${coverExt}`);
@@ -160,17 +127,6 @@ export async function POST(request: Request) {
 
     const epubBuffer = await fs.readFile(outputPath);
     const downloadName = `${safeBase}.epub`;
-
-    await prisma.conversion.create({
-      data: { userId: dbUser.id },
-    });
-
-    if (useCredit) {
-      await prisma.user.update({
-        where: { id: dbUser.id },
-        data: { credits: { decrement: 1 } },
-      });
-    }
 
     return new NextResponse(epubBuffer, {
       status: 200,

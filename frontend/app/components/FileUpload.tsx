@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ConversionSettings, {
   DEFAULT_OPTIONS,
   type ConversionOptions,
@@ -17,6 +16,31 @@ const ACCEPTED_TYPES = {
 const ACCEPTED_EXTENSIONS = [".docx", ".txt", ".pdf"];
 const ACCEPTED_STRING = ".docx, .txt, .pdf";
 const CONVERT_TO_EPUB_EXTENSIONS = [".docx", ".txt"];
+const MAX_TEXT_CHARS = 30_000;
+const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
+const BETA_DAILY_LIMIT = 3;
+const BETA_STORAGE_KEY = "epubmaker_beta_usage";
+
+function getBetaUsage(): { count: number; date: string } {
+  if (typeof window === "undefined") return { count: 0, date: "" };
+  const today = new Date().toDateString();
+  try {
+    const raw = localStorage.getItem(BETA_STORAGE_KEY);
+    if (!raw) return { count: 0, date: today };
+    const { date, count } = JSON.parse(raw) as { date: string; count: number };
+    if (date !== today) return { count: 0, date: today };
+    return { date, count };
+  } catch {
+    return { count: 0, date: today };
+  }
+}
+
+function incrementBetaUsage(): void {
+  const u = getBetaUsage();
+  const today = new Date().toDateString();
+  const newCount = u.date === today ? u.count + 1 : 1;
+  localStorage.setItem(BETA_STORAGE_KEY, JSON.stringify({ date: today, count: newCount }));
+}
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return "0 B";
@@ -52,6 +76,11 @@ export default function FileUpload() {
   const [previewFile, setPreviewFile] = useState<Blob | null>(null);
   const [conversionOptions, setConversionOptions] = useState<ConversionOptions>(DEFAULT_OPTIONS);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [betaUsage, setBetaUsage] = useState(() => getBetaUsage());
+
+  useEffect(() => {
+    setBetaUsage(getBetaUsage());
+  }, [converting]);
 
   const handleFiles = useCallback((files: FileList | null) => {
     setError(null);
@@ -60,6 +89,26 @@ export default function FileUpload() {
     if (!isValidFile(f)) {
       setError(`Please upload a DOCX, TXT or PDF file. "${f.name}" is not supported.`);
       setFile(null);
+      return;
+    }
+    if (f.size > MAX_FILE_SIZE_BYTES) {
+      setError("File size must be 10MB or less.");
+      setFile(null);
+      return;
+    }
+    const ext = getExtension(f.name);
+    if (ext === ".txt") {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = (reader.result as string) ?? "";
+        if (text.length > MAX_TEXT_CHARS) {
+          setError(`Text must be ${MAX_TEXT_CHARS.toLocaleString()} characters or less (current: ${text.length.toLocaleString()}).`);
+          setFile(null);
+          return;
+        }
+        setFile(f);
+      };
+      reader.readAsText(f, "UTF-8");
       return;
     }
     setFile(f);
@@ -102,8 +151,23 @@ export default function FileUpload() {
     setConvertError(null);
   }, []);
 
+  const handleCoverFileChange = useCallback((newCover: File | null) => {
+    if (newCover && newCover.size > MAX_FILE_SIZE_BYTES) {
+      setError("Cover image must be 10MB or less.");
+      return;
+    }
+    setError(null);
+    setCoverFile(newCover);
+  }, []);
+
+  const atBetaDailyLimit = betaUsage.count >= BETA_DAILY_LIMIT;
+
   const convertToEpub = useCallback(async () => {
     if (!file || !canConvertToEpub(file)) return;
+    if (atBetaDailyLimit) {
+      setConvertError("Daily limit reached (3 conversions per day). Try again tomorrow.");
+      return;
+    }
     setConvertError(null);
     setConverting(true);
     try {
@@ -119,16 +183,6 @@ export default function FileUpload() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        if (res.status === 401) {
-          setConvertError("login");
-          setConverting(false);
-          return;
-        }
-        if (res.status === 403) {
-          setConvertError("limit");
-          setConverting(false);
-          return;
-        }
         throw new Error(data.error || `Conversion failed (${res.status})`);
       }
       const blob = await res.blob();
@@ -142,12 +196,14 @@ export default function FileUpload() {
       a.download = name;
       a.click();
       URL.revokeObjectURL(downloadUrl);
+      incrementBetaUsage();
+      setBetaUsage(getBetaUsage());
     } catch (e) {
       setConvertError(e instanceof Error ? e.message : "Conversion failed");
     } finally {
       setConverting(false);
     }
-  }, [file, conversionOptions, coverFile]);
+  }, [file, conversionOptions, coverFile, atBetaDailyLimit]);
 
   return (
     <div className="w-full max-w-lg space-y-6">
@@ -199,21 +255,7 @@ export default function FileUpload() {
           role="alert"
           className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/40 dark:text-red-200"
         >
-          {convertError === "login" ? (
-            <span>Login required. Please sign in to convert files.</span>
-          ) : convertError === "limit" ? (
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <span>Monthly conversion limit reached.</span>
-              <Link
-                href="/pricing"
-                className="shrink-0 rounded-lg bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-red-950"
-              >
-                View plans
-              </Link>
-            </div>
-          ) : (
-            convertError
-          )}
+          {convertError}
         </div>
       )}
 
@@ -248,13 +290,18 @@ export default function FileUpload() {
                 options={conversionOptions}
                 onChange={setConversionOptions}
                 coverFile={coverFile}
-                onCoverFileChange={setCoverFile}
+                onCoverFileChange={handleCoverFileChange}
               />
+              {atBetaDailyLimit && (
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  Daily limit reached (3 per day). Resets at midnight.
+                </p>
+              )}
               <div>
                 <button
                   type="button"
                   onClick={convertToEpub}
-                  disabled={converting}
+                  disabled={converting || atBetaDailyLimit}
                   className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
                 >
                   {converting ? "Converting…" : "Convert to EPUB"}

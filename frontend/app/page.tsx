@@ -3,6 +3,13 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+      {/* Beta notice */}
+      <section className="border-b border-emerald-200 bg-emerald-50 px-4 py-3 text-center dark:border-emerald-800 dark:bg-emerald-950/50">
+        <p className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
+          <strong>Public Beta</strong> — No login required. Your files are processed and downloaded immediately. We do not store your content.
+        </p>
+      </section>
+
       {/* Hero */}
       <section className="border-b border-zinc-200 bg-white px-6 py-20 dark:border-zinc-800 dark:bg-zinc-900/50 sm:py-28">
         <div className="mx-auto max-w-3xl text-center">
