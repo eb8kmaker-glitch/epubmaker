@@ -121,6 +121,18 @@
   },
   "Pricing": {
     "title": "Precios para conversión EPUB",
-    "subtitle": "Elige el plan que se adapte a tu flujo de publicación."
+    "subtitle": "Elige el plan que se adapte a tu flujo de publicación.",
+    "recommended": "Recomendado",
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "q1": "¿Qué tipos de archivo se admiten?",
+      "a1": "Admitimos archivos DOCX y TXT para convertir a EPUB. Sube tu manuscrito y configura metadatos, portada y estilo antes de descargar.",
+      "q2": "¿Puedo cancelar en cualquier momento?",
+      "a2": "Sí. Puedes cambiar o cancelar tu plan cuando quieras. No hay compromiso a largo plazo.",
+      "q3": "¿Necesito una cuenta?",
+      "a3": "Puedes probar el plan Gratis sin registrarte. Los planes Starter y Pro requieren cuenta para facturación e historial de conversiones."
+    },
+    "ctaTitle": "Convierte tu manuscrito a EPUB hoy",
+    "ctaButton": "Empezar a convertir"
   }
 }

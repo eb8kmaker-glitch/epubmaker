@@ -121,6 +121,18 @@
   },
   "Pricing": {
     "title": "Preise für EPUB-Konvertierung",
-    "subtitle": "Wähle den Tarif, der zu deinem Publikations-Workflow passt."
+    "subtitle": "Wähle den Tarif, der zu deinem Publikations-Workflow passt.",
+    "recommended": "Empfohlen",
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "q1": "Welche Dateitypen werden unterstützt?",
+      "a1": "Wir unterstützen DOCX- und TXT-Dateien für die Konvertierung zu EPUB. Lade dein Manuskript hoch und konfiguriere Metadaten, Cover und Stil vor dem Download.",
+      "q2": "Kann ich jederzeit kündigen?",
+      "a2": "Ja. Du kannst deinen Tarif jederzeit upgraden oder kündigen. Es ist keine langfristige Bindung erforderlich.",
+      "q3": "Brauche ich ein Konto?",
+      "a3": "Den Free-Tarif kannst du ohne Anmeldung testen. Starter- und Pro-Tarife erfordern ein Konto für Abrechnung und Konvertierungshistorie."
+    },
+    "ctaTitle": "Konvertiere dein Manuskript noch heute",
+    "ctaButton": "Jetzt konvertieren"
   }
 }

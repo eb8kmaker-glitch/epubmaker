@@ -121,6 +121,18 @@
   },
   "Pricing": {
     "title": "Tarifs de conversion EPUB",
-    "subtitle": "Choisissez l'offre qui correspond à votre flux de publication."
+    "subtitle": "Choisissez l'offre qui correspond à votre flux de publication.",
+    "recommended": "Recommandé",
+    "faq": {
+      "title": "Questions fréquentes",
+      "q1": "Quels types de fichiers sont pris en charge ?",
+      "a1": "Nous prenons en charge les fichiers DOCX et TXT pour la conversion en EPUB. Téléversez votre manuscrit et configurez métadonnées, couverture et style avant le téléchargement.",
+      "q2": "Puis-je annuler à tout moment ?",
+      "a2": "Oui. Vous pouvez changer ou annuler votre offre à tout moment. Aucun engagement à long terme.",
+      "q3": "Ai-je besoin d'un compte ?",
+      "a3": "L'offre Free est utilisable sans inscription. Les offres Starter et Pro nécessitent un compte pour la facturation et l'historique des conversions."
+    },
+    "ctaTitle": "Convertissez votre manuscrit en EPUB aujourd'hui",
+    "ctaButton": "Commencer la conversion"
   }
 }

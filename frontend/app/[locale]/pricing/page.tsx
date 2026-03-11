@@ -76,24 +76,15 @@ const plans = [
   },
 ];
 
-const FAQ = [
-  {
-    q: "What file types are supported?",
-    a: "We support DOCX and TXT files for conversion to EPUB. Upload your manuscript and configure metadata, cover, and styling before downloading.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes. You can upgrade or cancel your plan at any time. No long-term commitment required.",
-  },
-  {
-    q: "Do I need an account?",
-    a: "You can try the Free plan without signing up. Starter and Pro plans require an account for billing and conversion history.",
-  },
-];
-
 export default async function PricingPage() {
   const t = await getTranslations("Pricing");
   const tCommon = await getTranslations("common");
+
+  const faqItems = [
+    { q: t("faq.q1"), a: t("faq.a1") },
+    { q: t("faq.q2"), a: t("faq.a2") },
+    { q: t("faq.q3"), a: t("faq.a3") },
+  ];
 
   return (
     <div className="min-h-screen bg-[var(--page-bg)] font-sans text-[var(--content)]">
@@ -124,7 +115,7 @@ export default async function PricingPage() {
                 >
                   {highlighted && (
                     <span className="mb-2 inline-block w-fit rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 text-xs font-medium text-[var(--accent)]">
-                      Recommended
+                      {t("recommended")}
                     </span>
                   )}
                   <h2 className="text-lg font-semibold text-[var(--content)]">
@@ -176,10 +167,10 @@ export default async function PricingPage() {
       <section className="border-t border-[var(--border)] bg-[var(--card)] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-center text-2xl font-semibold tracking-tight sm:text-3xl">
-            Frequently asked questions
+            {t("faq.title")}
           </h2>
           <dl className="mt-12 space-y-8">
-            {FAQ.map((item) => (
+            {faqItems.map((item) => (
               <div key={item.q}>
                 <dt className="text-base font-medium text-[var(--content)]">
                   {item.q}
@@ -196,13 +187,13 @@ export default async function PricingPage() {
       <section className="border-t border-[var(--border)] bg-[var(--primary)] px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-xl font-semibold text-white sm:text-2xl">
-            Start converting your manuscript today
+            {t("ctaTitle")}
           </h2>
           <I18nLink
             href="/convert"
             className="mt-6 inline-block rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-[var(--primary)] shadow-sm transition-all duration-200 hover:bg-[var(--dropzone-hover)] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[var(--primary)]"
           >
-            Start Converting
+            {t("ctaButton")}
           </I18nLink>
         </div>
       </section>

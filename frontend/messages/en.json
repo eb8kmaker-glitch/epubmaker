@@ -120,6 +120,18 @@
   },
   "Pricing": {
     "title": "Simple pricing for EPUB conversion",
-    "subtitle": "Choose the plan that fits your publishing workflow."
+    "subtitle": "Choose the plan that fits your publishing workflow.",
+    "recommended": "Recommended",
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": "What file types are supported?",
+      "a1": "We support DOCX and TXT files for conversion to EPUB. Upload your manuscript and configure metadata, cover, and styling before downloading.",
+      "q2": "Can I cancel anytime?",
+      "a2": "Yes. You can upgrade or cancel your plan at any time. No long-term commitment required.",
+      "q3": "Do I need an account?",
+      "a3": "You can try the Free plan without signing up. Starter and Pro plans require an account for billing and conversion history."
+    },
+    "ctaTitle": "Start converting your manuscript today",
+    "ctaButton": "Start Converting"
   }
 }
