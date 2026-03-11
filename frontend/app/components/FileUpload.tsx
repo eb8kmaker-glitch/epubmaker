@@ -241,6 +241,36 @@ export default function FileUpload() {
         </div>
       </label>
 
+      <div
+        role="region"
+        aria-label="DOCX upload guide"
+        className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 dark:border-sky-800 dark:bg-sky-950/40"
+      >
+        <p className="flex items-start gap-2 text-sm font-medium text-sky-800 dark:text-sky-200">
+          <span className="mt-0.5 shrink-0 text-base" aria-hidden>
+            📋
+          </span>
+          <span>DOCX Upload Guide</span>
+        </p>
+        <p className="mt-2 text-xs leading-relaxed text-sky-700 dark:text-sky-300">
+          EPUB 목차(Table of Contents)를 생성하려면 Word 문서에서 Heading 스타일을 사용해야 합니다.
+        </p>
+        <ul className="mt-2 list-inside list-disc space-y-0.5 text-xs text-sky-700 dark:text-sky-300">
+          <li>Heading 1 → Chapter 제목</li>
+          <li>Heading 2 → Section 제목</li>
+          <li>Heading 3 → Subsection</li>
+        </ul>
+        <p className="mt-2 text-xs font-medium text-sky-800 dark:text-sky-200">
+          Word에서 설정 방법
+        </p>
+        <p className="mt-0.5 text-xs leading-relaxed text-sky-700 dark:text-sky-300">
+          홈(Home) → 스타일 → 제목1 / 제목2 / 제목3
+        </p>
+        <p className="mt-2 text-xs leading-relaxed text-sky-600 dark:text-sky-400">
+          Heading 스타일이 적용되지 않은 문서는 EPUB 목차가 생성되지 않을 수 있습니다.
+        </p>
+      </div>
+
       {error && (
         <div
           role="alert"
