@@ -65,7 +65,7 @@
   },
   "Convert": {
     "title": "Upload your document",
-    "subtitle": "DOCX, TXT and PDF files supported. Drag and drop or click to choose."
+    "subtitle": "DOCX, TXT, PDF, HTML, MD supported. Drag and drop or click to choose."
   },
   "FileUpload": {
     "dropText": "Drag and drop your file here",
@@ -77,10 +77,37 @@
     "converting": "Converting…",
     "errorConversionFailed": "Conversion failed",
     "dailyLimit": "Daily limit reached (3 per day). Resets at midnight.",
-    "errorFileType": "Please upload a DOCX, TXT or PDF file. \"{name}\" is not supported.",
-    "errorFileSize": "File size must be 10MB or less.",
+    "errorFileType": "Please upload a DOCX, TXT, PDF, HTML, or MD file. \"{name}\" is not supported.",
+    "errorFileSize": "File size must be 50MB or less.",
     "errorTextLength": "Text must be {max} characters or less (current: {current}).",
-    "errorCoverSize": "Cover image must be 10MB or less."
+    "errorCoverSize": "Cover image must be 10MB or less.",
+    "batchTitle": "Batch conversion",
+    "batchHint": "Select multiple files (Free: 3, Starter: 20, Pro: unlimited).",
+    "batchLimitReached": "Free plan allows max {max} files per batch.",
+    "convertAll": "Convert all to EPUB",
+    "convertingBatch": "Converting {current} of {total}…",
+    "downloadAllZip": "Download all as ZIP",
+    "downloadFile": "Download",
+    "uploadFile": "Upload File",
+    "importGoogleDocs": "Import from Google Docs",
+    "importNotion": "Import from Notion",
+    "notionUrlPlaceholder": "Paste Notion page URL…",
+    "notionImportButton": "Import",
+    "notionImporting": "Importing…",
+    "notionError": "Could not load Notion page. Check the URL and that the page is shared with your integration."
+  },
+  "EpubCompatibilityCheck": {
+    "title": "EPUB Compatibility Check",
+    "statusOk": "No errors",
+    "statusWarning": "Warning",
+    "statusError": "Error",
+    "epubVersion": "EPUB version",
+    "metadataErrors": "Metadata errors",
+    "cssWarnings": "CSS warnings",
+    "navigationIssues": "Navigation issues",
+    "fixSuggestions": "Fix suggestions",
+    "validating": "Validating…",
+    "noIssues": "No issues found."
   },
   "docxGuide": {
     "title": "DOCX Upload Guide",

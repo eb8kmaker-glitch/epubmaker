@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
+import { normalizeToHtml } from "@/app/lib/normalizeToHtml";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -8,8 +9,9 @@ export const maxDuration = 60;
 const INPUT_FILENAME = "input.docx";
 const OUTPUT_FILENAME = "output.epub";
 const STYLE_FILENAME = "style.css";
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-const ALLOWED_EXTENSIONS = [".docx", ".txt"];
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const ALLOWED_EXTENSIONS = [".docx", ".txt", ".pdf", ".html", ".htm", ".md"];
+const NORMALIZE_EXTENSIONS = [".pdf", ".html", ".htm", ".md"];
 
 function getExtension(name: string): string {
   const i = name.lastIndexOf(".");
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
       return NextResponse.json(
-        { error: "File size must be 10MB or less." },
+        { error: "File size must be 50MB or less." },
         { status: 400 }
       );
     }
@@ -89,7 +91,7 @@ export async function POST(request: Request) {
     const ext = getExtension(file.name);
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
       return NextResponse.json(
-        { error: "Only DOCX and TXT files are supported." },
+        { error: "Supported formats: DOCX, TXT, PDF, HTML, MD." },
         { status: 400 }
       );
     }
@@ -109,7 +111,6 @@ export async function POST(request: Request) {
 
     const safeBase = baseName(file.name).replace(/[^a-zA-Z0-9-_]/g, "_") || "document";
     const downloadName = `${safeBase}.epub`;
-    const fromFormat = ext === ".docx" ? "docx" : "plain";
     const toFormat = options.epubVersion === "epub2" ? "epub2" : "epub3";
     const styleName = options.style && options.style in EPUB_STYLES ? options.style : "default";
 
@@ -117,6 +118,28 @@ export async function POST(request: Request) {
       cover && cover instanceof File
         ? `cover${getExtension(cover.name) || ".png"}`
         : null;
+
+    let fromFormat: string;
+    let stdin: string | null = null;
+    const files: Record<string, Blob | string> = {};
+
+    if (NORMALIZE_EXTENSIONS.includes(ext)) {
+      fromFormat = "html";
+      const html = await normalizeToHtml(
+        ext === ".pdf"
+          ? { type: "pdf", buffer: Buffer.from(await file.arrayBuffer()) }
+          : ext === ".md"
+            ? { type: "md", text: await file.text() }
+            : { type: "html", text: await file.text() }
+      );
+      stdin = html;
+    } else if (ext === ".docx") {
+      fromFormat = "docx";
+      files[INPUT_FILENAME] = new Blob([await file.arrayBuffer()]);
+    } else {
+      fromFormat = "plain";
+      stdin = await file.text();
+    }
 
     const pandocOptions = buildPandocOptions({
       from: fromFormat,
@@ -133,26 +156,17 @@ export async function POST(request: Request) {
       },
       epubCoverImage: coverKey ?? undefined,
       styleCssFile: STYLE_FILENAME,
-      inputFile: ext === ".docx" ? INPUT_FILENAME : undefined,
+      inputFile: fromFormat === "docx" ? INPUT_FILENAME : undefined,
     });
 
-    const files: Record<string, Blob | string> = {};
-    if (ext === ".docx") {
-      files[INPUT_FILENAME] = new Blob([await file.arrayBuffer()]);
-    }
     files[STYLE_FILENAME] = EPUB_STYLES[styleName] ?? EPUB_STYLES.default;
     if (cover && cover instanceof File && coverKey) {
       files[coverKey] = new Blob([await cover.arrayBuffer()]);
     }
 
-    let stdin: string | null = null;
-    if (ext === ".txt") {
-      stdin = await file.text();
-    }
-
     const pandocCommandLog = [
       "pandoc",
-      ext === ".docx" ? INPUT_FILENAME : "(stdin)",
+      fromFormat === "docx" ? INPUT_FILENAME : "(stdin)",
       "-o",
       OUTPUT_FILENAME,
       "-f",

@@ -80,7 +80,27 @@
     "errorFileType": "DOCX、TXTまたはPDFファイルをアップロードしてください。「{name}」は対応していません。",
     "errorFileSize": "ファイルサイズは10MB以下にしてください。",
     "errorTextLength": "テキストは{max}文字以下にしてください（現在: {current}）。",
-    "errorCoverSize": "表紙画像は10MB以下にしてください。"
+    "errorCoverSize": "表紙画像は10MB以下にしてください。",
+    "batchTitle": "一括変換",
+    "batchHint": "複数ファイルを選択（無料：3、スターター：20、プロ：無制限）。",
+    "batchLimitReached": "無料プランは1回あたり最大{max}ファイルまでです。",
+    "convertAll": "すべてEPUBに変換",
+    "convertingBatch": "変換中 {current} / {total}…",
+    "downloadAllZip": "すべてZIPでダウンロード",
+    "downloadFile": "ダウンロード"
+  },
+  "EpubCompatibilityCheck": {
+    "title": "EPUB互換性チェック",
+    "statusOk": "エラーなし",
+    "statusWarning": "警告",
+    "statusError": "エラー",
+    "epubVersion": "EPUBバージョン",
+    "metadataErrors": "メタデータエラー",
+    "cssWarnings": "CSS警告",
+    "navigationIssues": "ナビゲーションの問題",
+    "fixSuggestions": "修正の提案",
+    "validating": "検証中…",
+    "noIssues": "問題は見つかりませんでした。"
   },
   "docxGuide": {
     "title": "DOCXアップロードガイド",

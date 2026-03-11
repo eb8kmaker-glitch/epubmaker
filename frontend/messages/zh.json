@@ -80,7 +80,27 @@
     "errorFileType": "请上传 DOCX、TXT 或 PDF 文件。「{name}」不受支持。",
     "errorFileSize": "文件大小须在 10MB 以内。",
     "errorTextLength": "文本须在 {max} 字以内（当前：{current}）。",
-    "errorCoverSize": "封面图片须在 10MB 以内。"
+    "errorCoverSize": "封面图片须在 10MB 以内。",
+    "batchTitle": "批量转换",
+    "batchHint": "选择多个文件（免费：3，入门：20，专业：无限制）。",
+    "batchLimitReached": "免费计划每批最多 {max} 个文件。",
+    "convertAll": "全部转换为 EPUB",
+    "convertingBatch": "正在转换 {current} / {total}…",
+    "downloadAllZip": "全部下载为 ZIP",
+    "downloadFile": "下载"
+  },
+  "EpubCompatibilityCheck": {
+    "title": "EPUB 兼容性检查",
+    "statusOk": "无错误",
+    "statusWarning": "警告",
+    "statusError": "错误",
+    "epubVersion": "EPUB 版本",
+    "metadataErrors": "元数据错误",
+    "cssWarnings": "CSS 警告",
+    "navigationIssues": "导航问题",
+    "fixSuggestions": "修复建议",
+    "validating": "验证中…",
+    "noIssues": "未发现问题。"
   },
   "docxGuide": {
     "title": "DOCX 上传指南",

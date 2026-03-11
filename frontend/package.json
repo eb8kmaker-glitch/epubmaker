@@ -9,14 +9,19 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@likecoin/epubcheck-ts": "^0.3.7",
     "@prisma/client": "^6.19.2",
     "@sentry/nextjs": "^10.43.0",
     "@vercel/analytics": "^2.0.0",
+    "cheerio": "^1.2.0",
     "epubjs": "^0.3.93",
+    "jszip": "^3.10.1",
+    "marked": "^17.0.4",
     "next": "16.1.6",
     "next-auth": "^4.24.13",
     "next-intl": "^4.8.3",
     "pandoc-wasm": "^1.0.1",
+    "pdf-parse": "^2.4.5",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

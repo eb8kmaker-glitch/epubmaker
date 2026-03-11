@@ -80,7 +80,27 @@
     "errorFileType": "Bitte DOCX-, TXT- oder PDF-Datei hochladen. \"{name}\" wird nicht unterstützt.",
     "errorFileSize": "Dateigröße darf maximal 10 MB sein.",
     "errorTextLength": "Text darf maximal {max} Zeichen haben (aktuell: {current}).",
-    "errorCoverSize": "Cover darf maximal 10 MB groß sein."
+    "errorCoverSize": "Cover darf maximal 10 MB groß sein.",
+    "batchTitle": "Stapelkonvertierung",
+    "batchHint": "Mehrere Dateien wählen (Kostenlos: 3, Starter: 20, Pro: unbegrenzt).",
+    "batchLimitReached": "Kostenloser Tarif erlaubt max. {max} Dateien pro Stapel.",
+    "convertAll": "Alle zu EPUB konvertieren",
+    "convertingBatch": "Konvertiere {current} von {total}…",
+    "downloadAllZip": "Alle als ZIP herunterladen",
+    "downloadFile": "Herunterladen"
+  },
+  "EpubCompatibilityCheck": {
+    "title": "EPUB-Kompatibilitätsprüfung",
+    "statusOk": "Keine Fehler",
+    "statusWarning": "Warnung",
+    "statusError": "Fehler",
+    "epubVersion": "EPUB-Version",
+    "metadataErrors": "Metadatenfehler",
+    "cssWarnings": "CSS-Warnungen",
+    "navigationIssues": "Navigationsprobleme",
+    "fixSuggestions": "Korrekturvorschläge",
+    "validating": "Prüfung läuft…",
+    "noIssues": "Keine Probleme gefunden."
   },
   "docxGuide": {
     "title": "DOCX-Upload-Anleitung",

@@ -80,7 +80,27 @@
     "errorFileType": "Veuillez téléverser un fichier DOCX, TXT ou PDF. « {name} » n'est pas pris en charge.",
     "errorFileSize": "La taille du fichier doit être de 10 Mo ou moins.",
     "errorTextLength": "Le texte doit contenir {max} caractères ou moins (actuel : {current}).",
-    "errorCoverSize": "La couverture doit faire 10 Mo ou moins."
+    "errorCoverSize": "La couverture doit faire 10 Mo ou moins.",
+    "batchTitle": "Conversion par lot",
+    "batchHint": "Sélectionnez plusieurs fichiers (Gratuit : 3, Starter : 20, Pro : illimité).",
+    "batchLimitReached": "Le plan gratuit permet au maximum {max} fichiers par lot.",
+    "convertAll": "Tout convertir en EPUB",
+    "convertingBatch": "Conversion {current} sur {total}…",
+    "downloadAllZip": "Tout télécharger en ZIP",
+    "downloadFile": "Télécharger"
+  },
+  "EpubCompatibilityCheck": {
+    "title": "Vérification de compatibilité EPUB",
+    "statusOk": "Aucune erreur",
+    "statusWarning": "Avertissement",
+    "statusError": "Erreur",
+    "epubVersion": "Version EPUB",
+    "metadataErrors": "Erreurs de métadonnées",
+    "cssWarnings": "Avertissements CSS",
+    "navigationIssues": "Problèmes de navigation",
+    "fixSuggestions": "Suggestions de correction",
+    "validating": "Validation…",
+    "noIssues": "Aucun problème trouvé."
   },
   "docxGuide": {
     "title": "Guide d'upload DOCX",

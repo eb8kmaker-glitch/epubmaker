@@ -65,7 +65,7 @@
   },
   "Convert": {
     "title": "문서를 업로드하세요",
-    "subtitle": "DOCX, TXT, PDF 지원. 드래그 앤 드롭 또는 클릭하여 선택하세요."
+    "subtitle": "DOCX, TXT, PDF, HTML, MD 지원. 드래그 앤 드롭 또는 클릭하여 선택하세요."
   },
   "FileUpload": {
     "dropText": "파일을 여기에 드래그하여 놓으세요",
@@ -77,10 +77,37 @@
     "converting": "변환 중…",
     "errorConversionFailed": "변환에 실패했습니다.",
     "dailyLimit": "일일 한도(1일 3회)에 도달했습니다. 자정에 초기화됩니다.",
-    "errorFileType": "DOCX, TXT 또는 PDF 파일을 업로드해 주세요. \"{name}\"은(는) 지원되지 않습니다.",
-    "errorFileSize": "파일 크기는 10MB 이하여야 합니다.",
+    "errorFileType": "DOCX, TXT, PDF, HTML 또는 MD 파일을 업로드해 주세요. \"{name}\"은(는) 지원되지 않습니다.",
+    "errorFileSize": "파일 크기는 50MB 이하여야 합니다.",
     "errorTextLength": "텍스트는 {max}자 이하여야 합니다 (현재: {current}).",
-    "errorCoverSize": "표지 이미지는 10MB 이하여야 합니다."
+    "errorCoverSize": "표지 이미지는 10MB 이하여야 합니다.",
+    "batchTitle": "일괄 변환",
+    "batchHint": "여러 파일 선택 (무료: 3, 스타터: 20, 프로: 무제한).",
+    "batchLimitReached": "무료 플랜은 일괄 최대 {max}개 파일까지 가능합니다.",
+    "convertAll": "전부 EPUB로 변환",
+    "convertingBatch": "변환 중 {current} / {total}…",
+    "downloadAllZip": "전체 ZIP으로 다운로드",
+    "downloadFile": "다운로드",
+    "uploadFile": "파일 업로드",
+    "importGoogleDocs": "Google Docs에서 가져오기",
+    "importNotion": "Notion에서 가져오기",
+    "notionUrlPlaceholder": "Notion 페이지 URL 붙여넣기…",
+    "notionImportButton": "가져오기",
+    "notionImporting": "가져오는 중…",
+    "notionError": "Notion 페이지를 불러올 수 없습니다. URL을 확인하고, 페이지가 연동에 공유되어 있는지 확인하세요."
+  },
+  "EpubCompatibilityCheck": {
+    "title": "EPUB 호환성 검사",
+    "statusOk": "오류 없음",
+    "statusWarning": "경고",
+    "statusError": "오류",
+    "epubVersion": "EPUB 버전",
+    "metadataErrors": "메타데이터 오류",
+    "cssWarnings": "CSS 경고",
+    "navigationIssues": "탐색(목차) 문제",
+    "fixSuggestions": "수정 제안",
+    "validating": "검사 중…",
+    "noIssues": "발견된 문제가 없습니다."
   },
   "docxGuide": {
     "title": "DOCX 업로드 안내",
