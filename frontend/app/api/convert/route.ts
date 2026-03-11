@@ -20,6 +20,7 @@ function logPandocSystemCheck(): void {
 
 const INPUT_FILENAME = "input.docx";
 const OUTPUT_FILENAME = "output.epub";
+const INTERMEDIATE_HTML_FILENAME = "output.html";
 const STYLE_FILENAME = "style.css";
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
 const ALLOWED_EXTENSIONS = [".docx", ".txt", ".pdf", ".html", ".htm", ".md"];
@@ -149,8 +150,38 @@ export async function POST(request: Request) {
       );
       stdin = html;
     } else if (ext === ".docx") {
-      fromFormat = "docx";
-      files[INPUT_FILENAME] = new Blob([await file.arrayBuffer()]);
+      fromFormat = "html";
+      const docxBlob = new Blob([await file.arrayBuffer()]);
+      const docxFiles: Record<string, Blob | string> = { [INPUT_FILENAME]: docxBlob };
+      const docxToHtmlOptions: Record<string, unknown> = {
+        from: "docx",
+        to: "html",
+        "output-file": INTERMEDIATE_HTML_FILENAME,
+        "input-files": [INPUT_FILENAME],
+        standalone: true,
+      };
+      let htmlResult: Awaited<ReturnType<typeof convert>>;
+      try {
+        htmlResult = await convert(docxToHtmlOptions, null, docxFiles);
+      } catch (docxToHtmlErr) {
+        console.error("[convert] DOCX → HTML error:", docxToHtmlErr);
+        if (docxToHtmlErr instanceof Error && docxToHtmlErr.stack) {
+          console.error("[convert] Stack:", docxToHtmlErr.stack);
+        }
+        const errObj = docxToHtmlErr as { message?: string; stderr?: string };
+        const message = errObj?.message || (docxToHtmlErr instanceof Error ? docxToHtmlErr.message : "DOCX → HTML failed");
+        const stderr = typeof errObj?.stderr === "string" ? errObj.stderr : "";
+        const detail = stderr ? `${message}. ${stderr}` : message;
+        return NextResponse.json({ error: `DOCX → HTML failed: ${detail}` }, { status: 500 });
+      }
+      const htmlBlobOrStr = htmlResult.files?.[INTERMEDIATE_HTML_FILENAME];
+      if (!htmlBlobOrStr) {
+        const errMsg = htmlResult.stderr || "DOCX → HTML produced no output.";
+        console.error("[convert] DOCX → HTML no output:", htmlResult.stderr);
+        return NextResponse.json({ error: `DOCX → HTML failed: ${errMsg}` }, { status: 500 });
+      }
+      stdin = typeof htmlBlobOrStr === "string" ? htmlBlobOrStr : await (htmlBlobOrStr as Blob).text();
+      console.log("[convert] DOCX → HTML success");
     } else {
       fromFormat = "plain";
       stdin = await file.text();
@@ -171,7 +202,7 @@ export async function POST(request: Request) {
       },
       epubCoverImage: coverKey ?? undefined,
       styleCssFile: STYLE_FILENAME,
-      inputFile: fromFormat === "docx" ? INPUT_FILENAME : undefined,
+      inputFile: undefined,
     });
 
     files[STYLE_FILENAME] = EPUB_STYLES[styleName] ?? EPUB_STYLES.default;
@@ -181,7 +212,7 @@ export async function POST(request: Request) {
 
     const pandocCommandLog = [
       "pandoc",
-      fromFormat === "docx" ? INPUT_FILENAME : "(stdin)",
+      "(stdin)",
       "-o",
       OUTPUT_FILENAME,
       "-f",
@@ -225,6 +256,10 @@ export async function POST(request: Request) {
       const errMsg = result.stderr || "Conversion produced no output.";
       console.error("[convert] No output blob:", result.stderr);
       return NextResponse.json({ error: errMsg }, { status: 500 });
+    }
+
+    if (ext === ".docx") {
+      console.log("[convert] HTML → EPUB success");
     }
 
     const epubBuffer = Buffer.from(await epubBlob.arrayBuffer());
