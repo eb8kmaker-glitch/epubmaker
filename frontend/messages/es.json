@@ -123,6 +123,56 @@
     "title": "Precios para conversión EPUB",
     "subtitle": "Elige el plan que se adapte a tu flujo de publicación.",
     "recommended": "Recomendado",
+    "plans": {
+      "free": {
+        "title": "Gratis",
+        "desc": "Empieza sin coste",
+        "price": "0 $ / mes",
+        "cta": "Empezar gratis",
+        "feature1": "5 conversiones al mes",
+        "feature2": "Soporte DOCX y TXT",
+        "feature3": "Export EPUB básico"
+      },
+      "starter": {
+        "title": "Starter",
+        "desc": "Para autores habituales",
+        "price": "9 $ / mes",
+        "cta": "Empezar Starter",
+        "feature1": "100 conversiones al mes",
+        "feature2": "Editor de metadatos",
+        "feature3": "Subida de portada",
+        "feature4": "Estilos CSS predefinidos"
+      },
+      "pro": {
+        "title": "Pro",
+        "desc": "Para usuarios avanzados",
+        "price": "19 $ / mes",
+        "cta": "Pasar a Pro",
+        "feature1": "Conversiones ilimitadas",
+        "feature2": "Todas las funciones",
+        "feature3": "Conversión prioritaria"
+      },
+      "pay": {
+        "title": "Pago por uso",
+        "desc": "Sin compromiso mensual",
+        "price": "3 $ por conversión",
+        "cta": "Obtener créditos",
+        "feature1": "Sin suscripción mensual",
+        "feature2": "Paga solo al convertir",
+        "feature3": "Ideal para autores ocasionales",
+        "feature4": "Los créditos no caducan"
+      },
+      "publisher": {
+        "title": "Publisher / B2B",
+        "desc": "Volumen y API",
+        "price": "Personalizado",
+        "cta": "Contactar ventas",
+        "feature1": "Precios por volumen",
+        "feature2": "Acceso API",
+        "feature3": "Procesamiento prioritario",
+        "feature4": "Soporte dedicado"
+      }
+    },
     "faq": {
       "title": "Preguntas frecuentes",
       "q1": "¿Qué tipos de archivo se admiten?",

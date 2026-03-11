@@ -122,6 +122,56 @@
     "title": "Simple pricing for EPUB conversion",
     "subtitle": "Choose the plan that fits your publishing workflow.",
     "recommended": "Recommended",
+    "plans": {
+      "free": {
+        "title": "Free",
+        "desc": "Get started at no cost",
+        "price": "$0 / month",
+        "cta": "Start Free",
+        "feature1": "5 conversions per month",
+        "feature2": "DOCX & TXT support",
+        "feature3": "Basic EPUB export"
+      },
+      "starter": {
+        "title": "Starter",
+        "desc": "For regular authors",
+        "price": "$9 / month",
+        "cta": "Start Starter",
+        "feature1": "100 conversions per month",
+        "feature2": "Metadata editor",
+        "feature3": "Cover image upload",
+        "feature4": "CSS styling presets"
+      },
+      "pro": {
+        "title": "Pro",
+        "desc": "For power users",
+        "price": "$19 / month",
+        "cta": "Upgrade to Pro",
+        "feature1": "Unlimited conversions",
+        "feature2": "All features included",
+        "feature3": "Priority conversion"
+      },
+      "pay": {
+        "title": "Pay-per-use",
+        "desc": "No monthly commitment",
+        "price": "$3 per conversion",
+        "cta": "Get credits",
+        "feature1": "No monthly subscription",
+        "feature2": "Pay only when converting",
+        "feature3": "Ideal for occasional authors",
+        "feature4": "Credits never expire"
+      },
+      "publisher": {
+        "title": "Publisher / B2B",
+        "desc": "Bulk and API",
+        "price": "Custom",
+        "cta": "Contact sales",
+        "feature1": "Bulk conversion pricing",
+        "feature2": "API access",
+        "feature3": "Priority processing",
+        "feature4": "Dedicated support"
+      }
+    },
     "faq": {
       "title": "Frequently asked questions",
       "q1": "What file types are supported?",

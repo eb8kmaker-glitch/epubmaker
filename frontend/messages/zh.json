@@ -123,6 +123,56 @@
     "title": "EPUB 转换价格",
     "subtitle": "选择适合您出版流程的套餐。",
     "recommended": "推荐",
+    "plans": {
+      "free": {
+        "title": "免费",
+        "desc": "零成本入门",
+        "price": "¥0 / 月",
+        "cta": "免费开始",
+        "feature1": "每月 5 次转换",
+        "feature2": "支持 DOCX 与 TXT",
+        "feature3": "基础 EPUB 导出"
+      },
+      "starter": {
+        "title": "Starter",
+        "desc": "适合经常写作的作者",
+        "price": "¥9 / 月",
+        "cta": "开通 Starter",
+        "feature1": "每月 100 次转换",
+        "feature2": "元数据编辑",
+        "feature3": "封面图片上传",
+        "feature4": "CSS 样式预设"
+      },
+      "pro": {
+        "title": "Pro",
+        "desc": "适合重度用户",
+        "price": "¥19 / 月",
+        "cta": "升级到 Pro",
+        "feature1": "无限次转换",
+        "feature2": "包含全部功能",
+        "feature3": "优先转换"
+      },
+      "pay": {
+        "title": "按次付费",
+        "desc": "无月费承诺",
+        "price": "每次转换 ¥3",
+        "cta": "购买点数",
+        "feature1": "无月费订阅",
+        "feature2": "仅在使用时付费",
+        "feature3": "适合偶尔使用的作者",
+        "feature4": "点数永不过期"
+      },
+      "publisher": {
+        "title": "出版商 / B2B",
+        "desc": "批量与 API",
+        "price": "定制",
+        "cta": "联系销售",
+        "feature1": "批量转换定价",
+        "feature2": "API 接入",
+        "feature3": "优先处理",
+        "feature4": "专属支持"
+      }
+    },
     "faq": {
       "title": "常见问题",
       "q1": "支持哪些文件格式？",

@@ -123,6 +123,56 @@
     "title": "Preise für EPUB-Konvertierung",
     "subtitle": "Wähle den Tarif, der zu deinem Publikations-Workflow passt.",
     "recommended": "Empfohlen",
+    "plans": {
+      "free": {
+        "title": "Free",
+        "desc": "Kostenlos starten",
+        "price": "0 € / Monat",
+        "cta": "Kostenlos starten",
+        "feature1": "5 Konvertierungen pro Monat",
+        "feature2": "DOCX- & TXT-Unterstützung",
+        "feature3": "Einfacher EPUB-Export"
+      },
+      "starter": {
+        "title": "Starter",
+        "desc": "Für regelmäßige Autoren",
+        "price": "9 € / Monat",
+        "cta": "Starter starten",
+        "feature1": "100 Konvertierungen pro Monat",
+        "feature2": "Metadaten-Editor",
+        "feature3": "Cover-Upload",
+        "feature4": "CSS-Stilvorlagen"
+      },
+      "pro": {
+        "title": "Pro",
+        "desc": "Für Power-User",
+        "price": "19 € / Monat",
+        "cta": "Auf Pro upgraden",
+        "feature1": "Unbegrenzte Konvertierungen",
+        "feature2": "Alle Funktionen inklusive",
+        "feature3": "Prioritäts-Konvertierung"
+      },
+      "pay": {
+        "title": "Pay-per-use",
+        "desc": "Keine monatliche Bindung",
+        "price": "3 € pro Konvertierung",
+        "cta": "Credits kaufen",
+        "feature1": "Kein Monatsabo",
+        "feature2": "Nur bei Konvertierung zahlen",
+        "feature3": "Ideal für Gelegenheitsautoren",
+        "feature4": "Credits verfallen nicht"
+      },
+      "publisher": {
+        "title": "Publisher / B2B",
+        "desc": "Mengen & API",
+        "price": "Individuell",
+        "cta": "Verkauf kontaktieren",
+        "feature1": "Mengenpreise",
+        "feature2": "API-Zugang",
+        "feature3": "Prioritätsbearbeitung",
+        "feature4": "Dedizierter Support"
+      }
+    },
     "faq": {
       "title": "Häufig gestellte Fragen",
       "q1": "Welche Dateitypen werden unterstützt?",

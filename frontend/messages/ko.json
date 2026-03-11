@@ -123,6 +123,56 @@
     "title": "EPUB 변환 요금제",
     "subtitle": "출판 워크플로에 맞는 요금제를 선택하세요.",
     "recommended": "추천",
+    "plans": {
+      "free": {
+        "title": "무료",
+        "desc": "비용 없이 시작하세요",
+        "price": "월 $0",
+        "cta": "무료로 시작",
+        "feature1": "월 5회 변환",
+        "feature2": "DOCX & TXT 지원",
+        "feature3": "기본 EPUB 내보내기"
+      },
+      "starter": {
+        "title": "스타터",
+        "desc": "꾸준히 쓰는 작가를 위해",
+        "price": "월 $9",
+        "cta": "스타터 시작",
+        "feature1": "월 100회 변환",
+        "feature2": "메타데이터 편집",
+        "feature3": "표지 이미지 업로드",
+        "feature4": "CSS 스타일 프리셋"
+      },
+      "pro": {
+        "title": "프로",
+        "desc": "고급 사용자를 위해",
+        "price": "월 $19",
+        "cta": "프로로 업그레이드",
+        "feature1": "무제한 변환",
+        "feature2": "모든 기능 포함",
+        "feature3": "우선 변환"
+      },
+      "pay": {
+        "title": "사용량 과금",
+        "desc": "월 정액 없음",
+        "price": "변환당 $3",
+        "cta": "크레딧 구매",
+        "feature1": "월 구독 없음",
+        "feature2": "변환할 때만 결제",
+        "feature3": "가끔 쓰는 작가에게 적합",
+        "feature4": "크레딧 만료 없음"
+      },
+      "publisher": {
+        "title": "퍼블리셔 / B2B",
+        "desc": "대량·API",
+        "price": "문의",
+        "cta": "영업 문의",
+        "feature1": "대량 변환 요금",
+        "feature2": "API 연동",
+        "feature3": "우선 처리",
+        "feature4": "전담 지원"
+      }
+    },
     "faq": {
       "title": "자주 묻는 질문",
       "q1": "어떤 파일 형식을 지원하나요?",

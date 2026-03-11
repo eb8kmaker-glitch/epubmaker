@@ -9,72 +9,17 @@ const LEMON_SQUEEZY = {
   payPerUse: "https://epubmaker.lemonsqueezy.com/checkout/buy/55e55a27-69cc-4ac1-a4ce-03f247c1c620",
 } as const;
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0 / month",
-    description: "Get started at no cost",
-    features: [
-      "5 conversions per month",
-      "DOCX & TXT support",
-      "Basic EPUB export",
-    ],
-    cta: "Start Free",
-    href: LEMON_SQUEEZY.free,
-  },
-  {
-    name: "Starter",
-    price: "$9 / month",
-    description: "For regular authors",
-    features: [
-      "100 conversions per month",
-      "Metadata editor",
-      "Cover image upload",
-      "CSS styling presets",
-    ],
-    recommended: true,
-    cta: "Start Starter",
-    href: LEMON_SQUEEZY.starter,
-  },
-  {
-    name: "Pro",
-    price: "$19 / month",
-    description: "For power users",
-    features: [
-      "Unlimited conversions",
-      "All features included",
-      "Priority conversion",
-    ],
-    cta: "Upgrade to Pro",
-    href: LEMON_SQUEEZY.pro,
-  },
-  {
-    name: "Pay-per-use",
-    price: "$3 per conversion",
-    description: "No monthly commitment",
-    features: [
-      "No monthly subscription",
-      "Pay only when converting",
-      "Ideal for occasional authors",
-      "Credits never expire",
-    ],
-    cta: "Get credits",
-    href: LEMON_SQUEEZY.payPerUse,
-  },
-  {
-    name: "Publisher / B2B",
-    price: "Custom",
-    description: "Bulk and API",
-    features: [
-      "Bulk conversion pricing",
-      "API access",
-      "Priority processing",
-      "Dedicated support",
-    ],
-    cta: "Contact sales",
-    href: "/contact",
-  },
-];
+const PLAN_IDS = ["free", "starter", "pro", "pay", "publisher"] as const;
+const PLAN_CONFIG: Record<
+  (typeof PLAN_IDS)[number],
+  { href: string; featureCount: number; recommended: boolean }
+> = {
+  free: { href: LEMON_SQUEEZY.free, featureCount: 3, recommended: false },
+  starter: { href: LEMON_SQUEEZY.starter, featureCount: 4, recommended: true },
+  pro: { href: LEMON_SQUEEZY.pro, featureCount: 3, recommended: false },
+  pay: { href: LEMON_SQUEEZY.payPerUse, featureCount: 4, recommended: false },
+  publisher: { href: "/contact", featureCount: 4, recommended: false },
+};
 
 export default async function PricingPage() {
   const t = await getTranslations("Pricing");
@@ -85,6 +30,23 @@ export default async function PricingPage() {
     { q: t("faq.q2"), a: t("faq.a2") },
     { q: t("faq.q3"), a: t("faq.a3") },
   ];
+
+  const plans = PLAN_IDS.map((id) => {
+    const config = PLAN_CONFIG[id];
+    const features = Array.from({ length: config.featureCount }, (_, i) =>
+      t(`plans.${id}.feature${i + 1}`)
+    );
+    return {
+      id,
+      name: t(`plans.${id}.title`),
+      description: t(`plans.${id}.desc`),
+      price: t(`plans.${id}.price`),
+      cta: t(`plans.${id}.cta`),
+      features,
+      href: config.href,
+      recommended: config.recommended,
+    };
+  });
 
   return (
     <div className="min-h-screen bg-[var(--page-bg)] font-sans text-[var(--content)]">
@@ -106,7 +68,7 @@ export default async function PricingPage() {
               const highlighted = plan.recommended === true;
               return (
                 <div
-                  key={plan.name}
+                  key={plan.id}
                   className={`flex flex-col rounded-[12px] border bg-[var(--card)] p-6 shadow-[var(--shadow-card)] transition-all duration-200 ${
                     highlighted
                       ? "border-[var(--accent)] ring-2 ring-[var(--accent-soft)]"
@@ -132,8 +94,8 @@ export default async function PricingPage() {
                     </span>
                   </div>
                   <ul className="mt-6 flex-1 space-y-3 text-sm text-[var(--content-muted)]">
-                    {plan.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2">
+                    {plan.features.map((f, i) => (
+                      <li key={`${plan.id}-${i}`} className="flex items-start gap-2">
                         <span className="mt-0.5 text-[var(--accent)]">
                           ✓
                         </span>

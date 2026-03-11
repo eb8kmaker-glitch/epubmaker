@@ -123,6 +123,56 @@
     "title": "EPUB変換の料金",
     "subtitle": "出版ワークフローに合ったプランを選べます。",
     "recommended": "おすすめ",
+    "plans": {
+      "free": {
+        "title": "無料",
+        "desc": "無料で始められます",
+        "price": "月 $0",
+        "cta": "無料で始める",
+        "feature1": "月5回まで変換",
+        "feature2": "DOCX・TXT対応",
+        "feature3": "基本EPUB出力"
+      },
+      "starter": {
+        "title": "Starter",
+        "desc": "日常的に使う作者向け",
+        "price": "月 $9",
+        "cta": "Starterを始める",
+        "feature1": "月100回まで変換",
+        "feature2": "メタデータ編集",
+        "feature3": "表紙画像アップロード",
+        "feature4": "CSSスタイルプリセット"
+      },
+      "pro": {
+        "title": "Pro",
+        "desc": "ヘビーユーザー向け",
+        "price": "月 $19",
+        "cta": "Proにアップグレード",
+        "feature1": "無制限変換",
+        "feature2": "全機能込み",
+        "feature3": "優先変換"
+      },
+      "pay": {
+        "title": "従量課金",
+        "desc": "月額契約なし",
+        "price": "変換1回 $3",
+        "cta": "クレジットを購入",
+        "feature1": "月額料金なし",
+        "feature2": "変換時のみ支払い",
+        "feature3": "たまに使う作者に最適",
+        "feature4": "クレジットは失効しない"
+      },
+      "publisher": {
+        "title": "Publisher / B2B",
+        "desc": "一括・API",
+        "price": "要相談",
+        "cta": "営業に問い合わせ",
+        "feature1": "一括変換料金",
+        "feature2": "APIアクセス",
+        "feature3": "優先処理",
+        "feature4": "専用サポート"
+      }
+    },
     "faq": {
       "title": "よくある質問",
       "q1": "対応しているファイル形式は？",

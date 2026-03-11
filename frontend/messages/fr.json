@@ -123,6 +123,56 @@
     "title": "Tarifs de conversion EPUB",
     "subtitle": "Choisissez l'offre qui correspond à votre flux de publication.",
     "recommended": "Recommandé",
+    "plans": {
+      "free": {
+        "title": "Gratuit",
+        "desc": "Commencez sans frais",
+        "price": "0 € / mois",
+        "cta": "Commencer gratuitement",
+        "feature1": "5 conversions par mois",
+        "feature2": "Prise en charge DOCX et TXT",
+        "feature3": "Export EPUB de base"
+      },
+      "starter": {
+        "title": "Starter",
+        "desc": "Pour les auteurs réguliers",
+        "price": "9 € / mois",
+        "cta": "Démarrer Starter",
+        "feature1": "100 conversions par mois",
+        "feature2": "Éditeur de métadonnées",
+        "feature3": "Upload de couverture",
+        "feature4": "Styles CSS prédéfinis"
+      },
+      "pro": {
+        "title": "Pro",
+        "desc": "Pour les utilisateurs avancés",
+        "price": "19 € / mois",
+        "cta": "Passer à Pro",
+        "feature1": "Conversions illimitées",
+        "feature2": "Toutes les fonctionnalités",
+        "feature3": "Conversion prioritaire"
+      },
+      "pay": {
+        "title": "Paiement à l'usage",
+        "desc": "Sans engagement mensuel",
+        "price": "3 € par conversion",
+        "cta": "Acheter des crédits",
+        "feature1": "Pas d'abonnement mensuel",
+        "feature2": "Payez uniquement à la conversion",
+        "feature3": "Idéal pour les auteurs occasionnels",
+        "feature4": "Les crédits n'expirent pas"
+      },
+      "publisher": {
+        "title": "Publisher / B2B",
+        "desc": "Volume et API",
+        "price": "Sur devis",
+        "cta": "Contacter les ventes",
+        "feature1": "Tarifs de conversion en volume",
+        "feature2": "Accès API",
+        "feature3": "Traitement prioritaire",
+        "feature4": "Support dédié"
+      }
+    },
     "faq": {
       "title": "Questions fréquentes",
       "q1": "Quels types de fichiers sont pris en charge ?",
