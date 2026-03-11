@@ -1,11 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Ensure pandoc-wasm is only loaded on the client (it uses WASM)
+  // pandoc-wasm is used by /api/convert; externalize so Node loads it at runtime (WASM in node_modules)
   serverExternalPackages: ["pandoc-wasm"],
   webpack: (config, { isServer }) => {
     if (isServer) {
-      // Don't bundle pandoc-wasm on server (not used there)
       config.externals = config.externals || [];
       config.externals.push("pandoc-wasm");
     } else {
