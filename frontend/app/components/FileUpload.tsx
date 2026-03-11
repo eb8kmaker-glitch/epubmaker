@@ -1,5 +1,6 @@
 "use client";
 
+import { convertToEpubInBrowser } from "@/app/lib/clientEpubConverter";
 import { useCallback, useEffect, useState } from "react";
 import ConversionSettings, {
   DEFAULT_OPTIONS,
@@ -171,29 +172,16 @@ export default function FileUpload() {
     setConvertError(null);
     setConverting(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("options", JSON.stringify(conversionOptions));
-      if (coverFile) {
-        formData.append("cover", coverFile);
-      }
-      const res = await fetch("/api/convert-to-epub", {
-        method: "POST",
-        body: formData,
+      const { blob, filename } = await convertToEpubInBrowser({
+        file,
+        options: conversionOptions,
+        coverFile,
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `Conversion failed (${res.status})`);
-      }
-      const blob = await res.blob();
-      const disposition = res.headers.get("Content-Disposition");
-      const match = disposition?.match(/filename="?([^";\n]+)"?/);
-      const name = match ? match[1].trim() : "document.epub";
       setPreviewFile(blob);
       const downloadUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = downloadUrl;
-      a.download = name;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(downloadUrl);
       incrementBetaUsage();
