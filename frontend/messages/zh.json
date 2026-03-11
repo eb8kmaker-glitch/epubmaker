@@ -1,0 +1,126 @@
+{
+  "common": {
+    "siteName": "EPUB 转换",
+    "backToHome": "← 返回首页",
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "中文",
+      "pt": "Português",
+      "de": "Deutsch",
+      "fr": "Français"
+    }
+  },
+  "Home": {
+    "beta": "公开测试版 — 无需登录。文件即时处理并下载，我们不会存储您的内容。",
+    "hero": {
+      "title": "将 DOCX 和 TXT 即时转换为 EPUB",
+      "subtitle": "为作者和出版商提供的专业 EPUB 转换服务。",
+      "cta": "开始转换"
+    },
+    "howItWorks": {
+      "title": "使用方式",
+      "step1Title": "上传 DOCX 或 TXT 文件",
+      "step1Desc": "拖放或从设备中选择文件。",
+      "step2Title": "配置转换设置",
+      "step2Desc": "设置元数据、封面、目录和样式。",
+      "step3Title": "下载 EPUB",
+      "step3Desc": "获取可出版的 EPUB 文件并在浏览器中预览。"
+    },
+    "features": {
+      "title": "功能",
+      "docxTxt": "支持 DOCX 和 TXT",
+      "docxTxtDesc": "将 Word 文档和纯文本转换为标准 EPUB。",
+      "toc": "自动目录",
+      "tocDesc": "可配置深度的目录（1–3 级）。",
+      "cover": "封面图片",
+      "coverDesc": "上传 JPEG 或 PNG 格式的电子书封面。",
+      "css": "CSS 样式",
+      "cssDesc": "可选默认、图书、小说、学术等样式。",
+      "metadata": "元数据编辑",
+      "metadataDesc": "设置标题、作者、语言、出版社和日期。"
+    },
+    "plans": {
+      "title": "套餐",
+      "free": "免费",
+      "freePrice": "¥0/月",
+      "freeFeature": "每月 5 次转换",
+      "starter": "入门版",
+      "starterPrice": "¥9/月",
+      "starterFeature1": "每月 100 次转换",
+      "starterFeature2": "最受独立作者欢迎",
+      "pro": "专业版",
+      "proPrice": "¥19/月",
+      "proFeature1": "无限次转换",
+      "proFeature2": "优先转换",
+      "moreOptions": "需要更多选择？查看全部套餐。",
+      "viewPricing": "查看完整价格 →"
+    },
+    "cta": {
+      "text": "立即将您的稿件转换为 EPUB。",
+      "button": "立即转换"
+    }
+  },
+  "Convert": {
+    "title": "上传你的文档",
+    "subtitle": "支持 DOCX、TXT 和 PDF。拖放或点击选择文件。"
+  },
+  "FileUpload": {
+    "dropText": "将文件拖放到此处",
+    "dropHere": "放到此处",
+    "browse": "或点击选择 — {extensions}",
+    "uploadedFile": "已上传文件",
+    "removeFile": "移除文件",
+    "convertButton": "转换为 EPUB",
+    "converting": "转换中…",
+    "errorConversionFailed": "转换失败。",
+    "dailyLimit": "已达每日限制（每日 3 次）。午夜重置。",
+    "errorFileType": "请上传 DOCX、TXT 或 PDF 文件。「{name}」不受支持。",
+    "errorFileSize": "文件大小须在 10MB 以内。",
+    "errorTextLength": "文本须在 {max} 字以内（当前：{current}）。",
+    "errorCoverSize": "封面图片须在 10MB 以内。"
+  },
+  "DocxGuide": {
+    "title": "DOCX 上传指南",
+    "intro": "要生成 EPUB 目录，请在 Word 文档中使用标题样式。",
+    "h1": "标题 1 → 章节标题",
+    "h2": "标题 2 → 节标题",
+    "h3": "标题 3 → 小节",
+    "howToTitle": "在 Word 中的设置方法",
+    "howTo": "开始 → 样式 → 标题 1 / 标题 2 / 标题 3",
+    "warning": "未使用标题样式的文档可能无法生成 EPUB 目录。"
+  },
+  "ConversionSettings": {
+    "heading": "转换设置",
+    "title": "标题",
+    "includeToc": "包含目录",
+    "tocDepth": "目录深度",
+    "epubVersion": "EPUB 版本",
+    "epub3": "EPUB 3",
+    "epub2": "EPUB 2",
+    "metadata": "元数据",
+    "title": "标题",
+    "titlePlaceholder": "书名",
+    "author": "作者",
+    "authorPlaceholder": "作者名",
+    "language": "语言",
+    "publisher": "出版社",
+    "publisherPlaceholder": "出版社名称",
+    "date": "日期",
+    "datePlaceholder": "例如 2024-01-15",
+    "stylePreset": "样式",
+    "styleDefault": "默认",
+    "styleBook": "图书",
+    "styleNovel": "小说",
+    "styleAcademic": "学术",
+    "coverImage": "封面图片（最大 10MB）",
+    "coverHint": "JPEG 或 PNG，最大 10MB",
+    "remove": "移除"
+  },
+  "Pricing": {
+    "title": "EPUB 转换价格",
+    "subtitle": "选择适合您出版流程的套餐。"
+  }
+}

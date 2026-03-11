@@ -1,0 +1,126 @@
+{
+  "common": {
+    "siteName": "EPUB変換",
+    "backToHome": "← ホームへ",
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "中文",
+      "pt": "Português",
+      "de": "Deutsch",
+      "fr": "Français"
+    }
+  },
+  "Home": {
+    "beta": "パブリックベータ — ログイン不要。ファイルは即時処理・ダウンロードされ、内容は保存しません。",
+    "hero": {
+      "title": "DOCX・TXTをEPUBに即座に変換",
+      "subtitle": "作家・出版社のためのEPUB変換サービス。",
+      "cta": "変換を開始"
+    },
+    "howItWorks": {
+      "title": "使い方",
+      "step1Title": "DOCXまたはTXTファイルをアップロード",
+      "step1Desc": "ドラッグ＆ドロップまたはデバイスから選択。",
+      "step2Title": "変換設定",
+      "step2Desc": "メタデータ、表紙、目次、スタイルを設定。",
+      "step3Title": "EPUBをダウンロード",
+      "step3Desc": "完成したEPUBを取得し、ブラウザでプレビュー可能。"
+    },
+    "features": {
+      "title": "機能",
+      "docxTxt": "DOCX・TXT対応",
+      "docxTxtDesc": "Word文書とテキストを標準EPUBに変換。",
+      "toc": "自動目次",
+      "tocDesc": "目次の深さを1～3で設定可能。",
+      "cover": "表紙画像",
+      "coverDesc": "JPEGまたはPNGの表紙をアップロード可能。",
+      "css": "CSSスタイル",
+      "cssDesc": "Default、Book、Novel、Academicから選択。",
+      "metadata": "メタデータ編集",
+      "metadataDesc": "タイトル、著者、言語、出版社、日付を設定。"
+    },
+    "plans": {
+      "title": "プラン",
+      "free": "無料",
+      "freePrice": "月$0",
+      "freeFeature": "月5回変換",
+      "starter": "スターター",
+      "starterPrice": "月$9",
+      "starterFeature1": "月100回変換",
+      "starterFeature2": "インディ作家に人気",
+      "pro": "プロ",
+      "proPrice": "月$19",
+      "proFeature1": "無制限変換",
+      "proFeature2": "優先変換",
+      "moreOptions": "他のプランが必要ですか？料金一覧を見る。",
+      "viewPricing": "料金一覧 →"
+    },
+    "cta": {
+      "text": "原稿をEPUBに変換しましょう。",
+      "button": "今すぐ変換"
+    }
+  },
+  "Convert": {
+    "title": "ドキュメントをアップロード",
+    "subtitle": "DOCX、TXT、PDF対応。ドラッグ＆ドロップまたはクリックで選択。"
+  },
+  "FileUpload": {
+    "dropText": "ここにファイルをドラッグしてドロップ",
+    "dropHere": "ここにドロップ",
+    "browse": "またはクリックして選択 — {extensions}",
+    "uploadedFile": "アップロードしたファイル",
+    "removeFile": "ファイルを削除",
+    "convertButton": "EPUBに変換",
+    "converting": "変換中…",
+    "errorConversionFailed": "変換に失敗しました。",
+    "dailyLimit": "1日3回の制限に達しました。0時にリセットされます。",
+    "errorFileType": "DOCX、TXTまたはPDFファイルをアップロードしてください。「{name}」は対応していません。",
+    "errorFileSize": "ファイルサイズは10MB以下にしてください。",
+    "errorTextLength": "テキストは{max}文字以下にしてください（現在: {current}）。",
+    "errorCoverSize": "表紙画像は10MB以下にしてください。"
+  },
+  "DocxGuide": {
+    "title": "DOCXアップロードガイド",
+    "intro": "EPUBの目次を作成するには、Word文書で見出しスタイルを使用してください。",
+    "h1": "見出し1 → 章タイトル",
+    "h2": "見出し2 → セクションタイトル",
+    "h3": "見出し3 → サブセクション",
+    "howToTitle": "Wordでの設定方法",
+    "howTo": "ホーム → スタイル → 見出し1 / 見出し2 / 見出し3",
+    "warning": "見出しスタイルがない文書は、EPUBの目次が生成されない場合があります。"
+  },
+  "ConversionSettings": {
+    "heading": "変換設定",
+    "title": "タイトル",
+    "includeToc": "目次を含める",
+    "tocDepth": "目次の深さ",
+    "epubVersion": "EPUBバージョン",
+    "epub3": "EPUB 3",
+    "epub2": "EPUB 2",
+    "metadata": "メタデータ",
+    "title": "タイトル",
+    "titlePlaceholder": "書籍タイトル",
+    "author": "著者",
+    "authorPlaceholder": "著者名",
+    "language": "言語",
+    "publisher": "出版社",
+    "publisherPlaceholder": "出版社名",
+    "date": "日付",
+    "datePlaceholder": "例: 2024-01-15",
+    "stylePreset": "スタイル",
+    "styleDefault": "デフォルト",
+    "styleBook": "ブック",
+    "styleNovel": "ノベル",
+    "styleAcademic": "アカデミック",
+    "coverImage": "表紙画像（最大10MB）",
+    "coverHint": "JPEGまたはPNG、最大10MB",
+    "remove": "削除"
+  },
+  "Pricing": {
+    "title": "EPUB変換の料金",
+    "subtitle": "出版ワークフローに合ったプランを選べます。"
+  }
+}

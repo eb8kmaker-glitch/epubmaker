@@ -1,0 +1,126 @@
+{
+  "common": {
+    "siteName": "Conversor EPUB",
+    "backToHome": "← Voltar ao início",
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "中文",
+      "pt": "Português",
+      "de": "Deutsch",
+      "fr": "Français"
+    }
+  },
+  "Home": {
+    "beta": "Beta público — Sem login. Seus arquivos são processados e baixados na hora. Não armazenamos seu conteúdo.",
+    "hero": {
+      "title": "Converta DOCX e TXT para EPUB instantaneamente",
+      "subtitle": "Conversão profissional para EPUB para escritores e editores.",
+      "cta": "Começar a converter"
+    },
+    "howItWorks": {
+      "title": "Como funciona",
+      "step1Title": "Envie seu arquivo DOCX ou TXT",
+      "step1Desc": "Arraste e solte ou escolha um arquivo do seu dispositivo.",
+      "step2Title": "Configure a conversão",
+      "step2Desc": "Defina metadados, capa, índice e estilos.",
+      "step3Title": "Baixe seu EPUB",
+      "step3Desc": "Obtenha seu EPUB pronto para publicar e visualize no navegador."
+    },
+    "features": {
+      "title": "Recursos",
+      "docxTxt": "Suporte DOCX e TXT",
+      "docxTxtDesc": "Converta documentos Word e texto para EPUB padrão.",
+      "toc": "Índice automático",
+      "tocDesc": "Sumário com profundidade configurável (1–3).",
+      "cover": "Capa",
+      "coverDesc": "Envie uma capa em JPEG ou PNG.",
+      "css": "Estilos CSS",
+      "cssDesc": "Escolha entre Default, Book, Novel ou Academic.",
+      "metadata": "Editor de metadados",
+      "metadataDesc": "Título, autor, idioma, editora e data."
+    },
+    "plans": {
+      "title": "Planos",
+      "free": "Grátis",
+      "freePrice": "R$ 0/mês",
+      "freeFeature": "5 conversões por mês",
+      "starter": "Starter",
+      "starterPrice": "R$ 9/mês",
+      "starterFeature1": "100 conversões por mês",
+      "starterFeature2": "Mais popular para autores indie",
+      "pro": "Pro",
+      "proPrice": "R$ 19/mês",
+      "proFeature1": "Conversões ilimitadas",
+      "proFeature2": "Conversão prioritária",
+      "moreOptions": "Precisa de mais? Veja todos os planos.",
+      "viewPricing": "Ver preços →"
+    },
+    "cta": {
+      "text": "Converta seu manuscrito para EPUB hoje.",
+      "button": "Converter agora"
+    }
+  },
+  "Convert": {
+    "title": "Envie seu documento",
+    "subtitle": "DOCX, TXT e PDF suportados. Arraste e solte ou clique para escolher."
+  },
+  "FileUpload": {
+    "dropText": "Arraste e solte seu arquivo aqui",
+    "dropHere": "Solte aqui",
+    "browse": "ou clique para procurar — {extensions}",
+    "uploadedFile": "Arquivo enviado",
+    "removeFile": "Remover arquivo",
+    "convertButton": "Converter para EPUB",
+    "converting": "Convertendo…",
+    "errorConversionFailed": "Falha na conversão.",
+    "dailyLimit": "Limite diário atingido (3 por dia). Reinicia à meia-noite.",
+    "errorFileType": "Envie um arquivo DOCX, TXT ou PDF. \"{name}\" não é suportado.",
+    "errorFileSize": "O arquivo deve ter 10 MB ou menos.",
+    "errorTextLength": "O texto deve ter {max} caracteres ou menos (atual: {current}).",
+    "errorCoverSize": "A capa deve ter 10 MB ou menos."
+  },
+  "DocxGuide": {
+    "title": "Guia de envio DOCX",
+    "intro": "Para gerar o sumário do EPUB, use estilos de título (Heading) no seu documento Word.",
+    "h1": "Heading 1 → Título do capítulo",
+    "h2": "Heading 2 → Título da seção",
+    "h3": "Heading 3 → Subseção",
+    "howToTitle": "Como configurar no Word",
+    "howTo": "Início → Estilos → Título 1 / Título 2 / Título 3",
+    "warning": "Documentos sem estilos Heading podem não gerar sumário no EPUB."
+  },
+  "ConversionSettings": {
+    "heading": "Configurações de conversão",
+    "title": "Título",
+    "includeToc": "Incluir sumário",
+    "tocDepth": "Profundidade do sumário",
+    "epubVersion": "Versão EPUB",
+    "epub3": "EPUB 3",
+    "epub2": "EPUB 2",
+    "metadata": "Metadados",
+    "title": "Título",
+    "titlePlaceholder": "Título do livro",
+    "author": "Autor",
+    "authorPlaceholder": "Nome do autor",
+    "language": "Idioma",
+    "publisher": "Editora",
+    "publisherPlaceholder": "Nome da editora",
+    "date": "Data",
+    "datePlaceholder": "ex: 2024-01-15",
+    "stylePreset": "Estilo",
+    "styleDefault": "Padrão",
+    "styleBook": "Livro",
+    "styleNovel": "Romance",
+    "styleAcademic": "Acadêmico",
+    "coverImage": "Capa (máx. 10 MB)",
+    "coverHint": "JPEG ou PNG, máx. 10 MB",
+    "remove": "Remover"
+  },
+  "Pricing": {
+    "title": "Preços para conversão EPUB",
+    "subtitle": "Escolha o plano que cabe no seu fluxo de publicação."
+  }
+}

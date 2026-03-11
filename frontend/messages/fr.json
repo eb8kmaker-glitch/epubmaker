@@ -1,0 +1,126 @@
+{
+  "common": {
+    "siteName": "Convertisseur EPUB",
+    "backToHome": "← Retour à l'accueil",
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "中文",
+      "pt": "Português",
+      "de": "Deutsch",
+      "fr": "Français"
+    }
+  },
+  "Home": {
+    "beta": "Bêta publique — Pas de connexion. Vos fichiers sont traités et téléchargés immédiatement. Nous ne stockons pas votre contenu.",
+    "hero": {
+      "title": "Convertissez DOCX et TXT en EPUB instantanément",
+      "subtitle": "Conversion EPUB professionnelle pour auteurs et éditeurs.",
+      "cta": "Commencer la conversion"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche",
+      "step1Title": "Téléversez votre fichier DOCX ou TXT",
+      "step1Desc": "Glissez-déposez ou choisissez un fichier depuis votre appareil.",
+      "step2Title": "Configurez la conversion",
+      "step2Desc": "Métadonnées, couverture, table des matières et styles.",
+      "step3Title": "Téléchargez votre EPUB",
+      "step3Desc": "Obtenez votre EPUB prêt à publier et prévisualisez dans le navigateur."
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "docxTxt": "Prise en charge DOCX et TXT",
+      "docxTxtDesc": "Convertissez les documents Word et le texte en EPUB standard.",
+      "toc": "Table des matières automatique",
+      "tocDesc": "Table des matières avec profondeur configurable (1–3).",
+      "cover": "Image de couverture",
+      "coverDesc": "Téléversez une couverture JPEG ou PNG.",
+      "css": "Styles CSS",
+      "cssDesc": "Choisissez parmi Default, Book, Novel ou Academic.",
+      "metadata": "Éditeur de métadonnées",
+      "metadataDesc": "Titre, auteur, langue, éditeur et date."
+    },
+    "plans": {
+      "title": "Offres",
+      "free": "Gratuit",
+      "freePrice": "0 €/mois",
+      "freeFeature": "5 conversions par mois",
+      "starter": "Starter",
+      "starterPrice": "9 €/mois",
+      "starterFeature1": "100 conversions par mois",
+      "starterFeature2": "Populaire auprès des auteurs indie",
+      "pro": "Pro",
+      "proPrice": "19 €/mois",
+      "proFeature1": "Conversions illimitées",
+      "proFeature2": "Conversion prioritaire",
+      "moreOptions": "Besoin de plus ? Voir toutes les offres.",
+      "viewPricing": "Voir les tarifs →"
+    },
+    "cta": {
+      "text": "Convertissez votre manuscrit en EPUB aujourd'hui.",
+      "button": "Convertir maintenant"
+    }
+  },
+  "Convert": {
+    "title": "Téléversez votre document",
+    "subtitle": "DOCX, TXT et PDF acceptés. Glissez-déposez ou cliquez pour choisir."
+  },
+  "FileUpload": {
+    "dropText": "Glissez-déposez votre fichier ici",
+    "dropHere": "Déposer ici",
+    "browse": "ou cliquez pour parcourir — {extensions}",
+    "uploadedFile": "Fichier téléversé",
+    "removeFile": "Supprimer le fichier",
+    "convertButton": "Convertir en EPUB",
+    "converting": "Conversion…",
+    "errorConversionFailed": "Échec de la conversion.",
+    "dailyLimit": "Limite quotidienne atteinte (3/jour). Réinitialisation à minuit.",
+    "errorFileType": "Veuillez téléverser un fichier DOCX, TXT ou PDF. « {name} » n'est pas pris en charge.",
+    "errorFileSize": "La taille du fichier doit être de 10 Mo ou moins.",
+    "errorTextLength": "Le texte doit contenir {max} caractères ou moins (actuel : {current}).",
+    "errorCoverSize": "La couverture doit faire 10 Mo ou moins."
+  },
+  "DocxGuide": {
+    "title": "Guide d'upload DOCX",
+    "intro": "Pour générer la table des matières de l'EPUB, utilisez les styles Titre dans votre document Word.",
+    "h1": "Titre 1 → Titre de chapitre",
+    "h2": "Titre 2 → Titre de section",
+    "h3": "Titre 3 → Sous-section",
+    "howToTitle": "Comment configurer dans Word",
+    "howTo": "Accueil → Styles → Titre 1 / Titre 2 / Titre 3",
+    "warning": "Les documents sans styles Titre peuvent ne pas générer de table des matières EPUB."
+  },
+  "ConversionSettings": {
+    "heading": "Paramètres de conversion",
+    "title": "Titre",
+    "includeToc": "Inclure la table des matières",
+    "tocDepth": "Profondeur de la table des matières",
+    "epubVersion": "Version EPUB",
+    "epub3": "EPUB 3",
+    "epub2": "EPUB 2",
+    "metadata": "Métadonnées",
+    "title": "Titre",
+    "titlePlaceholder": "Titre du livre",
+    "author": "Auteur",
+    "authorPlaceholder": "Nom de l'auteur",
+    "language": "Langue",
+    "publisher": "Éditeur",
+    "publisherPlaceholder": "Nom de l'éditeur",
+    "date": "Date",
+    "datePlaceholder": "ex. 2024-01-15",
+    "stylePreset": "Style",
+    "styleDefault": "Par défaut",
+    "styleBook": "Livre",
+    "styleNovel": "Roman",
+    "styleAcademic": "Académique",
+    "coverImage": "Image de couverture (max. 10 Mo)",
+    "coverHint": "JPEG ou PNG, max. 10 Mo",
+    "remove": "Supprimer"
+  },
+  "Pricing": {
+    "title": "Tarifs de conversion EPUB",
+    "subtitle": "Choisissez l'offre qui correspond à votre flux de publication."
+  }
+}

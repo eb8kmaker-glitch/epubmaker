@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,27 +19,21 @@ export const metadata: Metadata = {
   description: "Convert DOCX and TXT to EPUB instantly",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
   return (
-    <html lang="en">
+    <html lang={locale || "en"} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="sticky top-0 z-10 border-b border-zinc-200 bg-white/95 px-6 py-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/95">
-          <div className="mx-auto flex max-w-5xl items-center justify-between">
-            <Link
-              href="/"
-              className="text-sm font-semibold text-zinc-900 dark:text-zinc-50"
-            >
-              EPUB Converter
-            </Link>
-          </div>
-        </header>
-        {children}
+        <NextIntlClientProvider messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

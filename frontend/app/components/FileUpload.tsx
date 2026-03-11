@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import ConversionSettings, {
   DEFAULT_OPTIONS,
   type ConversionOptions,
@@ -68,6 +69,8 @@ function canConvertToEpub(file: File): boolean {
 }
 
 export default function FileUpload() {
+  const t = useTranslations("FileUpload");
+  const tDocx = useTranslations("DocxGuide");
   const [file, setFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -87,12 +90,12 @@ export default function FileUpload() {
     if (!files?.length) return;
     const f = files[0];
     if (!isValidFile(f)) {
-      setError(`Please upload a DOCX, TXT or PDF file. "${f.name}" is not supported.`);
+      setError(t("errorFileType", { name: f.name }));
       setFile(null);
       return;
     }
     if (f.size > MAX_FILE_SIZE_BYTES) {
-      setError("File size must be 10MB or less.");
+      setError(t("errorFileSize"));
       setFile(null);
       return;
     }
@@ -102,7 +105,7 @@ export default function FileUpload() {
       reader.onload = () => {
         const text = (reader.result as string) ?? "";
         if (text.length > MAX_TEXT_CHARS) {
-          setError(`Text must be ${MAX_TEXT_CHARS.toLocaleString()} characters or less (current: ${text.length.toLocaleString()}).`);
+          setError(t("errorTextLength", { max: MAX_TEXT_CHARS.toLocaleString(), current: text.length.toLocaleString() }));
           setFile(null);
           return;
         }
@@ -112,7 +115,7 @@ export default function FileUpload() {
       return;
     }
     setFile(f);
-  }, []);
+  }, [t]);
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
@@ -153,19 +156,19 @@ export default function FileUpload() {
 
   const handleCoverFileChange = useCallback((newCover: File | null) => {
     if (newCover && newCover.size > MAX_FILE_SIZE_BYTES) {
-      setError("Cover image must be 10MB or less.");
+      setError(t("errorCoverSize"));
       return;
     }
     setError(null);
     setCoverFile(newCover);
-  }, []);
+  }, [t]);
 
   const atBetaDailyLimit = betaUsage.count >= BETA_DAILY_LIMIT;
 
   const convertToEpub = useCallback(async () => {
     if (!file || !canConvertToEpub(file)) return;
     if (atBetaDailyLimit) {
-      setConvertError("Daily limit reached (3 conversions per day). Try again tomorrow.");
+      setConvertError(t("dailyLimit"));
       return;
     }
     setConvertError(null);
@@ -199,7 +202,7 @@ export default function FileUpload() {
       incrementBetaUsage();
       setBetaUsage(getBetaUsage());
     } catch (e) {
-      setConvertError(e instanceof Error ? e.message : "Conversion failed");
+      setConvertError(e instanceof Error ? e.message : t("errorConversionFailed"));
     } finally {
       setConverting(false);
     }
@@ -233,41 +236,41 @@ export default function FileUpload() {
             📄
           </span>
           <p className="text-center text-sm font-medium text-zinc-600 dark:text-zinc-400">
-            {isDragging ? "Drop file here" : "Drag and drop your file here"}
+            {isDragging ? t("dropHere") : t("dropText")}
           </p>
           <p className="mt-1 text-center text-xs text-zinc-500 dark:text-zinc-500">
-            or click to browse — {ACCEPTED_STRING}
+            {t("browse", { extensions: ACCEPTED_STRING })}
           </p>
         </div>
       </label>
 
       <div
         role="region"
-        aria-label="DOCX upload guide"
+        aria-label={tDocx("title")}
         className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 dark:border-sky-800 dark:bg-sky-950/40"
       >
         <p className="flex items-start gap-2 text-sm font-medium text-sky-800 dark:text-sky-200">
           <span className="mt-0.5 shrink-0 text-base" aria-hidden>
             📋
           </span>
-          <span>DOCX Upload Guide</span>
+          <span>{tDocx("title")}</span>
         </p>
         <p className="mt-2 text-xs leading-relaxed text-sky-700 dark:text-sky-300">
-          EPUB 목차(Table of Contents)를 생성하려면 Word 문서에서 Heading 스타일을 사용해야 합니다.
+          {tDocx("intro")}
         </p>
         <ul className="mt-2 list-inside list-disc space-y-0.5 text-xs text-sky-700 dark:text-sky-300">
-          <li>Heading 1 → Chapter 제목</li>
-          <li>Heading 2 → Section 제목</li>
-          <li>Heading 3 → Subsection</li>
+          <li>{tDocx("h1")}</li>
+          <li>{tDocx("h2")}</li>
+          <li>{tDocx("h3")}</li>
         </ul>
         <p className="mt-2 text-xs font-medium text-sky-800 dark:text-sky-200">
-          Word에서 설정 방법
+          {tDocx("howToTitle")}
         </p>
         <p className="mt-0.5 text-xs leading-relaxed text-sky-700 dark:text-sky-300">
-          홈(Home) → 스타일 → 제목1 / 제목2 / 제목3
+          {tDocx("howTo")}
         </p>
         <p className="mt-2 text-xs leading-relaxed text-sky-600 dark:text-sky-400">
-          Heading 스타일이 적용되지 않은 문서는 EPUB 목차가 생성되지 않을 수 있습니다.
+          {tDocx("warning")}
         </p>
       </div>
 
@@ -293,7 +296,7 @@ export default function FileUpload() {
         <>
           <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/80">
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Uploaded file
+              {t("uploadedFile")}
             </p>
             <div className="mt-2 flex items-center justify-between gap-3">
               <p className="min-w-0 truncate font-medium text-zinc-900 dark:text-zinc-100">
@@ -309,7 +312,7 @@ export default function FileUpload() {
                 onClick={clearFile}
                 className="text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
               >
-                Remove file
+                {t("removeFile")}
               </button>
             </div>
           </div>
@@ -324,7 +327,7 @@ export default function FileUpload() {
               />
               {atBetaDailyLimit && (
                 <p className="text-sm text-amber-700 dark:text-amber-300">
-                  Daily limit reached (3 per day). Resets at midnight.
+                  {t("dailyLimit")}
                 </p>
               )}
               <div>
@@ -334,7 +337,7 @@ export default function FileUpload() {
                   disabled={converting || atBetaDailyLimit}
                   className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
                 >
-                  {converting ? "Converting…" : "Convert to EPUB"}
+                  {converting ? t("converting") : t("convertButton")}
                 </button>
               </div>
             </>

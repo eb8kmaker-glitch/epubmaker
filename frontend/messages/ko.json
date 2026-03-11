@@ -1,0 +1,126 @@
+{
+  "common": {
+    "siteName": "EPUB 변환기",
+    "backToHome": "← 홈으로",
+    "languages": {
+      "en": "English",
+      "ko": "한국어",
+      "es": "Español",
+      "ja": "日本語",
+      "zh": "中文",
+      "pt": "Português",
+      "de": "Deutsch",
+      "fr": "Français"
+    }
+  },
+  "Home": {
+    "beta": "퍼블릭 베타 — 로그인 불필요. 파일은 즉시 처리·다운로드되며, 콘텐츠를 저장하지 않습니다.",
+    "hero": {
+      "title": "DOCX와 TXT를 EPUB으로 즉시 변환",
+      "subtitle": "작가와 출판사를 위한 EPUB 변환 서비스.",
+      "cta": "변환 시작"
+    },
+    "howItWorks": {
+      "title": "이용 방법",
+      "step1Title": "DOCX 또는 TXT 파일 업로드",
+      "step1Desc": "드래그 앤 드롭 또는 장치에서 파일을 선택하세요.",
+      "step2Title": "변환 설정",
+      "step2Desc": "메타데이터, 표지, 목차, 스타일을 설정하세요.",
+      "step3Title": "EPUB 다운로드",
+      "step3Desc": "완성된 EPUB 파일을 받아 브라우저에서 미리 볼 수 있습니다."
+    },
+    "features": {
+      "title": "기능",
+      "docxTxt": "DOCX & TXT 지원",
+      "docxTxtDesc": "Word 문서와 텍스트를 표준 EPUB으로 변환합니다.",
+      "toc": "자동 목차 생성",
+      "tocDesc": "1~3단계 깊이의 목차를 설정할 수 있습니다.",
+      "cover": "표지 이미지",
+      "coverDesc": "JPEG 또는 PNG 표지를 업로드할 수 있습니다.",
+      "css": "CSS 스타일",
+      "cssDesc": "Default, Book, Novel, Academic 스타일 중 선택.",
+      "metadata": "메타데이터 편집",
+      "metadataDesc": "제목, 저자, 언어, 출판사, 날짜를 설정하세요."
+    },
+    "plans": {
+      "title": "요금제",
+      "free": "무료",
+      "freePrice": "월 $0",
+      "freeFeature": "월 5회 변환",
+      "starter": "스타터",
+      "starterPrice": "월 $9",
+      "starterFeature1": "월 100회 변환",
+      "starterFeature2": "인디 작가에게 인기",
+      "pro": "프로",
+      "proPrice": "월 $19",
+      "proFeature1": "무제한 변환",
+      "proFeature2": "우선 변환",
+      "moreOptions": "다른 요금제가 필요하신가요? 전체 요금제 보기.",
+      "viewPricing": "전체 요금제 →"
+    },
+    "cta": {
+      "text": "원고를 EPUB으로 변환해 보세요.",
+      "button": "지금 변환"
+    }
+  },
+  "Convert": {
+    "title": "문서를 업로드하세요",
+    "subtitle": "DOCX, TXT, PDF 지원. 드래그 앤 드롭 또는 클릭하여 선택하세요."
+  },
+  "FileUpload": {
+    "dropText": "파일을 여기에 드래그하여 놓으세요",
+    "dropHere": "여기에 놓기",
+    "browse": "또는 클릭하여 찾기 — {extensions}",
+    "uploadedFile": "업로드된 파일",
+    "removeFile": "파일 제거",
+    "convertButton": "EPUB로 변환",
+    "converting": "변환 중…",
+    "errorConversionFailed": "변환에 실패했습니다.",
+    "dailyLimit": "일일 한도(1일 3회)에 도달했습니다. 자정에 초기화됩니다.",
+    "errorFileType": "DOCX, TXT 또는 PDF 파일을 업로드해 주세요. \"{name}\"은(는) 지원되지 않습니다.",
+    "errorFileSize": "파일 크기는 10MB 이하여야 합니다.",
+    "errorTextLength": "텍스트는 {max}자 이하여야 합니다 (현재: {current}).",
+    "errorCoverSize": "표지 이미지는 10MB 이하여야 합니다."
+  },
+  "DocxGuide": {
+    "title": "DOCX 업로드 안내",
+    "intro": "EPUB 목차(Table of Contents)를 생성하려면 Word 문서에서 Heading 스타일을 사용해야 합니다.",
+    "h1": "Heading 1 → 챕터 제목",
+    "h2": "Heading 2 → 섹션 제목",
+    "h3": "Heading 3 → 하위 섹션",
+    "howToTitle": "Word에서 설정 방법",
+    "howTo": "홈(Home) → 스타일 → 제목1 / 제목2 / 제목3",
+    "warning": "Heading 스타일이 적용되지 않은 문서는 EPUB 목차가 생성되지 않을 수 있습니다."
+  },
+  "ConversionSettings": {
+    "heading": "변환 설정",
+    "title": "제목",
+    "includeToc": "목차 포함",
+    "tocDepth": "목차 깊이",
+    "epubVersion": "EPUB 버전",
+    "epub3": "EPUB 3",
+    "epub2": "EPUB 2",
+    "metadata": "메타데이터",
+    "title": "제목",
+    "titlePlaceholder": "책 제목",
+    "author": "저자",
+    "authorPlaceholder": "저자명",
+    "language": "언어",
+    "publisher": "출판사",
+    "publisherPlaceholder": "출판사명",
+    "date": "날짜",
+    "datePlaceholder": "예: 2024-01-15",
+    "stylePreset": "스타일",
+    "styleDefault": "기본",
+    "styleBook": "북",
+    "styleNovel": "소설",
+    "styleAcademic": "학술",
+    "coverImage": "표지 이미지 (최대 10MB)",
+    "coverHint": "JPEG 또는 PNG, 최대 10MB",
+    "remove": "제거"
+  },
+  "Pricing": {
+    "title": "EPUB 변환 요금제",
+    "subtitle": "출판 워크플로에 맞는 요금제를 선택하세요."
+  }
+}

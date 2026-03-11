@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link as I18nLink } from "@/i18n/navigation";
 
 const LEMON_SQUEEZY = {
   free: "https://epubmaker.lemonsqueezy.com/checkout/buy/4433ff2d-97ec-4737-b45f-43ed6ac020e9",
@@ -89,22 +91,23 @@ const FAQ = [
   },
 ];
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const t = await getTranslations("Pricing");
+  const tCommon = await getTranslations("common");
+
   return (
     <div className="min-h-screen bg-zinc-50 font-sans text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      {/* Page header */}
       <section className="border-b border-zinc-200 bg-white px-6 py-16 dark:border-zinc-800 dark:bg-zinc-900/50 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Simple pricing for EPUB conversion
+            {t("title")}
           </h1>
           <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-            Choose the plan that fits your publishing workflow.
+            {t("subtitle")}
           </p>
         </div>
       </section>
 
-      {/* Pricing cards */}
       <section className="px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
@@ -170,7 +173,6 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* FAQ */}
       <section className="border-t border-zinc-200 bg-white px-6 py-16 dark:border-zinc-800 dark:bg-zinc-900/30 sm:py-20">
         <div className="mx-auto max-w-2xl">
           <h2 className="text-center text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -191,30 +193,28 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="border-t border-zinc-200 bg-emerald-600 px-6 py-16 dark:border-zinc-800 sm:py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-xl font-semibold text-white sm:text-2xl">
             Start converting your manuscript today
           </h2>
-          <Link
+          <I18nLink
             href="/convert"
             className="mt-6 inline-block rounded-lg bg-white px-8 py-3.5 text-base font-semibold text-emerald-700 shadow-sm hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-emerald-600"
           >
             Start Converting
-          </Link>
+          </I18nLink>
         </div>
       </section>
 
-      {/* Back link */}
       <div className="px-6 py-6">
         <div className="mx-auto max-w-5xl">
-          <Link
+          <I18nLink
             href="/"
             className="text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            ← Back to home
-          </Link>
+            {tCommon("backToHome")}
+          </I18nLink>
         </div>
       </div>
     </div>
