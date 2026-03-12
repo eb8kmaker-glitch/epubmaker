@@ -41,8 +41,7 @@ export default async function DashboardPage({ params }: Props) {
     free: "Free",
     starter: "Starter",
     pro: "Pro",
-    pay: "Pay",
-    publisher: "Publisher",
+    pay_per_use: "Pay per use",
   };
   const plan = (profile?.plan as string) ?? "free";
 

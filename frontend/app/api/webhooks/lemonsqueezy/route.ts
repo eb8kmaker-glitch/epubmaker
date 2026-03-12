@@ -14,12 +14,29 @@ import type { SubscriptionPlan } from "@/types/database";
 const WEBHOOK_SECRET = process.env.LEMONSQUEEZY_WEBHOOK_SECRET;
 const STARTER_VARIANT_ID = process.env.LEMONSQUEEZY_STARTER_VARIANT_ID;
 const PRO_VARIANT_ID = process.env.LEMONSQUEEZY_PRO_VARIANT_ID;
+const PAY_PER_USE_VARIANT_ID = process.env.LEMONSQUEEZY_PAY_PER_USE_VARIANT_ID;
 
 function variantIdToPlan(variantId: number | string): SubscriptionPlan {
   const v = String(variantId);
   if (v === STARTER_VARIANT_ID) return "starter";
   if (v === PRO_VARIANT_ID) return "pro";
+  if (PAY_PER_USE_VARIANT_ID && v === PAY_PER_USE_VARIANT_ID) return "pay_per_use";
   return "free";
+}
+
+/** order_created에서 pay_per_use(일회성 결제) 여부 판별 */
+function isPayPerUseOrder(
+  attrs: Record<string, unknown>,
+  customData: Record<string, string>
+): boolean {
+  const variantId = attrs.variant_id != null ? String(attrs.variant_id) : null;
+  if (PAY_PER_USE_VARIANT_ID && variantId === PAY_PER_USE_VARIANT_ID) return true;
+  const variantName = (attrs.variant_name as string) ?? "";
+  const vn = variantName.toLowerCase();
+  if (vn === "pay_per_use" || vn === "pay-per-use") return true;
+  const plan = (customData.plan ?? "").toLowerCase();
+  if (plan === "pay_per_use" || plan === "pay-per-use") return true;
+  return false;
 }
 
 function verifySignature(rawBody: string, signature: string | null): boolean {
@@ -119,14 +136,26 @@ export async function POST(request: NextRequest) {
 
       switch (eventName) {
         case "order_created": {
-          await supabase
-            .from("users")
-            .update({
-              subscription_status: "active",
-              subscription_plan: planFromCustom,
-              updated_at: now,
-            })
-            .eq("id", targetUserId);
+          if (isPayPerUseOrder(attrs, customData)) {
+            await supabase
+              .from("users")
+              .update({
+                subscription_plan: "pay_per_use",
+                subscription_status: "active",
+                conversion_count: 0,
+                updated_at: now,
+              })
+              .eq("id", targetUserId);
+          } else {
+            await supabase
+              .from("users")
+              .update({
+                subscription_status: "active",
+                subscription_plan: planFromCustom,
+                updated_at: now,
+              })
+              .eq("id", targetUserId);
+          }
           break;
         }
         case "subscription_created": {
