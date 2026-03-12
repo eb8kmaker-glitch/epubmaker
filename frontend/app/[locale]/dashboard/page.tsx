@@ -31,7 +31,7 @@ export default async function DashboardPage({ params }: Props) {
 
   const { data: conversions } = await supabase
     .from("conversions")
-    .select("id, file_name, file_size_bytes, created_at")
+    .select("id, original_filename, original_size_bytes, created_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -83,7 +83,7 @@ export default async function DashboardPage({ params }: Props) {
                   key={c.id}
                   className="flex items-center justify-between rounded-lg border border-[var(--border)] px-4 py-2 text-sm"
                 >
-                  <span className="text-[var(--content)]">{c.file_name}</span>
+                  <span className="text-[var(--content)]">{c.original_filename}</span>
                   <span className="text-[var(--content-muted)]">
                     {new Date(c.created_at).toLocaleDateString()}
                   </span>
