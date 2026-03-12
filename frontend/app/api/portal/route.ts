@@ -1,13 +1,16 @@
 /**
- * Stripe Customer Portal 세션 생성 (구독 관리/결제 수단 변경).
+ * Lemon Squeezy Customer Portal URL 반환 (구독/결제 수단 관리).
  *
- * Supabase: createServerClient() — 쿠키로 현재 사용자 확인 후 profiles 에서 stripe_customer_id 조회.
- * Stripe: stripe.billingPortal.sessions.create()
+ * Supabase: createServerClient() — 쿠키로 현재 사용자 확인.
+ *          createAdminClient() — users 테이블에서 lemon_customer_id 조회.
+ * Lemon Squeezy: getCustomer() → attributes.urls.customer_portal
+ * 환경변수: LEMONSQUEEZY_API_KEY
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase";
-import { stripe } from "@/lib/stripe";
+import { createAdminClient } from "@/lib/supabase";
+import { getCustomerPortalUrl } from "@/lib/lemonsqueezy";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,29 +22,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("stripe_customer_id")
+    const admin = createAdminClient();
+    const { data: row } = await admin
+      .from("users")
+      .select("lemon_customer_id")
       .eq("id", user.id)
       .single();
 
-    const customerId = profile?.stripe_customer_id;
-    if (!customerId) {
+    const customerId = row?.lemon_customer_id ?? null;
+    if (!customerId || typeof customerId !== "string") {
       return NextResponse.json(
-        { error: "No billing customer found" },
-        { status: 400 }
+        { error: "구독 정보가 없습니다" },
+        { status: 404 }
       );
     }
 
-    const body = await request.json().catch(() => ({}));
-    const returnUrl = (body as { returnUrl?: string }).returnUrl ?? request.nextUrl.origin + "/dashboard";
+    const { url } = await getCustomerPortalUrl(customerId);
+    if (!url) {
+      return NextResponse.json(
+        { error: "구독 정보가 없습니다" },
+        { status: 404 }
+      );
+    }
 
-    const session = await stripe.billingPortal.sessions.create({
-      customer: customerId,
-      return_url: returnUrl,
-    });
-
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({ url });
   } catch (e) {
     console.error("[portal]", e);
     return NextResponse.json(

@@ -6,7 +6,11 @@
  *          LEMONSQUEEZY_STARTER_VARIANT_ID, LEMONSQUEEZY_PRO_VARIANT_ID
  */
 
-import { lemonSqueezySetup, createCheckout as lsCreateCheckout } from "@lemonsqueezy/lemonsqueezy.js";
+import {
+  lemonSqueezySetup,
+  createCheckout as lsCreateCheckout,
+  getCustomer,
+} from "@lemonsqueezy/lemonsqueezy.js";
 
 const apiKey = process.env.LEMONSQUEEZY_API_KEY;
 const storeId = process.env.LEMONSQUEEZY_STORE_ID;
@@ -74,5 +78,22 @@ export async function createCheckout(params: CreateCheckoutParams): Promise<{ ur
   if (!url || typeof url !== "string") {
     throw new Error("Lemon Squeezy did not return a checkout URL");
   }
+  return { url };
+}
+
+/**
+ * 고객 포털 URL 조회 (구독/결제 수단 관리).
+ * @param customerId Lemon Squeezy customer ID (users.lemon_customer_id)
+ * @returns customer_portal URL (24시간 유효). 구독 없으면 null.
+ */
+export async function getCustomerPortalUrl(
+  customerId: string
+): Promise<{ url: string | null }> {
+  ensureSetup();
+  const { data, error } = await getCustomer(customerId);
+  if (error) {
+    throw new Error(`Lemon Squeezy getCustomer failed: ${error.message}`);
+  }
+  const url = data?.data?.attributes?.urls?.customer_portal ?? null;
   return { url };
 }
