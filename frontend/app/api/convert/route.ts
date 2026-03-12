@@ -7,6 +7,12 @@ import { normalizeToHtml } from "@/app/lib/normalizeToHtml";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+/** Ensure temp files (e.g. from pandoc-wasm) use /tmp on Vercel (read-write). */
+function ensureTmpDir(): void {
+  if (process.env.TMPDIR) return;
+  process.env.TMPDIR = "/tmp";
+}
+
 const CONVERTER_NAME = "pandoc-wasm";
 
 function logPandocSystemCheck(): void {
@@ -83,6 +89,7 @@ interface ConversionOptionsBody {
 }
 
 export async function POST(request: Request) {
+  ensureTmpDir();
   console.log("[convert] Converter in use:", CONVERTER_NAME);
   logPandocSystemCheck();
 
@@ -164,6 +171,7 @@ export async function POST(request: Request) {
       try {
         htmlResult = await convert(docxToHtmlOptions, null, docxFiles);
       } catch (docxToHtmlErr) {
+        console.error("[EPUB ERROR]", docxToHtmlErr);
         console.error("[convert] DOCX → HTML error:", docxToHtmlErr);
         if (docxToHtmlErr instanceof Error && docxToHtmlErr.stack) {
           console.error("[convert] Stack:", docxToHtmlErr.stack);
@@ -172,11 +180,13 @@ export async function POST(request: Request) {
         const message = errObj?.message || (docxToHtmlErr instanceof Error ? docxToHtmlErr.message : "DOCX → HTML failed");
         const stderr = typeof errObj?.stderr === "string" ? errObj.stderr : "";
         const detail = stderr ? `${message}. ${stderr}` : message;
-        return NextResponse.json({ error: `DOCX → HTML failed: ${detail}` }, { status: 500 });
+        const clientError = `DOCX → HTML failed: ${detail}`;
+        return NextResponse.json({ error: clientError }, { status: 500 });
       }
       const htmlBlobOrStr = htmlResult.files?.[INTERMEDIATE_HTML_FILENAME];
       if (!htmlBlobOrStr) {
         const errMsg = htmlResult.stderr || "DOCX → HTML produced no output.";
+        console.error("[EPUB ERROR] DOCX → HTML no output:", errMsg);
         console.error("[convert] DOCX → HTML no output:", htmlResult.stderr);
         return NextResponse.json({ error: `DOCX → HTML failed: ${errMsg}` }, { status: 500 });
       }
@@ -240,6 +250,7 @@ export async function POST(request: Request) {
     try {
       result = await convert(pandocOptions, stdin, files);
     } catch (conversionErr) {
+      console.error("[EPUB ERROR]", conversionErr);
       console.error("[convert] Conversion error:", conversionErr);
       if (conversionErr instanceof Error && conversionErr.stack) {
         console.error("[convert] Stack:", conversionErr.stack);
@@ -254,6 +265,7 @@ export async function POST(request: Request) {
     const epubBlob = result.files?.[OUTPUT_FILENAME];
     if (!epubBlob || !(epubBlob instanceof Blob)) {
       const errMsg = result.stderr || "Conversion produced no output.";
+      console.error("[EPUB ERROR] No output blob:", errMsg);
       console.error("[convert] No output blob:", result.stderr);
       return NextResponse.json({ error: errMsg }, { status: 500 });
     }
@@ -272,6 +284,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (err) {
+    console.error("[EPUB ERROR]", err);
     console.error("[convert] Request/convert error:", err);
     if (err instanceof Error && err.stack) {
       console.error("[convert] Stack:", err.stack);

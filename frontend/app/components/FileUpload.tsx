@@ -298,7 +298,9 @@ export default function FileUpload() {
       setBatchResults(results);
       setBetaUsage(getBetaUsage());
     } catch (e) {
-      setConvertError(e instanceof Error ? e.message : t("errorConversionFailed"));
+      const msg = e instanceof Error ? e.message : t("errorConversionFailed");
+      console.error("[EPUB ERROR]", msg, e);
+      setConvertError(msg);
     } finally {
       setConverting(false);
       setBatchProgress(null);
@@ -406,7 +408,9 @@ export default function FileUpload() {
       incrementBetaUsage();
       setBetaUsage(getBetaUsage());
     } catch (e) {
-      setConvertError(e instanceof Error ? e.message : t("errorConversionFailed"));
+      const msg = e instanceof Error ? e.message : t("errorConversionFailed");
+      console.error("[EPUB ERROR]", msg, e);
+      setConvertError(msg);
     } finally {
       setConverting(false);
     }
