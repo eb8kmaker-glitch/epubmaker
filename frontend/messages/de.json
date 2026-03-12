@@ -67,6 +67,27 @@
     "title": "Dokument hochladen",
     "subtitle": "DOCX, TXT und PDF unterstützt. Per Drag & Drop oder Klick auswählen."
   },
+  "Dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Deine Konvertierungsverlauf und Nutzung.",
+    "usage": "Nutzung",
+    "plan": "Tarif",
+    "conversionsCount": "Konvertierungen in diesem Zeitraum",
+    "recentConversions": "Letzte Konvertierungen",
+    "noConversions": "Noch keine Konvertierungen.",
+    "convertMore": "Weitere Datei konvertieren",
+    "changePlan": "Tarif ändern"
+  },
+  "Login": {
+    "title": "Anmelden",
+    "subtitle": "Melde dich an für Konvertierung und Dashboard.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "signUp": "Registrieren",
+    "forgotPassword": "Passwort vergessen?",
+    "error": "E-Mail oder Passwort ungültig."
+  },
   "FileUpload": {
     "dropText": "Datei hierher ziehen und ablegen",
     "dropHere": "Hier ablegen",

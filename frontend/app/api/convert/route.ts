@@ -1,67 +1,91 @@
-import { execSync } from "child_process";
-import { NextResponse } from "next/server";
+/**
+ * EPUB 변환 API (인증 + 사용량 제한 + Storage + DB 기록).
+ *
+ * 순서: 인증 → 파일 수신 → 검증 → can_convert RPC → conversions 삽입 → Storage 업로드 → 변환 → 출력 업로드 → increment_conversion → signed URL 반환.
+ * createServerClient: 세션 확인. createAdminClient: RPC, conversions, Storage.
+ */
+
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase";
+import { createAdminClient } from "@/lib/supabase";
+import { uploadInputFile, uploadOutputFile, getSignedDownloadUrl } from "@/lib/storage";
+import { fileTypeFromBuffer } from "file-type";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
-import { normalizeToHtml } from "@/app/lib/normalizeToHtml";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-/** Ensure temp files (e.g. from pandoc-wasm) use /tmp on Vercel (read-write). */
-function ensureTmpDir(): void {
-  if (process.env.TMPDIR) return;
+if (typeof process !== "undefined" && !process.env.TMPDIR) {
   process.env.TMPDIR = "/tmp";
 }
 
-const CONVERTER_NAME = "pandoc-wasm";
-
-function logPandocSystemCheck(): void {
-  try {
-    execSync("pandoc --version", { encoding: "utf8" });
-    console.log("[convert] System pandoc is available (conversion uses pandoc-wasm, not system pandoc).");
-  } catch {
-    console.warn("[convert] System pandoc is NOT installed on this server. Conversion uses pandoc-wasm only.");
-  }
-}
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+const ALLOWED_EXTENSIONS = [".docx", ".txt"];
+const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const TEXT_PLAIN_MIME = "text/plain";
 
 const INPUT_FILENAME = "input.docx";
 const OUTPUT_FILENAME = "output.epub";
 const INTERMEDIATE_HTML_FILENAME = "output.html";
 const STYLE_FILENAME = "style.css";
-const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
-const ALLOWED_EXTENSIONS = [".docx", ".txt", ".pdf", ".html", ".htm", ".md"];
-const NORMALIZE_EXTENSIONS = [".pdf", ".html", ".htm", ".md"];
 
 function getExtension(name: string): string {
   const i = name.lastIndexOf(".");
   return i === -1 ? "" : name.slice(i).toLowerCase();
 }
 
-function baseName(name: string): string {
-  const i = name.lastIndexOf(".");
-  return i === -1 ? name : name.slice(0, i);
+function getInputFormat(ext: string): "docx" | "txt" {
+  return ext === ".docx" ? "docx" : "txt";
 }
 
-/** Build pandoc options from frontend JSON. Only pandoc-supported options (no "text"). */
+/** Magic bytes 검증: .docx, .txt만 허용. 불일치 시 에러 메시지 반환. */
+async function validateFileType(
+  buffer: Buffer,
+  filename: string
+): Promise<{ ok: true; inputFormat: "docx" | "txt" } | { ok: false; error: string }> {
+  const ext = getExtension(filename);
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    return { ok: false, error: "Allowed extensions: .docx, .txt only." };
+  }
+  const detected = await fileTypeFromBuffer(buffer);
+  if (ext === ".docx") {
+    if (!detected || detected.mime !== DOCX_MIME) {
+      return {
+        ok: false,
+        error: `Invalid file: expected DOCX (magic bytes). Got: ${detected ? `${detected.mime} (${detected.ext})` : "unknown"}.`,
+      };
+    }
+    return { ok: true, inputFormat: "docx" };
+  }
+  // .txt
+  if (detected && detected.mime !== TEXT_PLAIN_MIME) {
+    return {
+      ok: false,
+      error: `Invalid file: expected plain text. Got: ${detected.mime} (${detected.ext}).`,
+    };
+  }
+  return { ok: true, inputFormat: "txt" };
+}
+
+function getClientIp(request: NextRequest): string | null {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (!forwarded) return null;
+  const first = forwarded.split(",")[0]?.trim();
+  return first ?? null;
+}
+
+/** pandoc 옵션 (docx/txt → epub). */
 function buildPandocOptions(params: {
   from: string;
   to: string;
   outputFile: string;
   toc: boolean;
   tocDepth: number;
-  metadata: { title?: string; author?: string; lang?: string; publisher?: string; date?: string };
-  epubCoverImage?: string;
   styleCssFile: string;
   inputFile?: string;
 }): Record<string, unknown> {
-  const metadata: Record<string, unknown> = {};
-  if (params.metadata.title) metadata.title = params.metadata.title;
-  if (params.metadata.author) metadata.author = [params.metadata.author];
-  if (params.metadata.lang) metadata.lang = params.metadata.lang;
-  if (params.metadata.publisher) metadata.publisher = params.metadata.publisher;
-  if (params.metadata.date) metadata.date = params.metadata.date;
-
-  const opts: Record<string, unknown> = {
+  return {
     from: params.from,
     to: params.to,
     "output-file": params.outputFile,
@@ -69,34 +93,80 @@ function buildPandocOptions(params: {
     "table-of-contents": params.toc,
     "toc-depth": params.tocDepth,
     css: [params.styleCssFile],
-    metadata,
+    metadata: {},
+    ...(params.inputFile ? { "input-files": [params.inputFile] } : {}),
   };
-  if (params.epubCoverImage) opts["epub-cover-image"] = params.epubCoverImage;
-  if (params.inputFile) opts["input-files"] = [params.inputFile];
-  return opts;
 }
 
-interface ConversionOptionsBody {
-  toc?: boolean;
-  tocDepth?: number;
-  epubVersion?: "epub3" | "epub2";
-  title?: string;
-  author?: string;
-  language?: string;
-  publisher?: string;
-  date?: string;
-  style?: keyof typeof EPUB_STYLES;
+/** DOCX/TXT → EPUB 변환 (pandoc-wasm). */
+async function runConversion(
+  file: File,
+  inputFormat: "docx" | "txt"
+): Promise<Buffer> {
+  const files: Record<string, Blob | string> = {};
+  files[STYLE_FILENAME] = EPUB_STYLES.default ?? "";
+
+  let fromFormat: string;
+  let stdin: string | null = null;
+
+  if (inputFormat === "docx") {
+    const docxBlob = new Blob([await file.arrayBuffer()]);
+    const docxFiles: Record<string, Blob | string> = { [INPUT_FILENAME]: docxBlob };
+    const htmlResult = await convert(
+      {
+        from: "docx",
+        to: "html",
+        "output-file": INTERMEDIATE_HTML_FILENAME,
+        "input-files": [INPUT_FILENAME],
+        standalone: true,
+      },
+      null,
+      docxFiles
+    );
+    const htmlBlobOrStr = htmlResult.files?.[INTERMEDIATE_HTML_FILENAME];
+    if (!htmlBlobOrStr) {
+      throw new Error(htmlResult.stderr || "DOCX → HTML produced no output.");
+    }
+    stdin = typeof htmlBlobOrStr === "string" ? htmlBlobOrStr : await (htmlBlobOrStr as Blob).text();
+    fromFormat = "html";
+  } else {
+    stdin = await file.text();
+    fromFormat = "plain";
+  }
+
+  const pandocOptions = buildPandocOptions({
+    from: fromFormat,
+    to: "epub3",
+    outputFile: OUTPUT_FILENAME,
+    toc: true,
+    tocDepth: 3,
+    styleCssFile: STYLE_FILENAME,
+    inputFile: fromFormat === "html" ? undefined : undefined,
+  });
+
+  const result = await convert(pandocOptions, stdin, files);
+  const epubBlob = result.files?.[OUTPUT_FILENAME];
+  if (!epubBlob || !(epubBlob instanceof Blob)) {
+    throw new Error(result.stderr || "Conversion produced no output.");
+  }
+  return Buffer.from(await epubBlob.arrayBuffer());
 }
 
-export async function POST(request: Request) {
-  ensureTmpDir();
-  console.log("[convert] Converter in use:", CONVERTER_NAME);
-  logPandocSystemCheck();
-
+export async function POST(request: NextRequest) {
   try {
+    // 1. 인증 확인
+    const supabase = await createServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = user.id;
+
+    // 2. 파일 수신
     const formData = await request.formData();
     const file = formData.get("file");
-
     if (!file || !(file instanceof File)) {
       return NextResponse.json(
         { error: "No file provided. Send a file in the 'file' field." },
@@ -104,192 +174,130 @@ export async function POST(request: Request) {
       );
     }
 
+    // 3. 파일 검증
     if (file.size > MAX_FILE_SIZE_BYTES) {
       return NextResponse.json(
         { error: "File size must be 50MB or less." },
-        { status: 400 }
+        { status: 413 }
       );
     }
-
     const ext = getExtension(file.name);
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
       return NextResponse.json(
-        { error: "Supported formats: DOCX, TXT, PDF, HTML, MD." },
+        { error: "Allowed extensions: .docx, .txt only." },
         { status: 400 }
       );
     }
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const validation = await validateFileType(buffer, file.name);
+    if (!validation.ok) {
+      return NextResponse.json({ error: validation.error }, { status: 400 });
+    }
+    const inputFormat = validation.inputFormat;
 
-    const optionsRaw = formData.get("options");
-    const options: ConversionOptionsBody = typeof optionsRaw === "string"
-      ? (JSON.parse(optionsRaw) as ConversionOptionsBody)
-      : {};
+    const admin = createAdminClient();
+    const ipAddress = getClientIp(request);
 
-    const cover = formData.get("cover");
-    if (cover && cover instanceof File && cover.size > MAX_FILE_SIZE_BYTES) {
+    // 4. 사용량 체크
+    const { data: canConvertData, error: rpcError } = await admin.rpc("can_convert", {
+      p_user_id: userId,
+    });
+    if (rpcError) {
+      console.error("[convert] can_convert RPC error:", rpcError);
       return NextResponse.json(
-        { error: "Cover image must be 10MB or less." },
-        { status: 400 }
+        { error: "Usage check failed." },
+        { status: 500 }
+      );
+    }
+    const allowed = (canConvertData as { allowed?: boolean } | null)?.allowed;
+    if (allowed === false) {
+      const out = canConvertData as { used?: number; limit?: number; resets_at?: string } | null;
+      return NextResponse.json(
+        {
+          error: "Conversion limit reached.",
+          used: out?.used,
+          limit: out?.limit,
+          resets_at: out?.resets_at,
+        },
+        { status: 429 }
       );
     }
 
-    const safeBase = baseName(file.name).replace(/[^a-zA-Z0-9-_]/g, "_") || "document";
-    const downloadName = `${safeBase}.epub`;
-    const toFormat = options.epubVersion === "epub2" ? "epub2" : "epub3";
-    const styleName = options.style && options.style in EPUB_STYLES ? options.style : "default";
-
-    const coverKey =
-      cover && cover instanceof File
-        ? `cover${getExtension(cover.name) || ".png"}`
-        : null;
-
-    let fromFormat: string;
-    let stdin: string | null = null;
-    const files: Record<string, Blob | string> = {};
-
-    if (NORMALIZE_EXTENSIONS.includes(ext)) {
-      fromFormat = "html";
-      const html = await normalizeToHtml(
-        ext === ".pdf"
-          ? { type: "pdf", buffer: Buffer.from(await file.arrayBuffer()) }
-          : ext === ".md"
-            ? { type: "md", text: await file.text() }
-            : { type: "html", text: await file.text() }
+    // 5. conversions 레코드 생성 (status = processing)
+    const { data: conversionRow, error: insertError } = await admin
+      .from("conversions")
+      .insert({
+        user_id: userId,
+        original_filename: file.name,
+        original_size_bytes: file.size,
+        input_format: inputFormat,
+        output_format: "epub",
+        status: "processing",
+        ip_address: ipAddress,
+      })
+      .select("id")
+      .single();
+    if (insertError || !conversionRow) {
+      console.error("[convert] insert conversion error:", insertError);
+      return NextResponse.json(
+        { error: "Failed to create conversion record." },
+        { status: 500 }
       );
-      stdin = html;
-    } else if (ext === ".docx") {
-      fromFormat = "html";
-      const docxBlob = new Blob([await file.arrayBuffer()]);
-      const docxFiles: Record<string, Blob | string> = { [INPUT_FILENAME]: docxBlob };
-      const docxToHtmlOptions: Record<string, unknown> = {
-        from: "docx",
-        to: "html",
-        "output-file": INTERMEDIATE_HTML_FILENAME,
-        "input-files": [INPUT_FILENAME],
-        standalone: true,
-      };
-      let htmlResult: Awaited<ReturnType<typeof convert>>;
-      try {
-        htmlResult = await convert(docxToHtmlOptions, null, docxFiles);
-      } catch (docxToHtmlErr) {
-        console.error("[EPUB ERROR]", docxToHtmlErr);
-        console.error("[convert] DOCX → HTML error:", docxToHtmlErr);
-        if (docxToHtmlErr instanceof Error && docxToHtmlErr.stack) {
-          console.error("[convert] Stack:", docxToHtmlErr.stack);
-        }
-        const errObj = docxToHtmlErr as { message?: string; stderr?: string };
-        const message = errObj?.message || (docxToHtmlErr instanceof Error ? docxToHtmlErr.message : "DOCX → HTML failed");
-        const stderr = typeof errObj?.stderr === "string" ? errObj.stderr : "";
-        const detail = stderr ? `${message}. ${stderr}` : message;
-        const clientError = `DOCX → HTML failed: ${detail}`;
-        return NextResponse.json({ error: clientError }, { status: 500 });
-      }
-      const htmlBlobOrStr = htmlResult.files?.[INTERMEDIATE_HTML_FILENAME];
-      if (!htmlBlobOrStr) {
-        const errMsg = htmlResult.stderr || "DOCX → HTML produced no output.";
-        console.error("[EPUB ERROR] DOCX → HTML no output:", errMsg);
-        console.error("[convert] DOCX → HTML no output:", htmlResult.stderr);
-        return NextResponse.json({ error: `DOCX → HTML failed: ${errMsg}` }, { status: 500 });
-      }
-      stdin = typeof htmlBlobOrStr === "string" ? htmlBlobOrStr : await (htmlBlobOrStr as Blob).text();
-      console.log("[convert] DOCX → HTML success");
-    } else {
-      fromFormat = "plain";
-      stdin = await file.text();
     }
+    const conversionId = conversionRow.id as string;
 
-    const pandocOptions = buildPandocOptions({
-      from: fromFormat,
-      to: toFormat,
-      outputFile: OUTPUT_FILENAME,
-      toc: options.toc !== false,
-      tocDepth: Math.min(3, Math.max(1, options.tocDepth ?? 3)),
-      metadata: {
-        title: options.title,
-        author: options.author,
-        lang: options.language,
-        publisher: options.publisher,
-        date: options.date,
-      },
-      epubCoverImage: coverKey ?? undefined,
-      styleCssFile: STYLE_FILENAME,
-      inputFile: undefined,
-    });
-
-    files[STYLE_FILENAME] = EPUB_STYLES[styleName] ?? EPUB_STYLES.default;
-    if (cover && cover instanceof File && coverKey) {
-      files[coverKey] = new Blob([await cover.arrayBuffer()]);
-    }
-
-    const pandocCommandLog = [
-      "pandoc",
-      "(stdin)",
-      "-o",
-      OUTPUT_FILENAME,
-      "-f",
-      fromFormat,
-      "-t",
-      toFormat,
-      pandocOptions["table-of-contents"] ? "--toc" : "",
-      `--toc-depth=${pandocOptions["toc-depth"]}`,
-      ...(pandocOptions.metadata && typeof pandocOptions.metadata === "object" && (pandocOptions.metadata as Record<string, unknown>).title
-        ? [`--metadata title="${(pandocOptions.metadata as Record<string, string>).title}"`]
-        : []),
-      ...(pandocOptions.metadata && typeof pandocOptions.metadata === "object" && (pandocOptions.metadata as Record<string, unknown>).author
-        ? [`--metadata author="${((pandocOptions.metadata as Record<string, string[]>).author as string[])?.[0] ?? ""}"`]
-        : []),
-      ...(pandocOptions.metadata && typeof pandocOptions.metadata === "object" && (pandocOptions.metadata as Record<string, unknown>).lang
-        ? [`--metadata lang="${(pandocOptions.metadata as Record<string, string>).lang}"`]
-        : []),
-    ]
-      .filter(Boolean)
-      .join(" ");
-    console.log("[convert] Effective command (conceptual):", pandocCommandLog);
-    console.log("[convert] Options passed to convert():", JSON.stringify(pandocOptions, null, 2));
-
-    let result: Awaited<ReturnType<typeof convert>>;
     try {
-      result = await convert(pandocOptions, stdin, files);
+      // 6. Storage에 원본 업로드
+      await uploadInputFile(userId, conversionId, file);
+
+      // 7. EPUB 변환
+      const epubBuffer = await runConversion(file, inputFormat);
+
+      // 8. 변환 성공
+      await uploadOutputFile(userId, conversionId, epubBuffer);
+
+      const now = new Date();
+      const expiresAt = new Date(now.getTime() + 60 * 60 * 1000);
+      const storagePath = `${userId}/${conversionId}/output.epub`;
+
+      await admin
+        .from("conversions")
+        .update({
+          status: "completed",
+          completed_at: now.toISOString(),
+          expires_at: expiresAt.toISOString(),
+          storage_path: storagePath,
+        })
+        .eq("id", conversionId);
+
+      await admin.rpc("increment_conversion", { p_user_id: userId });
+
+      const { url: downloadUrl } = await getSignedDownloadUrl(storagePath, 3600);
+
+      return NextResponse.json({
+        downloadUrl,
+        conversionId,
+        expiresAt: expiresAt.toISOString(),
+      });
     } catch (conversionErr) {
-      console.error("[EPUB ERROR]", conversionErr);
-      console.error("[convert] Conversion error:", conversionErr);
-      if (conversionErr instanceof Error && conversionErr.stack) {
-        console.error("[convert] Stack:", conversionErr.stack);
-      }
-      const errObj = conversionErr as { message?: string; stderr?: string };
-      const message = errObj?.message || (conversionErr instanceof Error ? conversionErr.message : "Conversion failed");
-      const stderr = typeof errObj?.stderr === "string" ? errObj.stderr : "";
-      const detail = stderr ? `${message}. ${stderr}` : message;
-      return NextResponse.json({ error: detail }, { status: 500 });
+      // 9. 변환 실패
+      const errMessage = conversionErr instanceof Error ? conversionErr.message : String(conversionErr);
+      console.error("[convert] conversion error:", conversionErr);
+      await admin
+        .from("conversions")
+        .update({
+          status: "failed",
+          error_message: errMessage,
+        })
+        .eq("id", conversionId);
+      return NextResponse.json(
+        { error: errMessage },
+        { status: 500 }
+      );
     }
-
-    const epubBlob = result.files?.[OUTPUT_FILENAME];
-    if (!epubBlob || !(epubBlob instanceof Blob)) {
-      const errMsg = result.stderr || "Conversion produced no output.";
-      console.error("[EPUB ERROR] No output blob:", errMsg);
-      console.error("[convert] No output blob:", result.stderr);
-      return NextResponse.json({ error: errMsg }, { status: 500 });
-    }
-
-    if (ext === ".docx") {
-      console.log("[convert] HTML → EPUB success");
-    }
-
-    const epubBuffer = Buffer.from(await epubBlob.arrayBuffer());
-    return new NextResponse(epubBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/epub+zip",
-        "Content-Disposition": `attachment; filename="${downloadName}"`,
-        "Content-Length": String(epubBuffer.length),
-      },
-    });
   } catch (err) {
-    console.error("[EPUB ERROR]", err);
-    console.error("[convert] Request/convert error:", err);
-    if (err instanceof Error && err.stack) {
-      console.error("[convert] Stack:", err.stack);
-    }
-    const message = err instanceof Error ? err.message : String(err) || "Conversion failed";
+    console.error("[convert] request error:", err);
+    const message = err instanceof Error ? err.message : "Conversion failed";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

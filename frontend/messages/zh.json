@@ -67,6 +67,27 @@
     "title": "上传你的文档",
     "subtitle": "支持 DOCX、TXT 和 PDF。拖放或点击选择文件。"
   },
+  "Dashboard": {
+    "title": "仪表盘",
+    "subtitle": "你的转换记录与使用量。",
+    "usage": "使用量",
+    "plan": "套餐",
+    "conversionsCount": "本周期转换次数",
+    "recentConversions": "最近转换",
+    "noConversions": "暂无转换记录。",
+    "convertMore": "转换其他文件",
+    "changePlan": "更换套餐"
+  },
+  "Login": {
+    "title": "登录",
+    "subtitle": "登录以使用转换与仪表盘。",
+    "email": "邮箱",
+    "password": "密码",
+    "submit": "登录",
+    "signUp": "注册",
+    "forgotPassword": "忘记密码？",
+    "error": "邮箱或密码错误。"
+  },
   "FileUpload": {
     "dropText": "将文件拖放到此处",
     "dropHere": "放到此处",

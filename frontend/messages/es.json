@@ -67,6 +67,27 @@
     "title": "Sube tu documento",
     "subtitle": "Se admiten DOCX, TXT y PDF. Arrastra y suelta o haz clic para elegir."
   },
+  "Dashboard": {
+    "title": "Panel",
+    "subtitle": "Tu historial de conversiones y uso.",
+    "usage": "Uso",
+    "plan": "Plan",
+    "conversionsCount": "Conversiones en este período",
+    "recentConversions": "Conversiones recientes",
+    "noConversions": "Aún no hay conversiones.",
+    "convertMore": "Convertir otro archivo",
+    "changePlan": "Cambiar plan"
+  },
+  "Login": {
+    "title": "Iniciar sesión",
+    "subtitle": "Inicia sesión para acceder a convertir y al panel.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "error": "Correo o contraseña incorrectos."
+  },
   "FileUpload": {
     "dropText": "Arrastra y suelta tu archivo aquí",
     "dropHere": "Suelta el archivo aquí",

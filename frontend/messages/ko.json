@@ -67,6 +67,27 @@
     "title": "문서를 업로드하세요",
     "subtitle": "DOCX, TXT, PDF, HTML, MD 지원. 드래그 앤 드롭 또는 클릭하여 선택하세요."
   },
+  "Dashboard": {
+    "title": "대시보드",
+    "subtitle": "변환 기록과 사용량을 확인하세요.",
+    "usage": "사용량",
+    "plan": "플랜",
+    "conversionsCount": "이번 기간 변환 수",
+    "recentConversions": "최근 변환",
+    "noConversions": "아직 변환 기록이 없습니다.",
+    "convertMore": "다른 파일 변환",
+    "changePlan": "플랜 변경"
+  },
+  "Login": {
+    "title": "로그인",
+    "subtitle": "변환 및 대시보드 이용을 위해 로그인하세요.",
+    "email": "이메일",
+    "password": "비밀번호",
+    "submit": "로그인",
+    "signUp": "회원가입",
+    "forgotPassword": "비밀번호 찾기",
+    "error": "이메일 또는 비밀번호가 올바르지 않습니다."
+  },
   "FileUpload": {
     "dropText": "파일을 여기에 드래그하여 놓으세요",
     "dropHere": "여기에 놓기",

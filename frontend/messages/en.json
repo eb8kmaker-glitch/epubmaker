@@ -67,6 +67,27 @@
     "title": "Upload your document",
     "subtitle": "DOCX, TXT, PDF, HTML, MD supported. Drag and drop or click to choose."
   },
+  "Dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Your conversion history and usage.",
+    "usage": "Usage",
+    "plan": "Plan",
+    "conversionsCount": "Conversions this period",
+    "recentConversions": "Recent conversions",
+    "noConversions": "No conversions yet.",
+    "convertMore": "Convert another file",
+    "changePlan": "Change plan"
+  },
+  "Login": {
+    "title": "Sign in",
+    "subtitle": "Sign in to access convert and dashboard.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "signUp": "Sign up",
+    "forgotPassword": "Forgot password?",
+    "error": "Invalid email or password."
+  },
   "FileUpload": {
     "dropText": "Drag and drop your file here",
     "dropHere": "Drop file here",

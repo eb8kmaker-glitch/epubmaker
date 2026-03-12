@@ -67,6 +67,27 @@
     "title": "ドキュメントをアップロード",
     "subtitle": "DOCX、TXT、PDF対応。ドラッグ＆ドロップまたはクリックで選択。"
   },
+  "Dashboard": {
+    "title": "ダッシュボード",
+    "subtitle": "変換履歴と使用量。",
+    "usage": "使用量",
+    "plan": "プラン",
+    "conversionsCount": "期間内の変換数",
+    "recentConversions": "最近の変換",
+    "noConversions": "まだ変換履歴がありません。",
+    "convertMore": "別のファイルを変換",
+    "changePlan": "プラン変更"
+  },
+  "Login": {
+    "title": "サインイン",
+    "subtitle": "変換とダッシュボードにアクセスするにはサインインしてください。",
+    "email": "メール",
+    "password": "パスワード",
+    "submit": "サインイン",
+    "signUp": "新規登録",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "error": "メールまたはパスワードが正しくありません。"
+  },
   "FileUpload": {
     "dropText": "ここにファイルをドラッグしてドロップ",
     "dropHere": "ここにドロップ",

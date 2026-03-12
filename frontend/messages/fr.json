@@ -67,6 +67,27 @@
     "title": "Téléversez votre document",
     "subtitle": "DOCX, TXT et PDF acceptés. Glissez-déposez ou cliquez pour choisir."
   },
+  "Dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Historique des conversions et utilisation.",
+    "usage": "Utilisation",
+    "plan": "Offre",
+    "conversionsCount": "Conversions sur la période",
+    "recentConversions": "Conversions récentes",
+    "noConversions": "Aucune conversion pour l'instant.",
+    "convertMore": "Convertir un autre fichier",
+    "changePlan": "Changer d'offre"
+  },
+  "Login": {
+    "title": "Connexion",
+    "subtitle": "Connectez-vous pour accéder à la conversion et au tableau de bord.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "submit": "Connexion",
+    "signUp": "S'inscrire",
+    "forgotPassword": "Mot de passe oublié ?",
+    "error": "E-mail ou mot de passe incorrect."
+  },
   "FileUpload": {
     "dropText": "Glissez-déposez votre fichier ici",
     "dropHere": "Déposer ici",

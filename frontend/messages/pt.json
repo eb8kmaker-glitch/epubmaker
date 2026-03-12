@@ -67,6 +67,27 @@
     "title": "Envie seu documento",
     "subtitle": "DOCX, TXT e PDF suportados. Arraste e solte ou clique para escolher."
   },
+  "Dashboard": {
+    "title": "Painel",
+    "subtitle": "Seu histórico de conversões e uso.",
+    "usage": "Uso",
+    "plan": "Plano",
+    "conversionsCount": "Conversões neste período",
+    "recentConversions": "Conversões recentes",
+    "noConversions": "Nenhuma conversão ainda.",
+    "convertMore": "Converter outro arquivo",
+    "changePlan": "Mudar plano"
+  },
+  "Login": {
+    "title": "Entrar",
+    "subtitle": "Entre para acessar conversão e painel.",
+    "email": "E-mail",
+    "password": "Senha",
+    "submit": "Entrar",
+    "signUp": "Cadastrar",
+    "forgotPassword": "Esqueceu a senha?",
+    "error": "E-mail ou senha inválidos."
+  },
   "FileUpload": {
     "dropText": "Arraste e solte seu arquivo aqui",
     "dropHere": "Solte aqui",
