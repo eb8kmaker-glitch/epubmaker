@@ -5,7 +5,6 @@ import { createServerClient } from "@/lib/supabase";
 import CheckoutButton from "@/app/components/CheckoutButton";
 
 const LEMON_SQUEEZY = {
-  free: "https://epubmaker.lemonsqueezy.com/checkout/buy/4433ff2d-97ec-4737-b45f-43ed6ac020e9",
   starter: "https://epubmaker.lemonsqueezy.com/checkout/buy/bdba77a1-9561-45d2-91ec-6aa3bc205ad5",
   pro: "https://epubmaker.lemonsqueezy.com/checkout/buy/fe7e2d70-5fd1-4445-80c0-93d898f579d7",
   payPerUse: "https://epubmaker.lemonsqueezy.com/checkout/buy/55e55a27-69cc-4ac1-a4ce-03f247c1c620",
@@ -16,7 +15,7 @@ const PLAN_CONFIG: Record<
   (typeof PLAN_IDS)[number],
   { href: string; featureCount: number; recommended: boolean }
 > = {
-  free: { href: LEMON_SQUEEZY.free, featureCount: 3, recommended: false },
+  free: { href: "/convert", featureCount: 3, recommended: false },
   starter: { href: LEMON_SQUEEZY.starter, featureCount: 4, recommended: true },
   pro: { href: LEMON_SQUEEZY.pro, featureCount: 3, recommended: false },
   pay: { href: LEMON_SQUEEZY.payPerUse, featureCount: 4, recommended: false },
@@ -126,15 +125,11 @@ export default async function PricingPage() {
                     >
                       {plan.cta}
                     </CheckoutButton>
-                  ) : (
+                  ) : plan.href.startsWith("http") ? (
                     <Link
                       href={plan.href}
-                      {...(plan.href.startsWith("http")
-                        ? {
-                            target: "_blank",
-                            rel: "noopener noreferrer",
-                          }
-                        : {})}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                         highlighted
                           ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
@@ -143,6 +138,17 @@ export default async function PricingPage() {
                     >
                       {plan.cta}
                     </Link>
+                  ) : (
+                    <I18nLink
+                      href={plan.href as "/convert" | "/contact"}
+                      className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                        highlighted
+                          ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
+                          : "border border-[var(--border)] bg-[var(--card)] text-[var(--content)] hover:bg-[var(--dropzone-hover)] focus:ring-[var(--primary)]"
+                      }`}
+                    >
+                      {plan.cta}
+                    </I18nLink>
                   )}
                 </div>
               );
