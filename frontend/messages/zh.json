@@ -76,7 +76,9 @@
     "recentConversions": "最近转换",
     "noConversions": "暂无转换记录。",
     "convertMore": "转换其他文件",
-    "changePlan": "更换套餐"
+    "changePlan": "更换套餐",
+    "manageSubscription": "管理订阅",
+    "noSubscription": "未找到订阅信息。"
   },
   "Login": {
     "title": "登录",

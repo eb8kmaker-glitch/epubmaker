@@ -76,7 +76,9 @@
     "recentConversions": "Conversions récentes",
     "noConversions": "Aucune conversion pour l'instant.",
     "convertMore": "Convertir un autre fichier",
-    "changePlan": "Changer d'offre"
+    "changePlan": "Changer d'offre",
+    "manageSubscription": "Gérer l'abonnement",
+    "noSubscription": "Aucun abonnement trouvé."
   },
   "Login": {
     "title": "Connexion",

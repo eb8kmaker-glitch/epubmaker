@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Link as I18nLink } from "@/i18n/navigation";
+import { createServerClient } from "@/lib/supabase";
+import CheckoutButton from "@/app/components/CheckoutButton";
 
 const LEMON_SQUEEZY = {
   free: "https://epubmaker.lemonsqueezy.com/checkout/buy/4433ff2d-97ec-4737-b45f-43ed6ac020e9",
@@ -21,9 +23,17 @@ const PLAN_CONFIG: Record<
   publisher: { href: "/contact", featureCount: 4, recommended: false },
 };
 
+const CHECKOUT_PLANS = new Set(["starter", "pro"]);
+
 export default async function PricingPage() {
   const t = await getTranslations("Pricing");
   const tCommon = await getTranslations("common");
+
+  const supabase = await createServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isLoggedIn = !!user;
 
   const faqItems = [
     { q: t("faq.q1"), a: t("faq.a1") },
@@ -103,22 +113,37 @@ export default async function PricingPage() {
                       </li>
                     ))}
                   </ul>
-                  <Link
-                    href={plan.href}
-                    {...(plan.href.startsWith("http")
-                      ? {
-                          target: "_blank",
-                          rel: "noopener noreferrer",
-                        }
-                      : {})}
-                    className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                      highlighted
-                        ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
-                        : "border border-[var(--border)] bg-[var(--card)] text-[var(--content)] hover:bg-[var(--dropzone-hover)] focus:ring-[var(--primary)]"
-                    }`}
-                  >
-                    {plan.cta}
-                  </Link>
+                  {CHECKOUT_PLANS.has(plan.id) ? (
+                    <CheckoutButton
+                      plan={plan.id as "starter" | "pro"}
+                      isLoggedIn={isLoggedIn}
+                      fallbackHref={plan.href}
+                      className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 ${
+                        highlighted
+                          ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
+                          : "border border-[var(--border)] bg-[var(--card)] text-[var(--content)] hover:bg-[var(--dropzone-hover)] focus:ring-[var(--primary)]"
+                      }`}
+                    >
+                      {plan.cta}
+                    </CheckoutButton>
+                  ) : (
+                    <Link
+                      href={plan.href}
+                      {...(plan.href.startsWith("http")
+                        ? {
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                          }
+                        : {})}
+                      className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                        highlighted
+                          ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
+                          : "border border-[var(--border)] bg-[var(--card)] text-[var(--content)] hover:bg-[var(--dropzone-hover)] focus:ring-[var(--primary)]"
+                      }`}
+                    >
+                      {plan.cta}
+                    </Link>
+                  )}
                 </div>
               );
             })}

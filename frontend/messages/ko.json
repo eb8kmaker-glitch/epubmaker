@@ -76,7 +76,9 @@
     "recentConversions": "최근 변환",
     "noConversions": "아직 변환 기록이 없습니다.",
     "convertMore": "다른 파일 변환",
-    "changePlan": "플랜 변경"
+    "changePlan": "플랜 변경",
+    "manageSubscription": "구독 관리",
+    "noSubscription": "구독 정보가 없습니다."
   },
   "Login": {
     "title": "로그인",

@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase";
 import { Link } from "@/i18n/navigation";
+import ManageSubscriptionButton from "@/app/components/ManageSubscriptionButton";
 import type { Database } from "@/types/database";
 
 type ConversionRow = Database["public"]["Tables"]["conversions"]["Row"];
@@ -92,7 +93,7 @@ export default async function DashboardPage({ params }: Props) {
           )}
         </section>
 
-        <div className="mt-8 flex gap-4">
+        <div className="mt-8 flex flex-wrap gap-4">
           <Link
             href="/convert"
             className="rounded-lg bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
@@ -105,6 +106,13 @@ export default async function DashboardPage({ params }: Props) {
           >
             {t("changePlan")}
           </Link>
+          {plan !== "free" && (
+            <ManageSubscriptionButton
+              label={t("manageSubscription")}
+              noSubscriptionLabel={t("noSubscription")}
+              className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--content)] hover:bg-[var(--card)] disabled:opacity-60"
+            />
+          )}
         </div>
       </main>
     </div>

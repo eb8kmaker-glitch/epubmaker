@@ -76,7 +76,9 @@
     "recentConversions": "最近の変換",
     "noConversions": "まだ変換履歴がありません。",
     "convertMore": "別のファイルを変換",
-    "changePlan": "プラン変更"
+    "changePlan": "プラン変更",
+    "manageSubscription": "サブスクリプション管理",
+    "noSubscription": "サブスクリプションが見つかりません。"
   },
   "Login": {
     "title": "サインイン",
