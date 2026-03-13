@@ -179,6 +179,36 @@
     "coverHint": "JPEG oder PNG, max. 10 MB",
     "remove": "Entfernen"
   },
+  "UserMenu": {
+    "dashboard": "Dashboard",
+    "account": "Konto",
+    "manageSubscription": "Abonnement verwalten",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "signUp": "Registrieren"
+  },
+  "Account": {
+    "title": "Konto",
+    "subtitle": "Verwalte deine Kontoeinstellungen.",
+    "email": "E-Mail",
+    "plan": "Tarif",
+    "changePassword": "Passwort ändern",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "savePassword": "Speichern",
+    "passwordChanged": "Passwort erfolgreich geändert.",
+    "passwordMismatch": "Passwörter stimmen nicht überein.",
+    "passwordMin": "Das Passwort muss mindestens 6 Zeichen haben.",
+    "passwordError": "Passwort konnte nicht geändert werden. Bitte erneut versuchen.",
+    "googleAccount": "Du hast dich mit Google angemeldet. Passwortänderung ist nicht verfügbar.",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountDesc": "Lösche dein Konto und alle zugehörigen Daten dauerhaft.",
+    "deleteConfirmTitle": "Konto löschen?",
+    "deleteConfirmDesc": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Daten werden dauerhaft gelöscht.",
+    "deleteConfirm": "Ja, Konto löschen",
+    "deleteCancel": "Abbrechen",
+    "deleteError": "Konto konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
   "Pricing": {
     "title": "Preise für EPUB-Konvertierung",
     "subtitle": "Wähle den Tarif, der zu deinem Publikations-Workflow passt.",

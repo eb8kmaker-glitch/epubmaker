@@ -179,6 +179,36 @@
     "coverHint": "JPEG 或 PNG，最大 10MB",
     "remove": "移除"
   },
+  "UserMenu": {
+    "dashboard": "仪表盘",
+    "account": "账户",
+    "manageSubscription": "管理订阅",
+    "logout": "退出登录",
+    "login": "登录",
+    "signUp": "注册"
+  },
+  "Account": {
+    "title": "账户",
+    "subtitle": "管理您的账户设置。",
+    "email": "邮箱",
+    "plan": "套餐",
+    "changePassword": "修改密码",
+    "newPassword": "新密码",
+    "confirmPassword": "确认密码",
+    "savePassword": "保存",
+    "passwordChanged": "密码修改成功。",
+    "passwordMismatch": "两次密码不一致。",
+    "passwordMin": "密码至少需要6个字符。",
+    "passwordError": "密码修改失败，请重试。",
+    "googleAccount": "您通过 Google 登录，不支持密码修改。",
+    "deleteAccount": "删除账户",
+    "deleteAccountDesc": "永久删除您的账户及所有相关数据。",
+    "deleteConfirmTitle": "确认删除账户？",
+    "deleteConfirmDesc": "此操作无法撤销，所有数据将被永久删除。",
+    "deleteConfirm": "是的，删除账户",
+    "deleteCancel": "取消",
+    "deleteError": "账户删除失败，请重试。"
+  },
   "Pricing": {
     "title": "EPUB 转换价格",
     "subtitle": "选择适合您出版流程的套餐。",

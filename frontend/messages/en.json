@@ -252,6 +252,36 @@
     "ctaTitle": "Start converting your manuscript today",
     "ctaButton": "Start Converting"
   },
+  "UserMenu": {
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "manageSubscription": "Manage subscription",
+    "logout": "Log out",
+    "login": "Log in",
+    "signUp": "Sign up"
+  },
+  "Account": {
+    "title": "Account",
+    "subtitle": "Manage your account settings.",
+    "email": "Email",
+    "plan": "Plan",
+    "changePassword": "Change password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "savePassword": "Save password",
+    "passwordChanged": "Password changed successfully.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordMin": "Password must be at least 6 characters.",
+    "passwordError": "Failed to change password. Please try again.",
+    "googleAccount": "You signed in with Google. Password change is not available.",
+    "deleteAccount": "Delete account",
+    "deleteAccountDesc": "Permanently delete your account and all associated data.",
+    "deleteConfirmTitle": "Delete your account?",
+    "deleteConfirmDesc": "This action cannot be undone. All your data will be permanently deleted.",
+    "deleteConfirm": "Yes, delete my account",
+    "deleteCancel": "Cancel",
+    "deleteError": "Failed to delete account. Please try again."
+  },
   "newsletter": {
     "title": "Stay updated with EPUBMaker",
     "subtitle": "Get notified when new features launch and when the beta expands.",

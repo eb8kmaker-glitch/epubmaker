@@ -179,6 +179,36 @@
     "coverHint": "JPEG ou PNG, max. 10 Mo",
     "remove": "Supprimer"
   },
+  "UserMenu": {
+    "dashboard": "Tableau de bord",
+    "account": "Compte",
+    "manageSubscription": "Gérer l'abonnement",
+    "logout": "Se déconnecter",
+    "login": "Se connecter",
+    "signUp": "S'inscrire"
+  },
+  "Account": {
+    "title": "Compte",
+    "subtitle": "Gérez les paramètres de votre compte.",
+    "email": "E-mail",
+    "plan": "Offre",
+    "changePassword": "Changer le mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "savePassword": "Enregistrer",
+    "passwordChanged": "Mot de passe modifié avec succès.",
+    "passwordMismatch": "Les mots de passe ne correspondent pas.",
+    "passwordMin": "Le mot de passe doit comporter au moins 6 caractères.",
+    "passwordError": "Échec de la modification du mot de passe. Veuillez réessayer.",
+    "googleAccount": "Vous vous êtes connecté avec Google. La modification du mot de passe n'est pas disponible.",
+    "deleteAccount": "Supprimer le compte",
+    "deleteAccountDesc": "Supprimez définitivement votre compte et toutes les données associées.",
+    "deleteConfirmTitle": "Supprimer votre compte ?",
+    "deleteConfirmDesc": "Cette action est irréversible. Toutes vos données seront définitivement supprimées.",
+    "deleteConfirm": "Oui, supprimer mon compte",
+    "deleteCancel": "Annuler",
+    "deleteError": "Échec de la suppression du compte. Veuillez réessayer."
+  },
   "Pricing": {
     "title": "Tarifs de conversion EPUB",
     "subtitle": "Choisissez l'offre qui correspond à votre flux de publication.",

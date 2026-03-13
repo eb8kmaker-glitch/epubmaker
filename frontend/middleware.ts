@@ -13,7 +13,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 
-const PROTECTED_SEGMENTS = ["dashboard", "convert"];
+const PROTECTED_SEGMENTS = ["dashboard", "convert", "account"];
 const LOGIN_SEGMENT = "login";
 
 function isProtectedPath(pathname: string): boolean {

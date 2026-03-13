@@ -179,6 +179,36 @@
     "coverHint": "JPEGまたはPNG、最大10MB",
     "remove": "削除"
   },
+  "UserMenu": {
+    "dashboard": "ダッシュボード",
+    "account": "アカウント",
+    "manageSubscription": "サブスクリプション管理",
+    "logout": "ログアウト",
+    "login": "ログイン",
+    "signUp": "新規登録"
+  },
+  "Account": {
+    "title": "アカウント",
+    "subtitle": "アカウント設定を管理します。",
+    "email": "メール",
+    "plan": "プラン",
+    "changePassword": "パスワード変更",
+    "newPassword": "新しいパスワード",
+    "confirmPassword": "パスワードの確認",
+    "savePassword": "保存",
+    "passwordChanged": "パスワードが変更されました。",
+    "passwordMismatch": "パスワードが一致しません。",
+    "passwordMin": "パスワードは6文字以上にしてください。",
+    "passwordError": "パスワードの変更に失敗しました。もう一度お試しください。",
+    "googleAccount": "Googleでサインインしています。パスワード変更はご利用いただけません。",
+    "deleteAccount": "アカウントを削除",
+    "deleteAccountDesc": "アカウントとすべての関連データを完全に削除します。",
+    "deleteConfirmTitle": "アカウントを削除しますか？",
+    "deleteConfirmDesc": "この操作は元に戻せません。すべてのデータが永久に削除されます。",
+    "deleteConfirm": "はい、削除します",
+    "deleteCancel": "キャンセル",
+    "deleteError": "アカウントの削除に失敗しました。もう一度お試しください。"
+  },
   "Pricing": {
     "title": "EPUB変換の料金",
     "subtitle": "出版ワークフローに合ったプランを選べます。",

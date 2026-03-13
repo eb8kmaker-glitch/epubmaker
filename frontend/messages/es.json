@@ -179,6 +179,36 @@
     "coverHint": "JPEG o PNG, máx. 10 MB",
     "remove": "Quitar"
   },
+  "UserMenu": {
+    "dashboard": "Panel",
+    "account": "Cuenta",
+    "manageSubscription": "Gestionar suscripción",
+    "logout": "Cerrar sesión",
+    "login": "Iniciar sesión",
+    "signUp": "Registrarse"
+  },
+  "Account": {
+    "title": "Cuenta",
+    "subtitle": "Administra la configuración de tu cuenta.",
+    "email": "Correo electrónico",
+    "plan": "Plan",
+    "changePassword": "Cambiar contraseña",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "savePassword": "Guardar",
+    "passwordChanged": "Contraseña cambiada correctamente.",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "passwordMin": "La contraseña debe tener al menos 6 caracteres.",
+    "passwordError": "Error al cambiar la contraseña. Por favor, inténtalo de nuevo.",
+    "googleAccount": "Iniciaste sesión con Google. El cambio de contraseña no está disponible.",
+    "deleteAccount": "Eliminar cuenta",
+    "deleteAccountDesc": "Elimina permanentemente tu cuenta y todos los datos asociados.",
+    "deleteConfirmTitle": "¿Eliminar tu cuenta?",
+    "deleteConfirmDesc": "Esta acción no se puede deshacer. Todos tus datos se eliminarán permanentemente.",
+    "deleteConfirm": "Sí, eliminar mi cuenta",
+    "deleteCancel": "Cancelar",
+    "deleteError": "Error al eliminar la cuenta. Por favor, inténtalo de nuevo."
+  },
   "Pricing": {
     "title": "Precios para conversión EPUB",
     "subtitle": "Elige el plan que se adapte a tu flujo de publicación.",
