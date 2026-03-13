@@ -45,6 +45,12 @@ export default async function PricingPage() {
     const features = Array.from({ length: config.featureCount }, (_, i) =>
       t(`plans.${id}.feature${i + 1}`)
     );
+    const href =
+      id === "free"
+        ? isLoggedIn
+          ? "/convert"
+          : "/login?redirect=/convert"
+        : config.href;
     return {
       id,
       name: t(`plans.${id}.title`),
@@ -52,7 +58,7 @@ export default async function PricingPage() {
       price: t(`plans.${id}.price`),
       cta: t(`plans.${id}.cta`),
       features,
-      href: config.href,
+      href,
       recommended: config.recommended,
     };
   });
@@ -116,7 +122,6 @@ export default async function PricingPage() {
                     <CheckoutButton
                       plan={plan.id as "starter" | "pro"}
                       isLoggedIn={isLoggedIn}
-                      fallbackHref={plan.href}
                       className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 ${
                         highlighted
                           ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
@@ -139,8 +144,8 @@ export default async function PricingPage() {
                       {plan.cta}
                     </Link>
                   ) : (
-                    <I18nLink
-                      href={plan.href as "/convert" | "/contact"}
+                    <Link
+                      href={plan.href}
                       className={`mt-8 block w-full rounded-xl py-2.5 text-center text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                         highlighted
                           ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] focus:ring-[var(--primary)]"
@@ -148,7 +153,7 @@ export default async function PricingPage() {
                       }`}
                     >
                       {plan.cta}
-                    </I18nLink>
+                    </Link>
                   )}
                 </div>
               );

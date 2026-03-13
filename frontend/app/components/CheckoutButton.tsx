@@ -8,7 +8,6 @@ type CheckoutPlan = "starter" | "pro";
 interface Props {
   plan: CheckoutPlan;
   isLoggedIn: boolean;
-  fallbackHref: string;
   className?: string;
   children: ReactNode;
 }
@@ -16,7 +15,6 @@ interface Props {
 export default function CheckoutButton({
   plan,
   isLoggedIn,
-  fallbackHref,
   className,
   children,
 }: Props) {
@@ -24,7 +22,7 @@ export default function CheckoutButton({
 
   async function handleClick() {
     if (!isLoggedIn) {
-      window.open(fallbackHref, "_blank", "noopener,noreferrer");
+      window.location.href = "/login?redirect=/pricing";
       return;
     }
 
@@ -40,11 +38,9 @@ export default function CheckoutButton({
         window.location.href = data.url;
       } else {
         console.error("[checkout]", data.error);
-        window.open(fallbackHref, "_blank", "noopener,noreferrer");
       }
     } catch (e) {
       console.error("[checkout]", e);
-      window.open(fallbackHref, "_blank", "noopener,noreferrer");
     } finally {
       setLoading(false);
     }
