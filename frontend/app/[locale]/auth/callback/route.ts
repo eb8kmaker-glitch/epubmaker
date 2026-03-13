@@ -6,7 +6,7 @@
  *
  * 설정 필요: Supabase 대시보드 > Authentication > URL Configuration
  *   - Site URL: https://your-domain.com
- *   - Redirect URLs: https://your-domain.com/*/auth/callback
+ *   - Redirect URLs: https://your-domain.com/[locale]/auth/callback (각 로케일별 등록)
  */
 
 import { NextRequest, NextResponse } from "next/server";
