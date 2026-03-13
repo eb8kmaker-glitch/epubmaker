@@ -88,7 +88,25 @@
     "submit": "サインイン",
     "signUp": "新規登録",
     "forgotPassword": "パスワードをお忘れですか？",
-    "error": "メールまたはパスワードが正しくありません。"
+    "error": "メールまたはパスワードが正しくありません。",
+    "googleButton": "Googleで続ける",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "orDivider": "または"
+  },
+  "SignUp": {
+    "title": "アカウントを作成",
+    "subtitle": "ファイル変換を始めるには登録してください。",
+    "email": "メール",
+    "password": "パスワード",
+    "submit": "アカウント作成",
+    "googleButton": "Googleで続ける",
+    "alreadyHaveAccount": "すでにアカウントをお持ちですか？",
+    "signIn": "サインイン",
+    "checkEmail": "メールを確認してください",
+    "checkEmailDesc": "{email}に認証リンクを送信しました。受信箱を確認してください。",
+    "error": "エラーが発生しました。もう一度お試しください。",
+    "passwordMin": "パスワードは6文字以上にしてください。",
+    "orDivider": "または"
   },
   "FileUpload": {
     "dropText": "ここにファイルをドラッグしてドロップ",
@@ -144,7 +162,6 @@
     "epub3": "EPUB 3",
     "epub2": "EPUB 2",
     "metadata": "メタデータ",
-    "title": "タイトル",
     "titlePlaceholder": "書籍タイトル",
     "author": "著者",
     "authorPlaceholder": "著者名",

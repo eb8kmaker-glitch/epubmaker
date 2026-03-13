@@ -1,13 +1,16 @@
 "use client";
 
 /**
- * 로그인 페이지.
+ * 회원가입 페이지.
  *
- * Supabase 클라이언트: createBrowserClient() — 로그인/회원가입은 클라이언트에서 처리.
+ * Supabase 클라이언트: createBrowserClient()
+ * - 이메일/비밀번호 가입: supabase.auth.signUp
+ * - 구글 소셜 로그인: supabase.auth.signInWithOAuth
+ * - 가입 후 이메일 인증 안내 표시
  */
 
-import { Suspense, useState } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { createBrowserClient } from "@/lib/supabase";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -23,13 +26,10 @@ function GoogleIcon() {
   );
 }
 
-function LoginForm() {
-  const t = useTranslations("Login");
+function SignUpForm() {
+  const t = useTranslations("SignUp");
   const tCommon = useTranslations("common");
-  const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") ?? "/convert";
   const locale = pathname.split("/")[1] || "en";
 
   const [email, setEmail] = useState("");
@@ -37,36 +37,56 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
 
   const supabase = createBrowserClient();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    if (password.length < 6) {
+      setError(t("passwordMin"));
+      return;
+    }
     setLoading(true);
     try {
-      const { error: err } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error: err } = await supabase.auth.signUp({ email, password });
       if (err) {
-        setError(t("error"));
+        setError(err.message);
         return;
       }
-      router.push(redirect);
-      router.refresh();
+      setDone(true);
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleGoogleLogin() {
+  async function handleGoogleSignUp() {
     setGoogleLoading(true);
     const redirectTo = `${window.location.origin}/${locale}/auth/callback`;
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },
     });
+  }
+
+  if (done) {
+    return (
+      <main className="w-full max-w-sm rounded-xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-sm text-center">
+        <div className="mb-4 text-4xl">📧</div>
+        <h2 className="mb-2 text-xl font-semibold text-[var(--content)]">
+          {t("checkEmail")}
+        </h2>
+        <p className="text-sm text-[var(--content-muted)]">
+          {t("checkEmailDesc", { email })}
+        </p>
+        <p className="mt-6 text-center text-sm text-[var(--content-muted)]">
+          <Link href="/" className="hover:text-[var(--primary)]">
+            {tCommon("backToHome")}
+          </Link>
+        </p>
+      </main>
+    );
   }
 
   return (
@@ -79,7 +99,7 @@ function LoginForm() {
       </p>
 
       <button
-        onClick={handleGoogleLogin}
+        onClick={handleGoogleSignUp}
         disabled={googleLoading}
         className="mb-4 flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 py-2.5 text-sm font-medium text-[var(--content)] hover:bg-[var(--dropzone-hover)] disabled:opacity-50"
       >
@@ -141,12 +161,12 @@ function LoginForm() {
       </form>
 
       <p className="mt-4 text-center text-sm text-[var(--content-muted)]">
-        {t("noAccount")}{" "}
+        {t("alreadyHaveAccount")}{" "}
         <Link
-          href="/signup"
+          href="/login"
           className="font-medium text-[var(--primary)] hover:underline"
         >
-          {t("signUp")}
+          {t("signIn")}
         </Link>
       </p>
 
@@ -159,12 +179,10 @@ function LoginForm() {
   );
 }
 
-export default function LoginPage() {
+export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-[var(--page-bg)] font-sans flex items-center justify-center px-4">
-      <Suspense>
-        <LoginForm />
-      </Suspense>
+      <SignUpForm />
     </div>
   );
 }

@@ -88,7 +88,25 @@
     "submit": "Sign in",
     "signUp": "Sign up",
     "forgotPassword": "Forgot password?",
-    "error": "Invalid email or password."
+    "error": "Invalid email or password.",
+    "googleButton": "Continue with Google",
+    "noAccount": "Don't have an account?",
+    "orDivider": "or"
+  },
+  "SignUp": {
+    "title": "Create an account",
+    "subtitle": "Sign up to start converting your files.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Create account",
+    "googleButton": "Continue with Google",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "checkEmail": "Check your email",
+    "checkEmailDesc": "We sent a verification link to {email}. Please check your inbox.",
+    "error": "Something went wrong. Please try again.",
+    "passwordMin": "Password must be at least 6 characters.",
+    "orDivider": "or"
   },
   "FileUpload": {
     "dropText": "Drag and drop your file here",

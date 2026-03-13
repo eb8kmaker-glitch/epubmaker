@@ -88,7 +88,25 @@
     "submit": "Connexion",
     "signUp": "S'inscrire",
     "forgotPassword": "Mot de passe oublié ?",
-    "error": "E-mail ou mot de passe incorrect."
+    "error": "E-mail ou mot de passe incorrect.",
+    "googleButton": "Continuer avec Google",
+    "noAccount": "Pas encore de compte ?",
+    "orDivider": "ou"
+  },
+  "SignUp": {
+    "title": "Créer un compte",
+    "subtitle": "Inscrivez-vous pour commencer à convertir vos fichiers.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "submit": "Créer un compte",
+    "googleButton": "Continuer avec Google",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Connexion",
+    "checkEmail": "Vérifiez votre e-mail",
+    "checkEmailDesc": "Nous avons envoyé un lien de vérification à {email}. Veuillez vérifier votre boîte de réception.",
+    "error": "Une erreur s'est produite. Veuillez réessayer.",
+    "passwordMin": "Le mot de passe doit comporter au moins 6 caractères.",
+    "orDivider": "ou"
   },
   "FileUpload": {
     "dropText": "Glissez-déposez votre fichier ici",
@@ -144,7 +162,6 @@
     "epub3": "EPUB 3",
     "epub2": "EPUB 2",
     "metadata": "Métadonnées",
-    "title": "Titre",
     "titlePlaceholder": "Titre du livre",
     "author": "Auteur",
     "authorPlaceholder": "Nom de l'auteur",
