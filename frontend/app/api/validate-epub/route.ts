@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { EpubCheck } from "@likecoin/epubcheck-ts";
 import { buildValidationResult } from "@/app/lib/validateEpub";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+const RATE_LIMIT_PER_MINUTE = 10;
 
 /** EPUB is ZIP-based: local file header signature PK (0x50 0x4B 0x03 0x04) or empty zip (0x50 0x4B 0x05 0x06). */
 function isEpubMagicBytes(buffer: Uint8Array): boolean {
@@ -12,6 +15,12 @@ function isEpubMagicBytes(buffer: Uint8Array): boolean {
 }
 
 export async function POST(request: Request) {
+  if (!checkRateLimit(request, RATE_LIMIT_PER_MINUTE)) {
+    return NextResponse.json(
+      { error: "Too many requests" },
+      { status: 429 }
+    );
+  }
   try {
     const formData = await request.formData();
     const file = formData.get("epub");

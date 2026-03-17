@@ -8,6 +8,7 @@ import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
 import SetHtmlLang from "@/app/components/SetHtmlLang";
 import UserMenu from "@/app/components/UserMenu";
+import Footer from "@/app/components/Footer";
 import { createServerClient } from "@/lib/supabase";
 
 type Props = {
@@ -49,7 +50,10 @@ export default async function LocaleLayout({ children, params }: Props) {
           </div>
         </div>
       </header>
-      {children}
+      <div className="flex min-h-screen flex-col">
+        {children}
+        <Footer />
+      </div>
     </NextIntlClientProvider>
   );
 }

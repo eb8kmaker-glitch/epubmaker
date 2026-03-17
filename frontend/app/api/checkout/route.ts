@@ -4,6 +4,10 @@
  * POST body: { plan: 'starter' | 'pro' }
  * Supabase: createServerClient()로 세션에서 userId 확인 (없으면 401).
  * createAdminClient()는 사용하지 않음 (checkout 시점에는 users 업데이트 없음).
+ *
+ * 결제 페이지에 이용약관/개인정보처리방침 링크를 표시하려면 Lemon Squeezy 대시보드에서
+ * Store → Settings → Terms of Service URL / Privacy Policy URL 에
+ * https://epubmaker.vercel.app/en/terms, https://epubmaker.vercel.app/en/privacy 등 설정.
  */
 
 import { NextRequest, NextResponse } from "next/server";

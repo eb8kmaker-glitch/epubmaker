@@ -59,9 +59,9 @@ export default async function middleware(request: NextRequest) {
     });
 
     const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const hasSession = !!session;
+      data: { user },
+    } = await supabase.auth.getUser();
+    const hasSession = !!user;
 
     if (isProtectedPath(pathname) && !hasSession) {
       const locale = getLocaleFromPath(pathname);

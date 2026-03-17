@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase";
 import { extractNotionPageId, fetchNotionPageAsHtml } from "@/app/lib/notionToHtml";
 
 export const runtime = "nodejs";
@@ -6,6 +7,14 @@ export const maxDuration = 30;
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await request.json().catch(() => ({}));
     const url = typeof body.url === "string" ? body.url.trim() : "";
     if (!url) {

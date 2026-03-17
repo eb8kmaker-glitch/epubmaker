@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 const BUTTONDOWN_API = "https://api.buttondown.email/v1/subscribers";
+const RATE_LIMIT_PER_MINUTE = 10;
 
 export async function POST(request: Request) {
+  if (!checkRateLimit(request, RATE_LIMIT_PER_MINUTE)) {
+    return NextResponse.json(
+      { success: false, error: "Too many requests" },
+      { status: 429 }
+    );
+  }
   try {
     const token = process.env.BUTTONDOWN_API_KEY;
     if (!token) {

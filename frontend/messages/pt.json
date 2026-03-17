@@ -292,5 +292,49 @@
     },
     "ctaTitle": "Converta seu manuscrito para EPUB hoje",
     "ctaButton": "Começar a converter"
+  },
+  "Footer": {
+    "terms": "Termos de uso",
+    "privacy": "Política de privacidade",
+    "refund": "Política de reembolso",
+    "copyright": "© {year} EPUB Converter. Todos os direitos reservados."
+  },
+  "Terms": {
+    "title": "Termos de uso",
+    "section1Title": "1. Acceptance and Use of Service",
+    "section1Body": "EPUB Converter (epubmaker.vercel.app) is a service that converts documents (e.g. DOCX, TXT) to EPUB format. It is operated by an individual developer. By signing up (via email or Google OAuth) and using the service, you agree to these Terms. The service is provided \"as is\" and you use it at your own responsibility.",
+    "section2Title": "2. Prohibited Conduct",
+    "section2Body": "You may not: (a) use the service for any illegal purpose; (b) upload content that infringes others' intellectual property; (c) attempt to reverse engineer, overload, or disrupt the service; (d) resell or redistribute the service without permission; (e) use automated means to abuse the service.",
+    "section3Title": "3. Changes and Discontinuation",
+    "section3Body": "We may change, limit, or discontinue the service or these Terms at any time. Continued use after changes constitutes acceptance. We are not liable for any modification, suspension, or discontinuation of the service.",
+    "section4Title": "4. Disclaimer",
+    "section4Body": "The service is provided without warranties of any kind. We are not liable for any indirect, incidental, or consequential damages. You are responsible for backing up your data and for how you use converted files.",
+    "lastUpdated": "Last updated: March 2025"
+  },
+  "Privacy": {
+    "title": "Política de privacidade",
+    "section1Title": "1. Information We Collect",
+    "section1Body": "We collect: (a) Account data: email, and if you sign up with Google, your Google profile information; (b) Payment-related data: processed by Lemon Squeezy; (c) Usage data: conversion history, file metadata, and IP address; (d) Error reports: anonymized data may be sent to Sentry.",
+    "section2Title": "2. Purpose of Collection",
+    "section2Body": "We use this information to provide and operate the service; manage your account and subscriptions; process payments via Lemon Squeezy; prevent abuse; improve the service. We do not sell your personal information.",
+    "section3Title": "3. Retention",
+    "section3Body": "We retain account and conversion data while your account is active. After account deletion, we delete or anonymize your data within a reasonable period.",
+    "section4Title": "4. Third-Party Sharing",
+    "section4Body": "We use Supabase, Lemon Squeezy, and Sentry. We do not sell your personal information.",
+    "section5Title": "5. Your Rights",
+    "section5Body": "You may access, correct, or delete your account and associated data through the account settings. For payment issues, use the Lemon Squeezy customer portal.",
+    "section6Title": "6. Contact",
+    "section6Body": "For privacy-related questions, contact us via the contact method on epubmaker.vercel.app.",
+    "lastUpdated": "Last updated: March 2025"
+  },
+  "Refund": {
+    "title": "Política de reembolso",
+    "section1Title": "1. Subscription Refunds",
+    "section1Body": "Subscriptions are billed through Lemon Squeezy. You may cancel at any time from the billing portal. Refunds are handled according to Lemon Squeezy's policy.",
+    "section2Title": "2. Pay-per-Use Refunds",
+    "section2Body": "For one-time pay-per-use purchases, refunds may be considered if the conversion clearly failed due to a service error. Contact us with your order or conversion details.",
+    "section3Title": "3. Process and Timing",
+    "section3Body": "Refund requests should be sent via the contact method on epubmaker.vercel.app. We will respond within a reasonable time. Approved refunds will be processed via Lemon Squeezy.",
+    "lastUpdated": "Last updated: March 2025"
   }
 }
