@@ -209,6 +209,24 @@
     "deleteCancel": "Cancelar",
     "deleteError": "Falha ao excluir a conta. Por favor, tente novamente."
   },
+  "Subscription": {
+    "title": "Assinatura",
+    "subtitle": "Visualize e gerencie sua assinatura e cobrança.",
+    "currentPlan": "Plano atual",
+    "status": "Status",
+    "nextBillingDate": "Próxima cobrança",
+    "noPlan": "Você não tem uma assinatura ativa. Faça upgrade para um plano pago para gerenciar cobrança e formas de pagamento.",
+    "changePlan": "Mudar plano",
+    "managePortal": "Portal de cobrança",
+    "managePortalButton": "Abrir portal de cobrança",
+    "noSubscription": "Nenhuma assinatura encontrada.",
+    "viewPricing": "Ver preços",
+    "statusActive": "Ativa",
+    "statusCanceled": "Cancelada",
+    "statusPastDue": "Atrasada",
+    "statusTrialing": "Teste",
+    "statusFree": "Grátis"
+  },
   "Pricing": {
     "title": "Preços para conversão EPUB",
     "subtitle": "Escolha o plano que cabe no seu fluxo de publicação.",

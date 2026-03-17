@@ -209,6 +209,24 @@
     "deleteCancel": "取消",
     "deleteError": "账户删除失败，请重试。"
   },
+  "Subscription": {
+    "title": "订阅管理",
+    "subtitle": "查看并管理您的订阅与账单。",
+    "currentPlan": "当前套餐",
+    "status": "状态",
+    "nextBillingDate": "下次账单日",
+    "noPlan": "您暂无有效订阅。升级至付费套餐以管理账单与支付方式。",
+    "changePlan": "更换套餐",
+    "managePortal": "账单门户",
+    "managePortalButton": "打开账单门户",
+    "noSubscription": "未找到订阅信息。",
+    "viewPricing": "查看价格",
+    "statusActive": "有效",
+    "statusCanceled": "已取消",
+    "statusPastDue": "逾期未付",
+    "statusTrialing": "试用中",
+    "statusFree": "免费"
+  },
   "Pricing": {
     "title": "EPUB 转换价格",
     "subtitle": "选择适合您出版流程的套餐。",

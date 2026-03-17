@@ -13,7 +13,6 @@ interface Props {
 export default function UserMenu({ user, locale }: Props) {
   const t = useTranslations("UserMenu");
   const [isOpen, setIsOpen] = useState(false);
-  const [portalLoading, setPortalLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -29,18 +28,6 @@ export default function UserMenu({ user, locale }: Props) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  async function handleManageSubscription() {
-    setIsOpen(false);
-    setPortalLoading(true);
-    try {
-      const res = await fetch("/api/portal", { method: "POST" });
-      const data = await res.json();
-      if (data.url) window.location.href = data.url;
-    } finally {
-      setPortalLoading(false);
-    }
-  }
 
   if (!user) {
     return (
@@ -120,15 +107,14 @@ export default function UserMenu({ user, locale }: Props) {
             {t("account")}
           </Link>
 
-          <button
-            type="button"
-            onClick={handleManageSubscription}
-            disabled={portalLoading}
-            className="flex w-full items-center px-3 py-2 text-sm text-[var(--content)] transition-colors hover:bg-[var(--dropzone-hover)] disabled:opacity-50"
+          <Link
+            href="/subscription"
+            onClick={() => setIsOpen(false)}
+            className="flex w-full items-center px-3 py-2 text-sm text-[var(--content)] transition-colors hover:bg-[var(--dropzone-hover)]"
             role="menuitem"
           >
             {t("manageSubscription")}
-          </button>
+          </Link>
 
           <div className="mt-1 border-t border-[var(--border)] pt-1">
             <button

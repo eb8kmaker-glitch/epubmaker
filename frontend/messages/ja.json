@@ -209,6 +209,24 @@
     "deleteCancel": "キャンセル",
     "deleteError": "アカウントの削除に失敗しました。もう一度お試しください。"
   },
+  "Subscription": {
+    "title": "サブスクリプション管理",
+    "subtitle": "サブスクリプションと請求情報の確認・管理。",
+    "currentPlan": "現在のプラン",
+    "status": "状態",
+    "nextBillingDate": "次回請求日",
+    "noPlan": "有効なサブスクリプションがありません。請求・支払い方法を管理するには有料プランへアップグレードしてください。",
+    "changePlan": "プラン変更",
+    "managePortal": "請求ポータル",
+    "managePortalButton": "請求ポータルを開く",
+    "noSubscription": "サブスクリプションが見つかりません。",
+    "viewPricing": "料金を見る",
+    "statusActive": "有効",
+    "statusCanceled": "解約済み",
+    "statusPastDue": "支払い遅延",
+    "statusTrialing": "トライアル中",
+    "statusFree": "無料"
+  },
   "Pricing": {
     "title": "EPUB変換の料金",
     "subtitle": "出版ワークフローに合ったプランを選べます。",

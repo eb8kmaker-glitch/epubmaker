@@ -282,6 +282,24 @@
     "deleteCancel": "취소",
     "deleteError": "계정 삭제에 실패했습니다. 다시 시도해주세요."
   },
+  "Subscription": {
+    "title": "구독 관리",
+    "subtitle": "구독 및 결제 정보를 확인하고 관리하세요.",
+    "currentPlan": "현재 플랜",
+    "status": "상태",
+    "nextBillingDate": "다음 결제일",
+    "noPlan": "활성 구독이 없습니다. 결제 및 결제 수단 관리를 위해 유료 플랜으로 업그레이드하세요.",
+    "changePlan": "플랜 변경",
+    "managePortal": "결제 포털",
+    "managePortalButton": "결제 포털 열기",
+    "noSubscription": "구독 정보를 찾을 수 없습니다.",
+    "viewPricing": "요금제 보기",
+    "statusActive": "활성",
+    "statusCanceled": "해지됨",
+    "statusPastDue": "결제 연체",
+    "statusTrialing": "체험 중",
+    "statusFree": "무료"
+  },
   "newsletter": {
     "title": "EPUBMaker 소식 받기",
     "subtitle": "새 기능 출시와 베타 확대 시 알려드립니다.",

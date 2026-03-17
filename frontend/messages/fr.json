@@ -209,6 +209,24 @@
     "deleteCancel": "Annuler",
     "deleteError": "Échec de la suppression du compte. Veuillez réessayer."
   },
+  "Subscription": {
+    "title": "Abonnement",
+    "subtitle": "Consultez et gérez votre abonnement et vos facturations.",
+    "currentPlan": "Offre actuelle",
+    "status": "Statut",
+    "nextBillingDate": "Prochaine facturation",
+    "noPlan": "Vous n'avez pas d'abonnement actif. Passez à une offre payante pour gérer facturation et moyens de paiement.",
+    "changePlan": "Changer d'offre",
+    "managePortal": "Portail de facturation",
+    "managePortalButton": "Ouvrir le portail de facturation",
+    "noSubscription": "Aucun abonnement trouvé.",
+    "viewPricing": "Voir les tarifs",
+    "statusActive": "Actif",
+    "statusCanceled": "Résilié",
+    "statusPastDue": "En retard",
+    "statusTrialing": "Essai",
+    "statusFree": "Gratuit"
+  },
   "Pricing": {
     "title": "Tarifs de conversion EPUB",
     "subtitle": "Choisissez l'offre qui correspond à votre flux de publication.",

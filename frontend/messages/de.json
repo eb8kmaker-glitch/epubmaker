@@ -209,6 +209,24 @@
     "deleteCancel": "Abbrechen",
     "deleteError": "Konto konnte nicht gelöscht werden. Bitte erneut versuchen."
   },
+  "Subscription": {
+    "title": "Abonnement",
+    "subtitle": "Abonnement und Zahlungsinformationen anzeigen und verwalten.",
+    "currentPlan": "Aktueller Tarif",
+    "status": "Status",
+    "nextBillingDate": "Nächste Abrechnung",
+    "noPlan": "Du hast kein aktives Abonnement. Wechsle zu einem kostenpflichtigen Tarif, um Zahlungen und Zahlungsmethoden zu verwalten.",
+    "changePlan": "Tarif ändern",
+    "managePortal": "Abrechnungsportal",
+    "managePortalButton": "Abrechnungsportal öffnen",
+    "noSubscription": "Kein Abonnement gefunden.",
+    "viewPricing": "Preise anzeigen",
+    "statusActive": "Aktiv",
+    "statusCanceled": "Gekündigt",
+    "statusPastDue": "Überfällig",
+    "statusTrialing": "Testphase",
+    "statusFree": "Kostenlos"
+  },
   "Pricing": {
     "title": "Preise für EPUB-Konvertierung",
     "subtitle": "Wähle den Tarif, der zu deinem Publikations-Workflow passt.",

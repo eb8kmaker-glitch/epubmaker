@@ -282,6 +282,24 @@
     "deleteCancel": "Cancel",
     "deleteError": "Failed to delete account. Please try again."
   },
+  "Subscription": {
+    "title": "Subscription",
+    "subtitle": "View and manage your subscription and billing.",
+    "currentPlan": "Current plan",
+    "status": "Status",
+    "nextBillingDate": "Next billing date",
+    "noPlan": "You don't have an active subscription. Upgrade to a paid plan to manage billing and payment methods.",
+    "changePlan": "Change plan",
+    "managePortal": "Billing portal",
+    "managePortalButton": "Open billing portal",
+    "noSubscription": "No subscription found.",
+    "viewPricing": "View pricing",
+    "statusActive": "Active",
+    "statusCanceled": "Canceled",
+    "statusPastDue": "Past due",
+    "statusTrialing": "Trialing",
+    "statusFree": "Free"
+  },
   "newsletter": {
     "title": "Stay updated with EPUBMaker",
     "subtitle": "Get notified when new features launch and when the beta expands.",
