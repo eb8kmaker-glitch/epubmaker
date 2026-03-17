@@ -7,6 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import crypto from "node:crypto";
 import { createAdminClient } from "@/lib/supabase";
 import type { SubscriptionPlan } from "@/types/database";
@@ -88,6 +89,7 @@ export async function POST(request: NextRequest) {
     if (idemError.code === "23505") {
       return NextResponse.json({ received: true });
     }
+    Sentry.captureException(idemError);
     console.error("[webhooks/lemonsqueezy] lemon_webhook_events insert error:", idemError);
     return NextResponse.json({ error: "Failed to record event" }, { status: 500 });
   }
@@ -229,6 +231,7 @@ export async function POST(request: NextRequest) {
       .update({ processed: true })
       .eq("id", eventRow.id);
   } catch (e) {
+    Sentry.captureException(e);
     console.error("[webhooks/lemonsqueezy]", eventName, e);
     await supabase
       .from("subscription_events")

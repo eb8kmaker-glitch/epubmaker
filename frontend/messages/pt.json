@@ -183,6 +183,7 @@
     "dashboard": "Painel",
     "account": "Conta",
     "manageSubscription": "Gerenciar assinatura",
+    "admin": "Admin",
     "logout": "Sair",
     "login": "Entrar",
     "signUp": "Cadastrar"
@@ -336,5 +337,28 @@
     "section3Title": "3. Process and Timing",
     "section3Body": "Refund requests should be sent via the contact method on epubmaker.vercel.app. We will respond within a reasonable time. Approved refunds will be processed via Lemon Squeezy.",
     "lastUpdated": "Last updated: March 2025"
+  },
+  "Admin": {
+    "title": "Painel de administração",
+    "subtitle": "Visão geral do sistema e atividade recente",
+    "metrics": "Métricas principais",
+    "totalUsers": "Total de usuários",
+    "totalConversions": "Total de conversões",
+    "todayConversions": "Conversões hoje",
+    "activeSubscribers": "Assinantes ativos",
+    "planBreakdown": "Usuários por plano",
+    "recentSignups": "Cadastros recentes (últimos 10)",
+    "recentConversions": "Conversões recentes (últimas 20)",
+    "webhookEvents": "Log de webhooks (últimos 20)",
+    "email": "E-mail",
+    "plan": "Plano",
+    "joinedAt": "Cadastrado em",
+    "file": "Arquivo",
+    "status": "Status",
+    "date": "Data",
+    "eventType": "Evento",
+    "processed": "Processado",
+    "user": "Usuário",
+    "error": "Erro"
   }
 }

@@ -6,12 +6,14 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createServerClient } from "@/lib/supabase";
 import { createAdminClient } from "@/lib/supabase";
 import { uploadInputFile, uploadOutputFile, getSignedDownloadUrl } from "@/lib/storage";
 import { fileTypeFromBuffer } from "file-type";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -154,6 +156,14 @@ async function runConversion(
 
 export async function POST(request: NextRequest) {
   try {
+    // 0. Rate limit: IP 기준 분당 5회
+    if (!checkRateLimit(request, 5)) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     // 1. 인증 확인
     const supabase = await createServerClient();
     const {
@@ -203,6 +213,7 @@ export async function POST(request: NextRequest) {
       p_user_id: userId,
     });
     if (rpcError) {
+      Sentry.captureException(rpcError);
       console.error("[convert] can_convert RPC error:", rpcError);
       return NextResponse.json(
         { error: "Usage check failed." },
@@ -238,6 +249,7 @@ export async function POST(request: NextRequest) {
       .select("id")
       .single();
     if (insertError || !conversionRow) {
+      if (insertError) Sentry.captureException(insertError);
       console.error("[convert] insert conversion error:", insertError);
       return NextResponse.json(
         { error: "Failed to create conversion record." },
@@ -281,6 +293,7 @@ export async function POST(request: NextRequest) {
       });
     } catch (conversionErr) {
       // 9. 변환 실패
+      Sentry.captureException(conversionErr);
       const errMessage = conversionErr instanceof Error ? conversionErr.message : String(conversionErr);
       console.error("[convert] conversion error:", conversionErr);
       await admin
@@ -296,6 +309,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (err) {
+    Sentry.captureException(err);
     console.error("[convert] request error:", err);
     const message = err instanceof Error ? err.message : "Conversion failed";
     return NextResponse.json({ error: message }, { status: 500 });

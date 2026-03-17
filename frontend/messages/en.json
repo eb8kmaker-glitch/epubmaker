@@ -256,6 +256,7 @@
     "dashboard": "Dashboard",
     "account": "Account",
     "manageSubscription": "Manage subscription",
+    "admin": "Admin",
     "logout": "Log out",
     "login": "Log in",
     "signUp": "Sign up"
@@ -352,5 +353,28 @@
     "section3Title": "3. Process and Timing",
     "section3Body": "Refund requests should be sent via the contact method on epubmaker.vercel.app. We will respond within a reasonable time (e.g. within 14 business days). Approved refunds will be processed via Lemon Squeezy; the time to appear on your statement depends on your bank or card issuer.",
     "lastUpdated": "Last updated: March 2025"
+  },
+  "Admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "System overview and recent activity.",
+    "metrics": "Key Metrics",
+    "totalUsers": "Total Users",
+    "totalConversions": "Total Conversions",
+    "todayConversions": "Today's Conversions",
+    "activeSubscribers": "Active Subscribers",
+    "planBreakdown": "Users by Plan",
+    "recentSignups": "Recent Signups (last 10)",
+    "recentConversions": "Recent Conversions (last 20)",
+    "webhookEvents": "Webhook Events (last 20)",
+    "email": "Email",
+    "plan": "Plan",
+    "joinedAt": "Joined",
+    "file": "File",
+    "status": "Status",
+    "date": "Date",
+    "eventType": "Event",
+    "processed": "Processed",
+    "user": "User",
+    "error": "Error"
   }
 }

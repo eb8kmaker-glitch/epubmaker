@@ -11,6 +11,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createServerClient } from "@/lib/supabase";
 import {
   createCheckout,
@@ -67,6 +68,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url });
   } catch (e) {
+    Sentry.captureException(e);
     console.error("[checkout]", e);
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Checkout failed" },

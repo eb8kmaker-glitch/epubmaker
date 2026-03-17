@@ -256,6 +256,7 @@
     "dashboard": "대시보드",
     "account": "계정",
     "manageSubscription": "구독 관리",
+    "admin": "관리자",
     "logout": "로그아웃",
     "login": "로그인",
     "signUp": "회원가입"
@@ -352,5 +353,28 @@
     "section3Title": "3. 절차 및 기간",
     "section3Body": "환불 요청은 epubmaker.vercel.app에 안내된 연락처로 보내 주세요. 합리적인 기간(예: 영업일 기준 14일 이내) 내에 회신하겠습니다. 승인된 환불은 Lemon Squeezy를 통해 처리되며, 결제 수단에 반영되는 시일은 은행·카드사에 따라 다릅니다.",
     "lastUpdated": "최종 수정: 2025년 3월"
+  },
+  "Admin": {
+    "title": "관리자 대시보드",
+    "subtitle": "시스템 현황 및 최근 활동",
+    "metrics": "핵심 지표",
+    "totalUsers": "전체 가입자",
+    "totalConversions": "전체 변환 수",
+    "todayConversions": "오늘 변환 수",
+    "activeSubscribers": "활성 구독자",
+    "planBreakdown": "플랜별 사용자",
+    "recentSignups": "최근 가입자 (10명)",
+    "recentConversions": "최근 변환 내역 (20건)",
+    "webhookEvents": "웹훅 이벤트 로그 (20건)",
+    "email": "이메일",
+    "plan": "플랜",
+    "joinedAt": "가입일",
+    "file": "파일",
+    "status": "상태",
+    "date": "날짜",
+    "eventType": "이벤트",
+    "processed": "처리됨",
+    "user": "사용자",
+    "error": "에러"
   }
 }

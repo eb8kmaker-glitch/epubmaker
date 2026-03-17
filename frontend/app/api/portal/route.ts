@@ -8,6 +8,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 import { createServerClient } from "@/lib/supabase";
 import { createAdminClient } from "@/lib/supabase";
 import { getCustomerPortalUrl } from "@/lib/lemonsqueezy";
@@ -47,6 +48,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url });
   } catch (e) {
+    Sentry.captureException(e);
     console.error("[portal]", e);
     return NextResponse.json(
       { error: e instanceof Error ? e.message : "Portal failed" },

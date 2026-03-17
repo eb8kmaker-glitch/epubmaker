@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/app/actions/auth";
 
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+
 interface Props {
   user: { email: string } | null;
   locale: string;
@@ -115,6 +117,17 @@ export default function UserMenu({ user, locale }: Props) {
           >
             {t("manageSubscription")}
           </Link>
+
+          {ADMIN_EMAIL && user.email === ADMIN_EMAIL && (
+            <Link
+              href="/admin"
+              onClick={() => setIsOpen(false)}
+              className="flex w-full items-center px-3 py-2 text-sm font-medium text-[var(--primary)] transition-colors hover:bg-[var(--dropzone-hover)]"
+              role="menuitem"
+            >
+              {t("admin")}
+            </Link>
+          )}
 
           <div className="mt-1 border-t border-[var(--border)] pt-1">
             <button

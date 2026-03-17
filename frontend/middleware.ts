@@ -13,7 +13,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 
-const PROTECTED_SEGMENTS = ["dashboard", "convert", "account", "subscription"];
+const PROTECTED_SEGMENTS = ["dashboard", "convert", "account", "subscription", "admin"];
 const LOGIN_SEGMENT = "login";
 
 function isProtectedPath(pathname: string): boolean {
@@ -74,6 +74,16 @@ export default async function middleware(request: NextRequest) {
       const locale = getLocaleFromPath(pathname);
       const dashboardUrl = new URL(`/${locale}/dashboard`, request.url);
       return NextResponse.redirect(dashboardUrl);
+    }
+
+    // Admin 경로: ADMIN_EMAIL과 불일치 시 /dashboard로 리다이렉트
+    const segments = pathname.split("/").filter(Boolean);
+    if (segments[1] === "admin" && hasSession) {
+      const adminEmail = process.env.ADMIN_EMAIL;
+      if (!adminEmail || user?.email !== adminEmail) {
+        const locale = getLocaleFromPath(pathname);
+        return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
+      }
     }
   }
 

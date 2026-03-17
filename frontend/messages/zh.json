@@ -183,6 +183,7 @@
     "dashboard": "仪表盘",
     "account": "账户",
     "manageSubscription": "管理订阅",
+    "admin": "管理员",
     "logout": "退出登录",
     "login": "登录",
     "signUp": "注册"
@@ -336,5 +337,28 @@
     "section3Title": "3. Process and Timing",
     "section3Body": "Refund requests should be sent via the contact method on epubmaker.vercel.app. We will respond within a reasonable time. Approved refunds will be processed via Lemon Squeezy.",
     "lastUpdated": "Last updated: March 2025"
+  },
+  "Admin": {
+    "title": "管理仪表板",
+    "subtitle": "系统概览及最近活动",
+    "metrics": "核心指标",
+    "totalUsers": "总用户数",
+    "totalConversions": "总转换数",
+    "todayConversions": "今日转换数",
+    "activeSubscribers": "活跃订阅者",
+    "planBreakdown": "按方案分类用户",
+    "recentSignups": "最近注册 (10人)",
+    "recentConversions": "最近转换 (20条)",
+    "webhookEvents": "Webhook事件日志 (20条)",
+    "email": "邮箱",
+    "plan": "方案",
+    "joinedAt": "注册时间",
+    "file": "文件",
+    "status": "状态",
+    "date": "日期",
+    "eventType": "事件",
+    "processed": "已处理",
+    "user": "用户",
+    "error": "错误"
   }
 }
