@@ -6,9 +6,11 @@ import type { EpubValidationResult } from "@/app/lib/validateEpub";
 export default function EpubCompatibilityCheck({
   result,
   loading,
+  error,
 }: {
   result: EpubValidationResult | null;
   loading?: boolean;
+  error?: string | null;
 }) {
   const t = useTranslations("EpubCompatibilityCheck");
 
@@ -17,6 +19,15 @@ export default function EpubCompatibilityCheck({
       <div className="mt-4 rounded-[12px] border border-[var(--guide-border)] bg-[var(--guide-bg)] p-4">
         <p className="text-sm font-medium text-[var(--content)]">{t("title")}</p>
         <p className="mt-2 text-sm text-[var(--content-muted)]">{t("validating")}</p>
+      </div>
+    );
+  }
+
+  if (error && !result) {
+    return (
+      <div className="mt-4 rounded-[12px] border border-[var(--guide-border)] bg-[var(--guide-bg)] p-4">
+        <p className="text-sm font-medium text-[var(--content)]">{t("title")}</p>
+        <p className="mt-2 text-sm text-red-600">{error}</p>
       </div>
     );
   }

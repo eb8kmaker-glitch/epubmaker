@@ -109,6 +109,7 @@ export default function FileUpload() {
   const [showTocEditor, setShowTocEditor] = useState(false);
   const [validationResult, setValidationResult] = useState<EpubValidationResult | null>(null);
   const [validationLoading, setValidationLoading] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [notionUrl, setNotionUrl] = useState("");
   const [notionLoading, setNotionLoading] = useState(false);
   const [showNotionInput, setShowNotionInput] = useState(false);
@@ -222,6 +223,7 @@ export default function FileUpload() {
     setShowTocEditor(false);
     setValidationResult(null);
     setValidationLoading(false);
+    setValidationError(null);
     setCoverFile(null);
     setFile(null);
     setFiles([]);
@@ -235,23 +237,32 @@ export default function FileUpload() {
     if (!previewFile) {
       setValidationResult(null);
       setValidationLoading(false);
+      setValidationError(null);
       return;
     }
     let cancelled = false;
     setValidationLoading(true);
     setValidationResult(null);
+    setValidationError(null);
     const formData = new FormData();
     formData.append("epub", previewFile);
     fetch("/api/validate-epub", { method: "POST", body: formData })
-      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Validation failed"))))
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({})) as { error?: string };
+          throw new Error(data.error || `Validation failed (${res.status})`);
+        }
+        return res.json() as Promise<EpubValidationResult>;
+      })
       .then((result: EpubValidationResult) => {
         if (!cancelled) {
           setValidationResult(result);
           setValidationLoading(false);
         }
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (!cancelled) {
+          setValidationError(err instanceof Error ? err.message : "Validation failed");
           setValidationLoading(false);
         }
       });
@@ -707,7 +718,7 @@ export default function FileUpload() {
       {previewFile && (
         <div className="mt-6 w-full max-w-3xl space-y-4">
           <EpubPreview file={previewFile} />
-          <EpubCompatibilityCheck result={validationResult} loading={validationLoading} />
+          <EpubCompatibilityCheck result={validationResult} loading={validationLoading} error={validationError} />
 
           {/* TOC 편집기 토글 */}
           {!showTocEditor ? (

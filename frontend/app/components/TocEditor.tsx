@@ -179,6 +179,7 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
   const [items, setItems] = useState<TocItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [noNav, setNoNav] = useState(false);
   const [saving, setSaving] = useState(false);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
@@ -207,23 +208,42 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
         if (!opfFile) throw new Error("OPF file not found");
         const opfContent = await opfFile.async("text");
 
-        // nav 문서 찾기 (EPUB3 우선)
+        // nav 문서 찾기: <item> 태그를 속성 순서와 무관하게 파싱 (EPUB3 nav 우선)
         let navRelPath: string | null = null;
         let navFormat: NavFormat = "nav";
+        let ncxPath: string | null = null;
 
-        const navItemMatch = opfContent.match(/<item[^>]+properties="[^"]*\bnav\b[^"]*"[^>]+href="([^"]+)"/);
-        if (navItemMatch) {
-          navRelPath = opfDir + navItemMatch[1];
-          navFormat = "nav";
-        } else {
-          const ncxMatch = opfContent.match(/<item[^>]+media-type="application\/x-dtbncx\+xml"[^>]+href="([^"]+)"/);
-          if (ncxMatch) {
-            navRelPath = opfDir + ncxMatch[1];
-            navFormat = "ncx";
+        const itemRegex = /<item\b([^>]*?)(?:\/>|>)/gi;
+        let itemMatch: RegExpExecArray | null;
+        while ((itemMatch = itemRegex.exec(opfContent)) !== null) {
+          const attrs = itemMatch[1];
+          const hrefMatch = attrs.match(/href="([^"]+)"/);
+          if (!hrefMatch) continue;
+          const href = hrefMatch[1];
+          const propertiesMatch = attrs.match(/properties="([^"]+)"/);
+          const mediaTypeMatch = attrs.match(/media-type="([^"]+)"/);
+          if (propertiesMatch && /\bnav\b/.test(propertiesMatch[1])) {
+            navRelPath = opfDir + href;
+            navFormat = "nav";
+            break;
+          }
+          if (!ncxPath && mediaTypeMatch?.[1] === "application/x-dtbncx+xml") {
+            ncxPath = opfDir + href;
           }
         }
 
-        if (!navRelPath) throw new Error("Navigation document not found in EPUB");
+        if (!navRelPath && ncxPath) {
+          navRelPath = ncxPath;
+          navFormat = "ncx";
+        }
+
+        if (!navRelPath) {
+          if (!cancelled) {
+            setNoNav(true);
+            setLoading(false);
+          }
+          return;
+        }
 
         const navFile = zip.file(navRelPath);
         if (!navFile) throw new Error(`Nav file not found: ${navRelPath}`);
@@ -360,6 +380,23 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
     return (
       <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-6 shadow-[var(--shadow-card)]">
         <p className="text-sm text-[var(--content-muted)]">목차 로딩 중…</p>
+      </div>
+    );
+  }
+
+  if (noNav) {
+    return (
+      <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--content-muted)]">
+        <p className="font-medium text-[var(--content)]">목차 편집기</p>
+        <p className="mt-1">이 EPUB에는 편집 가능한 목차(TOC)가 없습니다.</p>
+        <p className="mt-1 text-xs">pandoc으로 변환된 파일이라면 목차를 자동 생성하는 옵션을 켜고 다시 변환해 보세요.</p>
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-2 underline underline-offset-2 hover:text-[var(--primary)]"
+        >
+          닫기
+        </button>
       </div>
     );
   }
