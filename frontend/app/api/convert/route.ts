@@ -14,6 +14,7 @@ import { fileTypeFromBuffer } from "file-type";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
 import { checkRateLimit } from "@/lib/rateLimit";
+import JSZip from "jszip";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -109,6 +110,7 @@ function buildPandocOptions(params: {
     standalone: true,
     "table-of-contents": params.toc,
     "toc-depth": params.tocDepth,
+    "epub-title-page": false,
     css: [params.styleCssFile],
     metadata: params.metadata ?? {},
   };
@@ -202,6 +204,102 @@ async function runConversion(
     throw new Error(result.stderr || "Conversion produced no output.");
   }
   return Buffer.from(await epubBlob.arrayBuffer());
+}
+
+/** title_page.xhtml 판별 (경로의 마지막 세그먼트 기준). */
+function isTitlePage(href: string): boolean {
+  return /title[_-]?page/i.test(href.split("/").pop() ?? "");
+}
+
+/**
+ * 변환된 EPUB에서 title_page.xhtml을 제거하는 후처리.
+ * pandoc --epub-title-page=false 옵션이 동작하면 이 함수는 조기 반환(no-op).
+ * 동작하지 않을 경우 ZIP, OPF manifest/spine, nav.xhtml, toc.ncx를 직접 정리.
+ */
+async function removeTitlePage(buffer: Buffer): Promise<Buffer> {
+  const zip = await JSZip.loadAsync(buffer);
+
+  const titlePagePaths = Object.keys(zip.files).filter(isTitlePage);
+  if (titlePagePaths.length === 0) return buffer; // 이미 없으면 그대로 반환
+
+  const titlePageNames = new Set(titlePagePaths.map((p) => p.split("/").pop()!));
+
+  // 1. ZIP에서 파일 제거
+  titlePagePaths.forEach((p) => zip.remove(p));
+
+  // 2. container.xml → OPF 경로 확인
+  const containerXml = await zip.file("META-INF/container.xml")?.async("text");
+  if (!containerXml) return zip.generateAsync({ type: "nodebuffer", mimeType: "application/epub+zip" });
+
+  const opfPath = containerXml.match(/full-path="([^"]+)"/)?.[1];
+  if (!opfPath) return zip.generateAsync({ type: "nodebuffer", mimeType: "application/epub+zip" });
+
+  const opfFile = zip.file(opfPath);
+  if (!opfFile) return zip.generateAsync({ type: "nodebuffer", mimeType: "application/epub+zip" });
+
+  let opf = await opfFile.async("text");
+  const opfDir = opfPath.includes("/") ? opfPath.slice(0, opfPath.lastIndexOf("/") + 1) : "";
+
+  // 3. OPF manifest에서 title_page 항목 제거 + nav/ncx 경로 수집
+  const removedIds = new Set<string>();
+  let navPath: string | null = null;
+  let ncxPath: string | null = null;
+
+  opf = opf.replace(/<item\b([^>]*?)\/>/gi, (tag, attrs: string) => {
+    const href = attrs.match(/href="([^"]+)"/)?.[1] ?? "";
+    const id = attrs.match(/\bid="([^"]+)"/)?.[1] ?? "";
+    const properties = attrs.match(/properties="([^"]+)"/)?.[1] ?? "";
+    const mediaType = attrs.match(/media-type="([^"]+)"/)?.[1] ?? "";
+
+    if (/\bnav\b/.test(properties) && !navPath) navPath = opfDir + href;
+    if (mediaType === "application/x-dtbncx+xml" && !ncxPath) ncxPath = opfDir + href;
+
+    const filename = href.split("/").pop() ?? "";
+    if (titlePageNames.has(filename) || isTitlePage(href)) {
+      if (id) removedIds.add(id);
+      return "";
+    }
+    return tag;
+  });
+
+  // 4. OPF spine에서 해당 itemref 제거
+  if (removedIds.size > 0) {
+    opf = opf.replace(/<itemref\b([^>]*?)\/>/gi, (tag, attrs: string) => {
+      const idref = attrs.match(/idref="([^"]+)"/)?.[1] ?? "";
+      return removedIds.has(idref) ? "" : tag;
+    });
+  }
+
+  zip.file(opfPath, opf);
+
+  // 5. nav.xhtml에서 title_page 링크 <li> 제거
+  if (navPath) {
+    const navFile = zip.file(navPath);
+    if (navFile) {
+      let nav = await navFile.async("text");
+      // 중첩 <li> 없이 단순 항목만 매칭 (title_page는 항상 leaf 노드)
+      nav = nav.replace(/<li\b[^>]*>(?:(?!<li\b)[\s\S])*?<\/li>/gi, (li) => {
+        const href = li.match(/<a\b[^>]*href="([^"]+)"/i)?.[1] ?? "";
+        return isTitlePage(href) ? "" : li;
+      });
+      zip.file(navPath, nav);
+    }
+  }
+
+  // 6. toc.ncx에서 title_page를 참조하는 <navPoint> 제거
+  if (ncxPath) {
+    const ncxFile = zip.file(ncxPath);
+    if (ncxFile) {
+      let ncx = await ncxFile.async("text");
+      ncx = ncx.replace(/<navPoint\b[^>]*>[\s\S]*?<\/navPoint>/gi, (np) => {
+        const src = np.match(/<content\b[^>]*src="([^"]+)"/i)?.[1] ?? "";
+        return isTitlePage(src) ? "" : np;
+      });
+      zip.file(ncxPath, ncx);
+    }
+  }
+
+  return zip.generateAsync({ type: "nodebuffer", mimeType: "application/epub+zip" });
 }
 
 export async function POST(request: NextRequest) {
@@ -331,8 +429,10 @@ export async function POST(request: NextRequest) {
         console.warn("[convert] 원본 Storage 업로드 실패 (변환 계속):", storageErr instanceof Error ? storageErr.message : storageErr);
       }
 
-      // 7. EPUB 변환 (options, cover 전달)
-      const epubBuffer = await runConversion(file, inputFormat, options, coverFile);
+      // 7. EPUB 변환 (options, cover 전달) → title_page 후처리
+      const epubBuffer = await removeTitlePage(
+        await runConversion(file, inputFormat, options, coverFile)
+      );
 
       // 8. 변환 성공 — Storage에 결과 업로드 (실패해도 EPUB 반환은 보장)
       let storagePath: string | null = null;
