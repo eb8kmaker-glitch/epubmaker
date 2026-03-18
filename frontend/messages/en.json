@@ -312,7 +312,8 @@
     "button": "Get updates",
     "trust": "No spam. Unsubscribe anytime.",
     "success": "You're on the list 🚀 We'll notify you when new features launch.",
-    "error": "Something went wrong or you're already subscribed."
+    "alreadySubscribed": "You're already subscribed with this email.",
+    "error": "Something went wrong. Please try again later."
   },
   "Footer": {
     "terms": "Terms of Service",

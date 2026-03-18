@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 
+type Status = "idle" | "loading" | "success" | "already_subscribed" | "error";
+
 export default function HeroEmailSignup() {
   const t = useTranslations("newsletter");
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<Status>("idle");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -18,13 +20,20 @@ export default function HeroEmailSignup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim() }),
       });
-      const data = await res.json().catch(() => ({}));
+      const data = await res.json().catch(() => ({})) as { success?: boolean; error?: string };
+
       if (res.ok && data.success) {
         setStatus("success");
         setEmail("");
-      } else {
-        setStatus("error");
+        return;
       }
+
+      if (data.error === "already_subscribed") {
+        setStatus("already_subscribed");
+        return;
+      }
+
+      setStatus("error");
     } catch {
       setStatus("error");
     }
@@ -65,6 +74,11 @@ export default function HeroEmailSignup() {
       {status === "success" && (
         <p className="mt-3 text-sm font-medium text-[var(--primary)]" role="status">
           {t("success")}
+        </p>
+      )}
+      {status === "already_subscribed" && (
+        <p className="mt-3 text-sm font-medium text-[var(--content-muted)]" role="status">
+          {t("alreadySubscribed")}
         </p>
       )}
       {status === "error" && (
