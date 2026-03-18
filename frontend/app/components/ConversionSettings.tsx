@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { EPUB_STYLES } from "@/app/lib/epubStyles";
 
-export type StylePreset = "default" | "book" | "novel" | "academic";
+export type StylePreset = "default" | "book" | "novel" | "academic" | "custom";
 
 export type MetadataLanguage = "ko" | "en" | "ja" | "zh";
 
@@ -16,6 +17,7 @@ export interface ConversionOptions {
   publisher: string;
   date: string;
   style: StylePreset;
+  customCss: string;
 }
 
 const DEFAULT_OPTIONS: ConversionOptions = {
@@ -28,6 +30,7 @@ const DEFAULT_OPTIONS: ConversionOptions = {
   publisher: "",
   date: "",
   style: "default",
+  customCss: "",
 };
 
 const COVER_ACCEPT = "image/jpeg,image/png";
@@ -56,6 +59,22 @@ export default function ConversionSettings({
   const inputClass =
     "w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--content)] placeholder-[var(--content-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]";
   const labelClass = "mb-1 block text-xs font-medium text-[var(--content-muted)]";
+
+  function handleStyleChange(newStyle: StylePreset) {
+    if (newStyle === "custom") {
+      // 현재 프리셋 CSS를 베이스로 커스텀 편집기에 로드
+      const basePreset = options.style !== "custom" ? options.style : "default";
+      const baseCss = EPUB_STYLES[basePreset] ?? EPUB_STYLES.default ?? "";
+      onChange({ ...options, style: "custom", customCss: options.customCss || baseCss });
+    } else {
+      setOption("style", newStyle);
+    }
+  }
+
+  function handleLoadPreset(preset: string) {
+    const css = EPUB_STYLES[preset] ?? EPUB_STYLES.default ?? "";
+    setOption("customCss", css);
+  }
 
   return (
     <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)] transition-all duration-200">
@@ -167,15 +186,47 @@ export default function ConversionSettings({
           <label className={labelClass}>{t("stylePreset")}</label>
           <select
             value={options.style}
-            onChange={(e) => setOption("style", e.target.value as ConversionOptions["style"])}
+            onChange={(e) => handleStyleChange(e.target.value as StylePreset)}
             className={inputClass}
           >
             <option value="default">{t("styleDefault")}</option>
             <option value="book">{t("styleBook")}</option>
             <option value="novel">{t("styleNovel")}</option>
             <option value="academic">{t("styleAcademic")}</option>
+            <option value="custom">{t("styleCustom")}</option>
           </select>
         </div>
+
+        {options.style === "custom" && (
+          <div>
+            <div className="mb-1 flex items-center justify-between">
+              <label className={labelClass.replace("mb-1 ", "")}>{t("customCssLabel")}</label>
+              <div className="flex gap-1">
+                {(["default", "book", "novel", "academic"] as const).map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => handleLoadPreset(preset)}
+                    className="rounded px-2 py-0.5 text-[10px] font-medium text-[var(--primary)] underline underline-offset-2 transition-colors hover:text-[var(--primary-hover)]"
+                  >
+                    {t(`style${preset.charAt(0).toUpperCase() + preset.slice(1)}` as "styleDefault" | "styleBook" | "styleNovel" | "styleAcademic")}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <textarea
+              value={options.customCss}
+              onChange={(e) => setOption("customCss", e.target.value)}
+              placeholder={t("customCssPlaceholder")}
+              rows={14}
+              spellCheck={false}
+              className="w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 font-mono text-xs text-[var(--content)] placeholder-[var(--content-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+            />
+            <p className="mt-1 text-[11px] text-[var(--content-muted)]">
+              {t("customCssHint")}
+            </p>
+          </div>
+        )}
 
         <div>
           <p className={labelClass}>{t("coverImage")}</p>

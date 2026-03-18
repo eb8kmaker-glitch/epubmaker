@@ -177,7 +177,11 @@
     "styleAcademic": "Académique",
     "coverImage": "Image de couverture (max. 10 Mo)",
     "coverHint": "JPEG ou PNG, max. 10 Mo",
-    "remove": "Supprimer"
+    "remove": "Supprimer",
+    "styleCustom": "Personnalisé",
+    "customCssLabel": "CSS personnalisé",
+    "customCssPlaceholder": "/* Entrez votre CSS ici */\nbody {\n  font-family: serif;\n}",
+    "customCssHint": "Cliquez sur un bouton de préréglage ci-dessus pour le charger comme base."
   },
   "UserMenu": {
     "dashboard": "Tableau de bord",

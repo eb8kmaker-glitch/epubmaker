@@ -177,7 +177,11 @@
     "styleAcademic": "学术",
     "coverImage": "封面图片（最大 10MB）",
     "coverHint": "JPEG 或 PNG，最大 10MB",
-    "remove": "移除"
+    "remove": "移除",
+    "styleCustom": "自定义",
+    "customCssLabel": "自定义 CSS",
+    "customCssPlaceholder": "/* 在此输入 CSS */\nbody {\n  font-family: serif;\n}",
+    "customCssHint": "点击上方预设按钮可将其作为编辑基础加载。"
   },
   "UserMenu": {
     "dashboard": "仪表盘",

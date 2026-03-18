@@ -177,7 +177,11 @@
     "styleAcademic": "Académico",
     "coverImage": "Portada (máx. 10 MB)",
     "coverHint": "JPEG o PNG, máx. 10 MB",
-    "remove": "Quitar"
+    "remove": "Quitar",
+    "styleCustom": "Personalizado",
+    "customCssLabel": "CSS personalizado",
+    "customCssPlaceholder": "/* Ingresa tu CSS aquí */\nbody {\n  font-family: serif;\n}",
+    "customCssHint": "Haz clic en un botón de preajuste arriba para cargarlo como base."
   },
   "UserMenu": {
     "dashboard": "Panel",

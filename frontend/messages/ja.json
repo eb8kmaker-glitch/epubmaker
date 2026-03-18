@@ -177,7 +177,11 @@
     "styleAcademic": "アカデミック",
     "coverImage": "表紙画像（最大10MB）",
     "coverHint": "JPEGまたはPNG、最大10MB",
-    "remove": "削除"
+    "remove": "削除",
+    "styleCustom": "カスタム",
+    "customCssLabel": "カスタム CSS",
+    "customCssPlaceholder": "/* CSSをここに入力 */\nbody {\n  font-family: serif;\n}",
+    "customCssHint": "上のプリセットボタンをクリックするとベースとして読み込めます。"
   },
   "UserMenu": {
     "dashboard": "ダッシュボード",

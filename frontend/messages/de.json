@@ -177,7 +177,11 @@
     "styleAcademic": "Akademisch",
     "coverImage": "Cover (max. 10 MB)",
     "coverHint": "JPEG oder PNG, max. 10 MB",
-    "remove": "Entfernen"
+    "remove": "Entfernen",
+    "styleCustom": "Benutzerdefiniert",
+    "customCssLabel": "Benutzerdefiniertes CSS",
+    "customCssPlaceholder": "/* CSS hier eingeben */\nbody {\n  font-family: serif;\n}",
+    "customCssHint": "Klicken Sie auf einen Preset-Button oben, um ihn als Basis zu laden."
   },
   "UserMenu": {
     "dashboard": "Dashboard",

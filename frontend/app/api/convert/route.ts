@@ -1,7 +1,7 @@
 /**
  * EPUB 변환 API (인증 + 사용량 제한 + Storage + DB 기록).
  *
- * 순서: 인증 → 파일 수신 → 검증 → can_convert RPC → conversions 삽입 → Storage 업로드 → 변환 → 출력 업로드 → increment_conversion → signed URL 반환.
+ * 순서: 인증 → 파일 수신 → options/cover 파싱 → 검증 → can_convert RPC → conversions 삽입 → Storage 업로드 → 변환 → 출력 업로드 → increment_conversion → EPUB blob 반환.
  * createServerClient: 세션 확인. createAdminClient: RPC, conversions, Storage.
  */
 
@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
 import { createServerClient } from "@/lib/supabase";
 import { createAdminClient } from "@/lib/supabase";
-import { uploadInputFile, uploadOutputFile, getSignedDownloadUrl } from "@/lib/storage";
+import { uploadInputFile, uploadOutputFile } from "@/lib/storage";
 import { fileTypeFromBuffer } from "file-type";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
@@ -32,6 +32,19 @@ const OUTPUT_FILENAME = "output.epub";
 const INTERMEDIATE_HTML_FILENAME = "output.html";
 const STYLE_FILENAME = "style.css";
 
+interface ConversionOptionsInput {
+  toc?: boolean;
+  tocDepth?: number;
+  epubVersion?: "epub3" | "epub2";
+  title?: string;
+  author?: string;
+  language?: string;
+  publisher?: string;
+  date?: string;
+  style?: string;
+  customCss?: string;
+}
+
 function getExtension(name: string): string {
   const i = name.lastIndexOf(".");
   return i === -1 ? "" : name.slice(i).toLowerCase();
@@ -41,7 +54,7 @@ function getInputFormat(ext: string): "docx" | "txt" {
   return ext === ".docx" ? "docx" : "txt";
 }
 
-/** Magic bytes 검증: .docx, .txt만 허용. 불일치 시 에러 메시지 반환. */
+/** Magic bytes 검증: .docx, .txt만 허용. */
 async function validateFileType(
   buffer: Buffer,
   filename: string
@@ -85,9 +98,11 @@ function buildPandocOptions(params: {
   toc: boolean;
   tocDepth: number;
   styleCssFile: string;
+  coverImageFile?: string;
+  metadata?: Record<string, string>;
   inputFile?: string;
 }): Record<string, unknown> {
-  return {
+  const opts: Record<string, unknown> = {
     from: params.from,
     to: params.to,
     "output-file": params.outputFile,
@@ -95,18 +110,52 @@ function buildPandocOptions(params: {
     "table-of-contents": params.toc,
     "toc-depth": params.tocDepth,
     css: [params.styleCssFile],
-    metadata: {},
-    ...(params.inputFile ? { "input-files": [params.inputFile] } : {}),
+    metadata: params.metadata ?? {},
   };
+  if (params.coverImageFile) {
+    opts["epub-cover-image"] = params.coverImageFile;
+  }
+  if (params.inputFile) {
+    opts["input-files"] = [params.inputFile];
+  }
+  return opts;
 }
 
-/** DOCX/TXT → EPUB 변환 (pandoc-wasm). */
+/** DOCX/TXT → EPUB 변환 (pandoc-wasm). options와 cover 파일을 적용. */
 async function runConversion(
   file: File,
-  inputFormat: "docx" | "txt"
+  inputFormat: "docx" | "txt",
+  options: ConversionOptionsInput,
+  coverFile?: File | null
 ): Promise<Buffer> {
   const files: Record<string, Blob | string> = {};
-  files[STYLE_FILENAME] = EPUB_STYLES.default ?? "";
+
+  // CSS: custom이면 customCss 사용, 아니면 프리셋 선택
+  const styleCss =
+    options.style === "custom"
+      ? (options.customCss ?? EPUB_STYLES.default ?? "")
+      : (EPUB_STYLES[options.style ?? "default"] ?? EPUB_STYLES.default ?? "");
+  files[STYLE_FILENAME] = styleCss;
+
+  // 표지 이미지
+  let coverFilename: string | undefined;
+  if (coverFile) {
+    const ext = getExtension(coverFile.name) || ".jpg";
+    coverFilename = `cover${ext}`;
+    files[coverFilename] = new Blob([await coverFile.arrayBuffer()], { type: coverFile.type });
+  }
+
+  // 메타데이터
+  const metadata: Record<string, string> = {};
+  if (options.title) metadata.title = options.title;
+  if (options.author) metadata.author = options.author;
+  if (options.language) metadata.lang = options.language;
+  if (options.publisher) metadata.publisher = options.publisher;
+  if (options.date) metadata.date = options.date;
+
+  const toc = options.toc !== false; // 기본 true
+  const tocDepth = options.tocDepth ?? 3;
+  const epubVersion = options.epubVersion ?? "epub3";
 
   let fromFormat: string;
   let stdin: string | null = null;
@@ -138,12 +187,13 @@ async function runConversion(
 
   const pandocOptions = buildPandocOptions({
     from: fromFormat,
-    to: "epub3",
+    to: epubVersion,
     outputFile: OUTPUT_FILENAME,
-    toc: true,
-    tocDepth: 3,
+    toc,
+    tocDepth,
     styleCssFile: STYLE_FILENAME,
-    inputFile: fromFormat === "html" ? undefined : undefined,
+    coverImageFile: coverFilename,
+    metadata,
   });
 
   const result = await convert(pandocOptions, stdin, files);
@@ -174,7 +224,7 @@ export async function POST(request: NextRequest) {
     }
     const userId = user.id;
 
-    // 2. 파일 수신
+    // 2. 파일 및 옵션 수신
     const formData = await request.formData();
     const file = formData.get("file");
     if (!file || !(file instanceof File)) {
@@ -183,6 +233,21 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // options 파싱
+    let options: ConversionOptionsInput = {};
+    const optionsRaw = formData.get("options");
+    if (optionsRaw && typeof optionsRaw === "string") {
+      try {
+        options = JSON.parse(optionsRaw) as ConversionOptionsInput;
+      } catch {
+        // options 파싱 실패 시 기본값 사용
+      }
+    }
+
+    // cover 이미지 파싱
+    const coverRaw = formData.get("cover");
+    const coverFile = coverRaw instanceof File ? coverRaw : null;
 
     // 3. 파일 검증
     if (file.size > MAX_FILE_SIZE_BYTES) {
@@ -262,10 +327,10 @@ export async function POST(request: NextRequest) {
       // 6. Storage에 원본 업로드
       await uploadInputFile(userId, conversionId, file);
 
-      // 7. EPUB 변환
-      const epubBuffer = await runConversion(file, inputFormat);
+      // 7. EPUB 변환 (options, cover 전달)
+      const epubBuffer = await runConversion(file, inputFormat, options, coverFile);
 
-      // 8. 변환 성공
+      // 8. 변환 성공 — Storage에 결과 업로드
       await uploadOutputFile(userId, conversionId, epubBuffer);
 
       const now = new Date();
@@ -284,15 +349,20 @@ export async function POST(request: NextRequest) {
 
       await admin.rpc("increment_conversion", { p_user_id: userId });
 
-      const { url: downloadUrl } = await getSignedDownloadUrl(storagePath, 3600);
+      // 9. EPUB blob을 클라이언트에 직접 반환 (Content-Disposition 포함)
+      const baseName = (options.title || file.name.replace(/\.[^.]+$/, "")).replace(/[^\w\s-]/g, "").trim() || "document";
+      const outputFilename = `${baseName}.epub`;
 
-      return NextResponse.json({
-        downloadUrl,
-        conversionId,
-        expiresAt: expiresAt.toISOString(),
+      return new NextResponse(epubBuffer.buffer as ArrayBuffer, {
+        status: 200,
+        headers: {
+          "Content-Type": "application/epub+zip",
+          "Content-Disposition": `attachment; filename="${outputFilename}"`,
+          "X-Conversion-Id": conversionId,
+        },
       });
     } catch (conversionErr) {
-      // 9. 변환 실패
+      // 변환 실패
       Sentry.captureException(conversionErr);
       const errMessage = conversionErr instanceof Error ? conversionErr.message : String(conversionErr);
       console.error("[convert] conversion error:", conversionErr);

@@ -184,7 +184,11 @@
     "styleAcademic": "Academic",
     "coverImage": "Cover Image (max 10MB)",
     "coverHint": "JPEG or PNG, max 10MB",
-    "remove": "Remove"
+    "remove": "Remove",
+    "styleCustom": "Custom",
+    "customCssLabel": "Custom CSS",
+    "customCssPlaceholder": "/* Enter your CSS here */\nbody {\n  font-family: serif;\n}",
+    "customCssHint": "Click a preset button above to load it as a base for editing."
   },
   "Pricing": {
     "title": "Simple pricing for EPUB conversion",

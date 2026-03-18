@@ -9,6 +9,7 @@ import ConversionSettings, {
 } from "./ConversionSettings";
 import EpubCompatibilityCheck from "./EpubCompatibilityCheck";
 import EpubPreview from "./EpubPreview";
+import TocEditor from "./TocEditor";
 import GoogleDocsPicker from "./GoogleDocsPicker";
 import type { EpubValidationResult } from "@/app/lib/validateEpub";
 
@@ -104,6 +105,8 @@ export default function FileUpload() {
   const [batchProgress, setBatchProgress] = useState<{ current: number; total: number } | null>(null);
   const [batchResults, setBatchResults] = useState<BatchResult[]>([]);
   const [previewFile, setPreviewFile] = useState<Blob | null>(null);
+  const [previewFilename, setPreviewFilename] = useState<string>("document.epub");
+  const [showTocEditor, setShowTocEditor] = useState(false);
   const [validationResult, setValidationResult] = useState<EpubValidationResult | null>(null);
   const [validationLoading, setValidationLoading] = useState(false);
   const [notionUrl, setNotionUrl] = useState("");
@@ -215,6 +218,8 @@ export default function FileUpload() {
 
   const clearFile = useCallback(() => {
     setPreviewFile(null);
+    setPreviewFilename("document.epub");
+    setShowTocEditor(false);
     setValidationResult(null);
     setValidationLoading(false);
     setCoverFile(null);
@@ -399,6 +404,8 @@ export default function FileUpload() {
       const match = disposition?.match(/filename="?([^";\n]+)"?/);
       const filename = match ? match[1].trim() : "document.epub";
       setPreviewFile(blob);
+      setPreviewFilename(filename);
+      setShowTocEditor(false);
       const downloadUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = downloadUrl;
@@ -701,6 +708,23 @@ export default function FileUpload() {
         <div className="mt-6 w-full max-w-3xl space-y-4">
           <EpubPreview file={previewFile} />
           <EpubCompatibilityCheck result={validationResult} loading={validationLoading} />
+
+          {/* TOC 편집기 토글 */}
+          {!showTocEditor ? (
+            <button
+              type="button"
+              onClick={() => setShowTocEditor(true)}
+              className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-2 text-sm font-medium text-[var(--content)] shadow-sm hover:bg-[var(--secondary-bg)]"
+            >
+              목차 편집기 열기
+            </button>
+          ) : (
+            <TocEditor
+              epubBlob={previewFile}
+              filename={previewFilename}
+              onClose={() => setShowTocEditor(false)}
+            />
+          )}
         </div>
       )}
     </div>
