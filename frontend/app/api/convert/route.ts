@@ -324,25 +324,34 @@ export async function POST(request: NextRequest) {
     const conversionId = conversionRow.id as string;
 
     try {
-      // 6. Storage에 원본 업로드
-      await uploadInputFile(userId, conversionId, file);
+      // 6. Storage에 원본 업로드 (실패해도 변환은 계속 — 버킷 미설정 등 인프라 문제 허용)
+      try {
+        await uploadInputFile(userId, conversionId, file);
+      } catch (storageErr) {
+        console.warn("[convert] 원본 Storage 업로드 실패 (변환 계속):", storageErr instanceof Error ? storageErr.message : storageErr);
+      }
 
       // 7. EPUB 변환 (options, cover 전달)
       const epubBuffer = await runConversion(file, inputFormat, options, coverFile);
 
-      // 8. 변환 성공 — Storage에 결과 업로드
-      await uploadOutputFile(userId, conversionId, epubBuffer);
+      // 8. 변환 성공 — Storage에 결과 업로드 (실패해도 EPUB 반환은 보장)
+      let storagePath: string | null = null;
+      try {
+        await uploadOutputFile(userId, conversionId, epubBuffer);
+        storagePath = `${userId}/${conversionId}/output.epub`;
+      } catch (storageErr) {
+        console.warn("[convert] 결과 Storage 업로드 실패 (EPUB 반환은 계속):", storageErr instanceof Error ? storageErr.message : storageErr);
+      }
 
       const now = new Date();
-      const expiresAt = new Date(now.getTime() + 60 * 60 * 1000);
-      const storagePath = `${userId}/${conversionId}/output.epub`;
+      const expiresAt = storagePath ? new Date(now.getTime() + 60 * 60 * 1000) : null;
 
       await admin
         .from("conversions")
         .update({
           status: "completed",
           completed_at: now.toISOString(),
-          expires_at: expiresAt.toISOString(),
+          ...(expiresAt && { expires_at: expiresAt.toISOString() }),
           storage_path: storagePath,
         })
         .eq("id", conversionId);
