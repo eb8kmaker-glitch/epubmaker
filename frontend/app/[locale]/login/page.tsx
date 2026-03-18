@@ -53,8 +53,10 @@ function LoginForm() {
         setError(t("error"));
         return;
       }
-      router.push(redirect);
+      // router.refresh()로 서버 세션을 먼저 동기화한 뒤 이동.
+      // push → refresh 순이면 push 중에 현재 페이지를 재렌더해서 미들웨어 리다이렉트와 충돌.
       router.refresh();
+      router.push(redirect);
     } finally {
       setLoading(false);
     }
