@@ -16,6 +16,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.99.1",
     "@vercel/analytics": "^2.0.0",
+    "@vercel/speed-insights": "^2.0.0",
     "cheerio": "^1.2.0",
     "epubjs": "^0.3.93",
     "file-type": "^21.3.1",
