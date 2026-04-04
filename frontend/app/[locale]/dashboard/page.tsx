@@ -25,8 +25,8 @@ export default async function DashboardPage({ params }: Props) {
   if (!user) redirect(`/${locale}/login`);
 
   const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan")
+    .from("users")
+    .select("subscription_plan")
     .eq("id", user.id)
     .single();
 
@@ -44,7 +44,7 @@ export default async function DashboardPage({ params }: Props) {
     pro: "Pro",
     pay_per_use: "Pay per use",
   };
-  const plan = (profile?.plan as string) ?? "free";
+  const plan = (profile?.subscription_plan as string) ?? "free";
 
   return (
     <div className="min-h-screen bg-[var(--page-bg)] font-sans">
