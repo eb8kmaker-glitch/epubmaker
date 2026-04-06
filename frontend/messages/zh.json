@@ -14,7 +14,7 @@
     }
   },
   "Home": {
-    "beta": "公开测试版 — 无需登录。文件即时处理并下载，我们不会存储您的内容。",
+    "beta": "公开测试版 — 转换文件需要登录。上传的文件会在1小时后自动删除。",
     "hero": {
       "title": "将 DOCX 和 TXT 即时转换为 EPUB",
       "subtitle": "为作者和出版商提供的专业 EPUB 转换服务。",
@@ -297,6 +297,16 @@
     },
     "ctaTitle": "立即将您的稿件转换为 EPUB",
     "ctaButton": "开始转换"
+  },
+  "newsletter": {
+    "title": "订阅 EPUBMaker 最新动态",
+    "subtitle": "新功能上线或公测扩展时，第一时间收到通知。",
+    "placeholder": "请输入您的电子邮件",
+    "button": "接收更新",
+    "trust": "无垃圾邮件，随时可取消订阅。",
+    "success": "订阅成功！🚀 新功能上线时我们会通知您。",
+    "alreadySubscribed": "该电子邮件已订阅。",
+    "error": "发生错误，请稍后重试。"
   },
   "Footer": {
     "terms": "服务条款",

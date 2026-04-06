@@ -14,7 +14,7 @@
     }
   },
   "Home": {
-    "beta": "Beta público — Sem login. Seus arquivos são processados e baixados na hora. Não armazenamos seu conteúdo.",
+    "beta": "Beta público — É necessário fazer login para converter arquivos. Os arquivos enviados são excluídos automaticamente após 1 hora.",
     "hero": {
       "title": "Converta DOCX e TXT para EPUB instantaneamente",
       "subtitle": "Conversão profissional para EPUB para escritores e editores.",
@@ -297,6 +297,16 @@
     },
     "ctaTitle": "Converta seu manuscrito para EPUB hoje",
     "ctaButton": "Começar a converter"
+  },
+  "newsletter": {
+    "title": "Fique atualizado com o EPUBMaker",
+    "subtitle": "Receba notificações quando novos recursos forem lançados e quando o beta for expandido.",
+    "placeholder": "Digite seu e-mail",
+    "button": "Receber atualizações",
+    "trust": "Sem spam. Cancele quando quiser.",
+    "success": "Você está na lista! 🚀 Avisaremos quando novos recursos forem lançados.",
+    "alreadySubscribed": "Este e-mail já está inscrito.",
+    "error": "Algo deu errado. Por favor, tente novamente mais tarde."
   },
   "Footer": {
     "terms": "Termos de uso",

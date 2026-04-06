@@ -14,7 +14,7 @@
     }
   },
   "Home": {
-    "beta": "Public Beta — No login required. Your files are processed and downloaded immediately. We do not store your content.",
+    "beta": "Public Beta — Login is required to convert files. Uploaded files are automatically deleted after 1 hour.",
     "hero": {
       "title": "Convert DOCX and TXT to EPUB instantly",
       "subtitle": "Professional EPUB conversion for writers and publishers.",
