@@ -1,0 +1,51 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"\nconst data = JSON.parse\\(require\\('fs'\\).readFileSync\\('C:/Users/PCuser/epubmaker/frontend/messages/ko.json', 'utf-8'\\)\\);\nconsole.log\\('=== Login 추가 키 ==='\\);\nconst { googleButton, noAccount, orDivider } = data.Login;\nconsole.log\\({ googleButton, noAccount, orDivider }\\);\nconsole.log\\('\\\\n=== SignUp 섹션 ==='\\);\nconsole.log\\(JSON.stringify\\(data.SignUp, null, 2\\)\\);\nconsole.log\\('\\\\n=== 키 순서 확인 \\(Login 다음이 SignUp\\) ==='\\);\nconst keys = Object.keys\\(data\\);\nconsole.log\\(keys.slice\\(keys.indexOf\\('Login'\\) - 1, keys.indexOf\\('Login'\\) + 3\\)\\);\n\")",
+      "Bash(grep -r \"Sentry\" C:/Users/PCuser/epubmaker/frontend/app --include=\"*.ts\" --include=\"*.tsx\" 2>/dev/null | head -20)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/PCuser/epubmaker/frontend/messages/**)",
+      "Bash(done)",
+      "Bash(ls -la /c/Users/PCuser/epubmaker/frontend/app/api/ | grep -E \"\\\\.\\(ts|tsx\\)$\")",
+      "Bash(ls -1 /c/Users/PCuser/epubmaker/frontend/app/api/*/)",
+      "Bash(npx tsc:*)",
+      "Bash(vercel:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(grep -r \"can_convert\\\\|increment_conversion\" /c/Users/PCuser/epubmaker/frontend --include=*.md)",
+      "Bash(find /c/Users/PCuser/epubmaker/frontend -maxdepth 1 \\\\\\(-name .env* -o -name *env* \\\\\\) -type f)",
+      "Bash(grep:*)",
+      "Bash(npm install:*)",
+      "Bash(claude mcp:*)",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql",
+      "Bash(npx playwright:*)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\({k:d[k] for k in ['Dashboard','Account','Login','Convert'] if k in d}, ensure_ascii=False, indent=2\\)\\)\")",
+      "Bash(npm run:*)",
+      "mcp__supabase__apply_migration",
+      "Bash(curl:*)",
+      "Bash(npx next:*)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(taskkill /F /PID 11528)",
+      "Bash(pkill -f \"next\")",
+      "Bash(cmd /c \"taskkill /F /PID 11528\")",
+      "Bash(cmd /c \"netstat -ano | findstr :3000\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -aon ^| findstr :3000 ^| findstr LISTENING'\\) do taskkill /F /PID %a\")",
+      "Bash(cmd /c \"netstat -aon | findstr \\\\\":3000 \\\\\"\")",
+      "Bash(cmd /c \"netstat -aon\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -aon ^| findstr \\\\\":3000 \\\\\"'\\) do taskkill /F /PID %a\")",
+      "Bash(cmd /c \"for /f \\\\\"tokens=5\\\\\" %a in \\('netstat -aon ^| findstr \\\\\":3001 \\\\\"'\\) do taskkill /F /PID %a\")",
+      "Bash(python3 -c \"import sys,json; d=sys.stdin.read\\(\\); start=d.find\\('\\\\\"message\\\\\":\\\\\"'\\); print\\(d[start:start+300] if start>=0 else d[:500]\\)\")",
+      "Bash(powershell -Command \"Stop-Process -Id 11528 -Force\")",
+      "Bash(powershell -Command \"Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess\")",
+      "Bash(powershell:*)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
+}
