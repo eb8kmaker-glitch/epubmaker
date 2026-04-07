@@ -1,0 +1,75 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e:
+    name: Playwright E2E (chromium)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # .env 파일은 gitignore되어 있으므로 빌드용 환경변수를 직접 주입
+      # DATABASE_URL은 불필요 — prisma generate는 DB 연결 없이 schema만 읽고,
+      # 실제 DB 쿼리는 Supabase 클라이언트만 사용
+      - name: Create .env for build
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" >> .env
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> .env
+
+      # .env.test는 .gitignore에 있으므로 Secrets에서 직접 생성
+      - name: Create .env.test
+        run: |
+          echo "TEST_BASE_URL=http://localhost:3000" >> .env.test
+          echo "TEST_PASSWORD_FREE=${{ secrets.TEST_PASSWORD_FREE }}" >> .env.test
+          echo "TEST_PASSWORD_STARTER=${{ secrets.TEST_PASSWORD_STARTER }}" >> .env.test
+          echo "TEST_PASSWORD_PRO=${{ secrets.TEST_PASSWORD_PRO }}" >> .env.test
+          echo "TEST_PASSWORD_PAY_PER_USE=${{ secrets.TEST_PASSWORD_PAY_PER_USE }}" >> .env.test
+          echo "TEST_PASSWORD_PUBLISHER=${{ secrets.TEST_PASSWORD_PUBLISHER }}" >> .env.test
+
+      - name: Build app
+        run: npm run build
+
+      - name: Start app and run E2E tests
+        run: |
+          npm run start &
+          npx wait-on http://localhost:3000 --timeout 60000
+          npm run test:e2e
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7
+
+      - name: Upload test results (videos/traces on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: frontend/test-results/
+          retention-days: 7
