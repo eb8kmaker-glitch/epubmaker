@@ -16,6 +16,7 @@ export const CONVERSION_LIMITS: Record<SubscriptionPlan, number> = {
   starter: 100,
   pro: 999999,
   pay_per_use: 1,
+  publisher: 999999,
 };
 
 export interface UseConversionLimitResult {

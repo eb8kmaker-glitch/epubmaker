@@ -10,9 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase";
 import { Link } from "@/i18n/navigation";
 import ManageSubscriptionButton from "@/app/components/ManageSubscriptionButton";
-import type { Database } from "@/types/database";
-
-type ConversionRow = Database["public"]["Tables"]["conversions"]["Row"];
+import ConversionList from "@/app/components/ConversionList";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -32,7 +30,7 @@ export default async function DashboardPage({ params }: Props) {
 
   const { data: conversions } = await supabase
     .from("conversions")
-    .select("id, original_filename, original_size_bytes, created_at")
+    .select("id, original_filename, original_size_bytes, created_at, status, storage_path, expires_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -43,6 +41,7 @@ export default async function DashboardPage({ params }: Props) {
     starter: "Starter",
     pro: "Pro",
     pay_per_use: "Pay per use",
+    publisher: "Publisher",
   };
   const plan = (profile?.subscription_plan as string) ?? "free";
 
@@ -72,25 +71,7 @@ export default async function DashboardPage({ params }: Props) {
           <h2 className="mb-4 text-lg font-medium text-[var(--content)]">
             {t("recentConversions")}
           </h2>
-          {!conversions?.length ? (
-            <p className="text-sm text-[var(--content-muted)]">
-              {t("noConversions")}
-            </p>
-          ) : (
-            <ul className="space-y-2">
-              {(conversions as ConversionRow[]).map((c) => (
-                <li
-                  key={c.id}
-                  className="flex items-center justify-between rounded-lg border border-[var(--border)] px-4 py-2 text-sm"
-                >
-                  <span className="text-[var(--content)]">{c.original_filename}</span>
-                  <span className="text-[var(--content-muted)]">
-                    {new Date(c.created_at).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+          <ConversionList conversions={conversions ?? []} />
         </section>
 
         <div className="mt-8 flex flex-wrap gap-4">

@@ -84,6 +84,19 @@ async function validateFileType(
   return { ok: true, inputFormat: "txt" };
 }
 
+/** 플랜별 Storage 보관 만료 시각 계산. */
+function getExpiresAt(from: Date, plan: string): Date {
+  switch (plan) {
+    case "pro":
+    case "publisher":
+      return new Date(from.getTime() + 30 * 24 * 60 * 60 * 1000); // 30일
+    case "starter":
+      return new Date(from.getTime() + 7 * 24 * 60 * 60 * 1000);  // 7일
+    default:
+      return new Date(from.getTime() + 60 * 60 * 1000);            // 1시간 (free)
+  }
+}
+
 function getClientIp(request: NextRequest): string | null {
   const forwarded = request.headers.get("x-forwarded-for");
   if (!forwarded) return null;
@@ -371,6 +384,14 @@ export async function POST(request: NextRequest) {
     const admin = createAdminClient();
     const ipAddress = getClientIp(request);
 
+    // 사용자 플랜 조회 (Storage 만료 기간 계산용)
+    const { data: userProfile } = await admin
+      .from("users")
+      .select("subscription_plan")
+      .eq("id", userId)
+      .single();
+    const userPlan = (userProfile?.subscription_plan as string) ?? "free";
+
     // 4. 사용량 체크
     const { data: canConvertData, error: rpcError } = await admin.rpc("can_convert", {
       p_user_id: userId,
@@ -444,7 +465,7 @@ export async function POST(request: NextRequest) {
       }
 
       const now = new Date();
-      const expiresAt = storagePath ? new Date(now.getTime() + 60 * 60 * 1000) : null;
+      const expiresAt = storagePath ? getExpiresAt(now, userPlan) : null;
 
       await admin
         .from("conversions")

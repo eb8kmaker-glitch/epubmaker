@@ -25,7 +25,7 @@ export type SubscriptionStatus =
   | "trialing";
 
 /** public.users.subscription_plan */
-export type SubscriptionPlan = "free" | "starter" | "pro" | "pay_per_use";
+export type SubscriptionPlan = "free" | "starter" | "pro" | "pay_per_use" | "publisher";
 
 /** @deprecated Use SubscriptionPlan. Kept for backward compatibility. */
 export type PlanSlug = SubscriptionPlan;
