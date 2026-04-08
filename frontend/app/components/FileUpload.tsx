@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import JSZip from "jszip";
+import { useUser } from "@/hooks/useUser";
 import ConversionSettings, {
   DEFAULT_OPTIONS,
   type ConversionOptions,
@@ -93,6 +94,7 @@ type BatchResult = { filename: string; blob: Blob };
 export default function FileUpload() {
   const t = useTranslations("FileUpload");
   const tDocx = useTranslations("docxGuide");
+  const { user } = useUser();
   const currentPlan: Plan = "free";
   const batchLimit = getBatchLimit(currentPlan);
 
@@ -291,9 +293,12 @@ export default function FileUpload() {
     return { filename, blob };
   }, [conversionOptions]);
 
+  const isPaidPlan = user?.subscription_plan === "pro" || user?.subscription_plan === "publisher";
+  const atBetaDailyLimit = !isPaidPlan && betaUsage.count >= BETA_DAILY_LIMIT;
+
   const convertAll = useCallback(async () => {
     if (files.length === 0) return;
-    const remaining = BETA_DAILY_LIMIT - betaUsage.count;
+    const remaining = isPaidPlan ? files.length : BETA_DAILY_LIMIT - betaUsage.count;
     if (remaining <= 0) {
       setConvertError(t("dailyLimit"));
       return;
@@ -321,7 +326,7 @@ export default function FileUpload() {
       setConverting(false);
       setBatchProgress(null);
     }
-  }, [files, betaUsage.count, convertOneFile, t]);
+  }, [files, betaUsage.count, convertOneFile, t, isPaidPlan]);
 
   const downloadZip = useCallback(async () => {
     if (batchResults.length === 0) return;
@@ -384,8 +389,6 @@ export default function FileUpload() {
       setNotionLoading(false);
     }
   }, [notionUrl, t]);
-
-  const atBetaDailyLimit = betaUsage.count >= BETA_DAILY_LIMIT;
 
   const convertToEpub = useCallback(async () => {
     if (!file || !canConvertToEpub(file)) return;
@@ -595,7 +598,7 @@ export default function FileUpload() {
                 <button
                   type="button"
                   onClick={convertAll}
-                  disabled={converting || (betaUsage.count >= BETA_DAILY_LIMIT)}
+                  disabled={converting || atBetaDailyLimit}
                   className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-[var(--primary-hover)] disabled:opacity-50"
                 >
                   {t("convertAll")}
