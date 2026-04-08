@@ -732,4 +732,12 @@ export default function FileUpload({ plan = "free" }: { plan?: string }) {
           ) : (
             <TocEditor
               epubBlob={previewFile}
-            
+              filename={previewFilename}
+              onClose={() => setShowTocEditor(false)}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
