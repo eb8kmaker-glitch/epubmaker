@@ -197,7 +197,7 @@ async function runConversion(
     fromFormat = "html";
   } else {
     stdin = await file.text();
-    fromFormat = "plain";
+    fromFormat = "markdown";
   }
 
   const pandocOptions = buildPandocOptions({

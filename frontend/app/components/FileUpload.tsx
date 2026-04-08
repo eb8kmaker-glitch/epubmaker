@@ -90,10 +90,10 @@ function canConvertToEpub(file: File): boolean {
 
 type BatchResult = { filename: string; blob: Blob };
 
-export default function FileUpload() {
+export default function FileUpload({ plan = "free" }: { plan?: string }) {
   const t = useTranslations("FileUpload");
   const tDocx = useTranslations("docxGuide");
-  const currentPlan: Plan = "free";
+  const currentPlan: Plan = (plan === "starter" ? "starter" : plan === "pro" || plan === "publisher" ? "pro" : "free");
   const batchLimit = getBatchLimit(currentPlan);
 
   const [file, setFile] = useState<File | null>(null);
@@ -385,7 +385,7 @@ export default function FileUpload() {
     }
   }, [notionUrl, t]);
 
-  const atBetaDailyLimit = betaUsage.count >= BETA_DAILY_LIMIT;
+  const atBetaDailyLimit = plan !== "pro" && plan !== "publisher" && betaUsage.count >= BETA_DAILY_LIMIT;
 
   const convertToEpub = useCallback(async () => {
     if (!file || !canConvertToEpub(file)) return;
@@ -595,7 +595,7 @@ export default function FileUpload() {
                 <button
                   type="button"
                   onClick={convertAll}
-                  disabled={converting || (betaUsage.count >= BETA_DAILY_LIMIT)}
+                  disabled={converting || atBetaDailyLimit}
                   className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-[var(--primary-hover)] disabled:opacity-50"
                 >
                   {t("convertAll")}
@@ -732,12 +732,4 @@ export default function FileUpload() {
           ) : (
             <TocEditor
               epubBlob={previewFile}
-              filename={previewFilename}
-              onClose={() => setShowTocEditor(false)}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
+            
