@@ -90,11 +90,14 @@ function canConvertToEpub(file: File): boolean {
 
 type BatchResult = { filename: string; blob: Blob };
 
-export default function FileUpload() {
+const BETA_EXEMPT_PLANS = ["pro", "publisher"] as const;
+
+export default function FileUpload({ plan = "free" }: { plan?: string }) {
   const t = useTranslations("FileUpload");
   const tDocx = useTranslations("docxGuide");
-  const currentPlan: Plan = "free";
+  const currentPlan: Plan = (["free", "starter", "pro"].includes(plan) ? plan : "free") as Plan;
   const batchLimit = getBatchLimit(currentPlan);
+  const isBetaExempt = (BETA_EXEMPT_PLANS as readonly string[]).includes(plan);
 
   const [file, setFile] = useState<File | null>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -293,12 +296,12 @@ export default function FileUpload() {
 
   const convertAll = useCallback(async () => {
     if (files.length === 0) return;
-    const remaining = BETA_DAILY_LIMIT - betaUsage.count;
+    const remaining = isBetaExempt ? Infinity : BETA_DAILY_LIMIT - betaUsage.count;
     if (remaining <= 0) {
       setConvertError(t("dailyLimit"));
       return;
     }
-    const toConvert = files.slice(0, Math.min(files.length, remaining));
+    const toConvert = isBetaExempt ? files : files.slice(0, Math.min(files.length, remaining));
     setConvertError(null);
     setBatchResults([]);
     setConverting(true);
@@ -385,7 +388,7 @@ export default function FileUpload() {
     }
   }, [notionUrl, t]);
 
-  const atBetaDailyLimit = betaUsage.count >= BETA_DAILY_LIMIT;
+  const atBetaDailyLimit = !isBetaExempt && betaUsage.count >= BETA_DAILY_LIMIT;
 
   const convertToEpub = useCallback(async () => {
     if (!file || !canConvertToEpub(file)) return;
@@ -595,7 +598,7 @@ export default function FileUpload() {
                 <button
                   type="button"
                   onClick={convertAll}
-                  disabled={converting || (betaUsage.count >= BETA_DAILY_LIMIT)}
+                  disabled={converting || atBetaDailyLimit}
                   className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:bg-[var(--primary-hover)] disabled:opacity-50"
                 >
                   {t("convertAll")}
