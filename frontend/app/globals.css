@@ -1,21 +1,33 @@
 @import "tailwindcss";
 
-/* Deep Green: natural, premium green SaaS color system */
+/* ─── Library Dark Theme ─── */
 :root {
-  --primary: #1f5d3b;
-  --primary-hover: #174a2f;
-  --accent: #e4f0e8;
-  --accent-soft: #3e8e63;
-  --page-bg: #f5f7f4;
-  --secondary-bg: #ecf2ee;
-  --card: #ffffff;
-  --border: #e2e8e5;
-  --content: #1f2933;
-  --content-muted: #6b7280;
-  --guide-bg: #e4f0e8;
-  --guide-border: #3e8e63;
-  --dropzone-hover: #e4f0e8;
-  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.04);
+  --deep-brown: #2B1E17;
+  --dark-wood: #3A2A22;
+  --mid-brown: #5A4636;
+  --vintage-wood: #8B6B4A;
+  --gold: #D6B97B;
+  --gold-light: #E8D09A;
+  --cream: #F3E6C9;
+  --cream-dim: #C9B898;
+  --panel: #301F16;
+  --panel-light: #3E2A1E;
+
+  /* Semantic tokens — dark theme */
+  --primary: #7B5029;
+  --primary-hover: #6A4220;
+  --accent: rgba(214, 185, 123, 0.15);
+  --accent-soft: rgba(214, 185, 123, 0.08);
+  --page-bg: #1A100A;
+  --secondary-bg: #1F1209;
+  --card: #2A1C13;
+  --border: rgba(214, 185, 123, 0.18);
+  --content: #F3E6C9;
+  --content-muted: #C9B898;
+  --guide-bg: rgba(214, 185, 123, 0.08);
+  --guide-border: rgba(214, 185, 123, 0.3);
+  --dropzone-hover: #3E2A1E;
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
   --background: var(--page-bg);
   --foreground: var(--content);
 }
@@ -23,14 +35,137 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-jost), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background-color: #1A100A;
+  background-image:
+    repeating-linear-gradient(92deg, transparent, transparent 120px, rgba(0, 0, 0, 0.03) 120px, rgba(0, 0, 0, 0.03) 121px),
+    repeating-linear-gradient(180deg, transparent, transparent 40px, rgba(255, 200, 120, 0.015) 40px, rgba(255, 200, 120, 0.015) 41px);
+  color: var(--cream);
+  font-family: var(--font-jost), "Jost", system-ui, sans-serif;
   line-height: 1.6;
   letter-spacing: 0.01em;
+}
+
+/* ─── Feature Card Hover ─── */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(214, 185, 123, 0.4), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(214, 185, 123, 0.28) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.feature-card:hover::before {
+  opacity: 1;
+}
+
+.feature-card:hover .fc-learn {
+  color: var(--gold);
+}
+
+/* ─── Pricing Card Hover ─── */
+.pricing-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Library Buttons ─── */
+.btn-gold {
+  background: var(--gold);
+  color: var(--deep-brown);
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+
+.btn-gold:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(214, 185, 123, 0.3);
+}
+
+.btn-gold:active {
+  transform: translateY(0);
+}
+
+.btn-ghost-gold {
+  border: 1px solid rgba(214, 185, 123, 0.3);
+  color: var(--cream-dim);
+  transition: all 0.25s ease;
+}
+
+.btn-ghost-gold:hover {
+  border-color: var(--gold);
+  background: rgba(214, 185, 123, 0.06);
+  color: var(--gold);
+}
+
+/* ─── Scroll Indicator ─── */
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.95); }
+  50% { opacity: 0.8; transform: scaleY(1); }
+}
+
+.scroll-line {
+  animation: scroll-pulse 2.2s ease-in-out infinite;
+}
+
+/* ─── Pricing Feature Checkmarks ─── */
+.plan-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--cream-dim);
+  font-weight: 300;
+}
+
+.plan-feature::before {
+  content: "";
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 1px solid rgba(214, 185, 123, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8.5l3 3 6-6' stroke='%23D6B97B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* ─── Navbar link hover ─── */
+.nav-link {
+  color: var(--cream-dim);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--gold);
 }

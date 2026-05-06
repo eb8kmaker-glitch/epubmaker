@@ -15,9 +15,23 @@
   },
   "Home": {
     "beta": "公开测试版 — 转换文件需要登录。上传的文件会在1小时后自动删除。",
+    "heroTagline": "专业文档转换",
+    "heroCtaSecondary": "查看价格",
+    "scrollExplore": "探索",
+    "featuresLabel": "包含功能",
+    "pricingLabel": "定价方案",
+    "featureLearnMore": "了解更多",
+    "statsConversions": "转换次数",
+    "statsLanguages": "语言",
+    "statsUptime": "正常运行时间",
+    "statsRating": "评分",
+    "navFeatures": "功能",
+    "navPricing": "价格",
     "hero": {
+      "titlePlain": "将文档转换为",
+      "titleEm": "精美的 EPUB",
       "title": "将 DOCX 和 TXT 即时转换为 EPUB",
-      "subtitle": "为作者和出版商提供的专业 EPUB 转换服务。",
+      "subtitle": "为作者和出版商提供的专业 EPUB 转换服务。上传您的稿件，配置设置，下载可发布的电子书。",
       "cta": "开始转换"
     },
     "howItWorks": {

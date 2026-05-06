@@ -15,9 +15,23 @@
   },
   "Home": {
     "beta": "Beta público — É necessário fazer login para converter arquivos. Os arquivos enviados são excluídos automaticamente após 1 hora.",
+    "heroTagline": "Conversão Profissional de Documentos",
+    "heroCtaSecondary": "Ver preços",
+    "scrollExplore": "Explorar",
+    "featuresLabel": "O que está incluído",
+    "pricingLabel": "Planos de preços",
+    "featureLearnMore": "Saiba mais",
+    "statsConversions": "Conversões",
+    "statsLanguages": "Idiomas",
+    "statsUptime": "Disponibilidade",
+    "statsRating": "Avaliação",
+    "navFeatures": "Recursos",
+    "navPricing": "Preços",
     "hero": {
+      "titlePlain": "Converta documentos para",
+      "titleEm": "EPUB elegante",
       "title": "Converta DOCX e TXT para EPUB instantaneamente",
-      "subtitle": "Conversão profissional para EPUB para escritores e editores.",
+      "subtitle": "Conversão profissional para EPUB para escritores e editores. Envie seu manuscrito, configure as definições e baixe um ebook pronto para publicar.",
       "cta": "Começar a converter"
     },
     "howItWorks": {

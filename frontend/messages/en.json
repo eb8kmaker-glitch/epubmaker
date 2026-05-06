@@ -15,9 +15,23 @@
   },
   "Home": {
     "beta": "Public Beta — Login is required to convert files. Uploaded files are automatically deleted after 1 hour.",
+    "heroTagline": "Professional Document Conversion",
+    "heroCtaSecondary": "View Pricing",
+    "scrollExplore": "Explore",
+    "featuresLabel": "What's included",
+    "pricingLabel": "Pricing plans",
+    "featureLearnMore": "Learn more",
+    "statsConversions": "Conversions",
+    "statsLanguages": "Languages",
+    "statsUptime": "Uptime",
+    "statsRating": "Rating",
+    "navFeatures": "Features",
+    "navPricing": "Pricing",
     "hero": {
+      "titlePlain": "Convert Documents to",
+      "titleEm": "Beautiful EPUB",
       "title": "Convert DOCX and TXT to EPUB instantly",
-      "subtitle": "Professional EPUB conversion for writers and publishers.",
+      "subtitle": "Professional EPUB conversion for writers and publishers. Upload your manuscript, configure your settings, and download a publish-ready ebook.",
       "cta": "Start Converting"
     },
     "howItWorks": {

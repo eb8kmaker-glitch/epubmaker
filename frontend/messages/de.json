@@ -15,9 +15,23 @@
   },
   "Home": {
     "beta": "Öffentliche Beta — Zum Konvertieren ist ein Login erforderlich. Hochgeladene Dateien werden nach 1 Stunde automatisch gelöscht.",
+    "heroTagline": "Professionelle Dokumentenkonvertierung",
+    "heroCtaSecondary": "Preise ansehen",
+    "scrollExplore": "Erkunden",
+    "featuresLabel": "Was enthalten ist",
+    "pricingLabel": "Preispläne",
+    "featureLearnMore": "Mehr erfahren",
+    "statsConversions": "Konvertierungen",
+    "statsLanguages": "Sprachen",
+    "statsUptime": "Verfügbarkeit",
+    "statsRating": "Bewertung",
+    "navFeatures": "Funktionen",
+    "navPricing": "Preise",
     "hero": {
+      "titlePlain": "Dokumente konvertieren in",
+      "titleEm": "schöne EPUBs",
       "title": "DOCX und TXT sofort in EPUB umwandeln",
-      "subtitle": "Professionelle EPUB-Konvertierung für Autoren und Verlage.",
+      "subtitle": "Professionelle EPUB-Konvertierung für Autoren und Verlage. Laden Sie Ihr Manuskript hoch, konfigurieren Sie die Einstellungen und laden Sie ein druckfertiges Ebook herunter.",
       "cta": "Konvertierung starten"
     },
     "howItWorks": {

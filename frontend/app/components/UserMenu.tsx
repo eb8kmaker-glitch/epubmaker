@@ -36,13 +36,32 @@ export default function UserMenu({ user, locale }: Props) {
       <div className="flex shrink-0 items-center gap-2">
         <Link
           href="/login"
-          className="rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--content)] shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--dropzone-hover)]"
+          className="btn-ghost-gold"
+          style={{
+            display: "inline-block",
+            padding: "7px 16px",
+            fontSize: 13,
+            letterSpacing: "0.05em",
+            borderRadius: 2,
+            textDecoration: "none",
+            fontFamily: "var(--font-jost), sans-serif",
+            background: "transparent",
+          }}
         >
           {t("login")}
         </Link>
         <Link
           href="/signup"
-          className="hidden rounded-[10px] bg-[var(--primary)] px-3 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 ease-in-out hover:opacity-90 sm:inline-flex"
+          className="btn-gold"
+          style={{
+            display: "inline-block",
+            padding: "7px 16px",
+            fontSize: 13,
+            letterSpacing: "0.05em",
+            borderRadius: 2,
+            textDecoration: "none",
+            fontFamily: "var(--font-jost), sans-serif",
+          }}
         >
           {t("signUp")}
         </Link>
@@ -57,15 +76,39 @@ export default function UserMenu({ user, locale }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--content)] shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--dropzone-hover)]"
+        className="btn-ghost-gold"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "7px 12px",
+          fontSize: 13,
+          borderRadius: 2,
+          background: "transparent",
+          cursor: "pointer",
+        }}
         aria-expanded={isOpen}
         aria-haspopup="menu"
       >
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-xs font-semibold text-white">
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 24,
+            height: 24,
+            borderRadius: "50%",
+            background: "var(--gold)",
+            color: "var(--deep-brown)",
+            fontSize: 11,
+            fontWeight: 600,
+            flexShrink: 0,
+          }}
+        >
           {initials}
         </span>
         <svg
-          className="h-4 w-4 shrink-0 opacity-70"
+          style={{ width: 14, height: 14, opacity: 0.6 }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -83,53 +126,86 @@ export default function UserMenu({ user, locale }: Props) {
       {isOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-20 mt-1 w-52 overflow-hidden rounded-[12px] border border-[var(--border)] bg-[var(--card)] py-1 shadow-[var(--shadow-card)]"
+          style={{
+            position: "absolute",
+            right: 0,
+            top: "calc(100% + 6px)",
+            zIndex: 20,
+            width: 200,
+            overflow: "hidden",
+            borderRadius: 3,
+            border: "1px solid rgba(214,185,123,0.2)",
+            background: "var(--panel)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+          }}
         >
-          <div className="border-b border-[var(--border)] px-3 py-2.5">
-            <p className="truncate text-xs text-[var(--content-muted)]">
+          <div
+            style={{
+              borderBottom: "1px solid rgba(214,185,123,0.12)",
+              padding: "10px 12px",
+            }}
+          >
+            <p
+              style={{
+                fontSize: 11,
+                color: "var(--cream-dim)",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                opacity: 0.7,
+              }}
+            >
               {user.email}
             </p>
           </div>
 
-          <Link
-            href="/dashboard"
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center px-3 py-2 text-sm text-[var(--content)] transition-colors hover:bg-[var(--dropzone-hover)]"
-            role="menuitem"
-          >
-            {t("dashboard")}
-          </Link>
-
-          <Link
-            href="/account"
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center px-3 py-2 text-sm text-[var(--content)] transition-colors hover:bg-[var(--dropzone-hover)]"
-            role="menuitem"
-          >
-            {t("account")}
-          </Link>
-
-          <Link
-            href="/subscription"
-            onClick={() => setIsOpen(false)}
-            className="flex w-full items-center px-3 py-2 text-sm text-[var(--content)] transition-colors hover:bg-[var(--dropzone-hover)]"
-            role="menuitem"
-          >
-            {t("manageSubscription")}
-          </Link>
+          {(
+            [
+              { href: "/dashboard", label: t("dashboard") },
+              { href: "/account", label: t("account") },
+              { href: "/subscription", label: t("manageSubscription") },
+            ] as const
+          ).map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setIsOpen(false)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "9px 12px",
+                fontSize: 13,
+                color: "var(--cream-dim)",
+                textDecoration: "none",
+                transition: "background 0.2s ease, color 0.2s ease",
+              }}
+              className="nav-link"
+              role="menuitem"
+            >
+              {item.label}
+            </Link>
+          ))}
 
           {ADMIN_EMAIL && user.email === ADMIN_EMAIL && (
             <Link
               href="/admin"
               onClick={() => setIsOpen(false)}
-              className="flex w-full items-center px-3 py-2 text-sm font-medium text-[var(--primary)] transition-colors hover:bg-[var(--dropzone-hover)]"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "9px 12px",
+                fontSize: 13,
+                color: "var(--gold)",
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
               role="menuitem"
             >
               {t("admin")}
             </Link>
           )}
 
-          <div className="mt-1 border-t border-[var(--border)] pt-1">
+          <div style={{ borderTop: "1px solid rgba(214,185,123,0.12)", paddingTop: 4, marginTop: 4 }}>
             <button
               type="button"
               disabled={isPending}
@@ -137,7 +213,19 @@ export default function UserMenu({ user, locale }: Props) {
                 setIsOpen(false);
                 startTransition(() => signOut(locale));
               }}
-              className="flex w-full items-center px-3 py-2 text-sm text-red-500 transition-colors hover:bg-[var(--dropzone-hover)] disabled:opacity-50"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                padding: "9px 12px",
+                fontSize: 13,
+                color: "#ef4444",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                transition: "background 0.2s ease",
+                opacity: isPending ? 0.5 : 1,
+              }}
               role="menuitem"
             >
               {t("logout")}

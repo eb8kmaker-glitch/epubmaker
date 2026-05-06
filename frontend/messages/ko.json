@@ -15,9 +15,23 @@
   },
   "Home": {
     "beta": "퍼블릭 베타 — 로그인 후 변환할 수 있습니다. 업로드한 파일은 1시간 후 자동 삭제됩니다.",
+    "heroTagline": "전문 문서 변환",
+    "heroCtaSecondary": "가격 보기",
+    "scrollExplore": "탐색",
+    "featuresLabel": "주요 기능",
+    "pricingLabel": "요금제",
+    "featureLearnMore": "더 보기",
+    "statsConversions": "변환",
+    "statsLanguages": "언어",
+    "statsUptime": "가동률",
+    "statsRating": "평점",
+    "navFeatures": "기능",
+    "navPricing": "요금제",
     "hero": {
+      "titlePlain": "문서를",
+      "titleEm": "아름다운 EPUB으로",
       "title": "DOCX와 TXT를 EPUB으로 즉시 변환",
-      "subtitle": "작가와 출판사를 위한 EPUB 변환 서비스.",
+      "subtitle": "작가와 출판사를 위한 전문 EPUB 변환 서비스. 원고를 업로드하고 설정 후 출판 준비된 전자책을 다운로드하세요.",
       "cta": "변환 시작"
     },
     "howItWorks": {

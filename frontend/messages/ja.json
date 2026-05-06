@@ -15,9 +15,23 @@
   },
   "Home": {
     "beta": "パブリックベータ — 変換にはログインが必要です。アップロードしたファイルは1時間後に自動削除されます。",
+    "heroTagline": "プロフェッショナル文書変換",
+    "heroCtaSecondary": "料金を見る",
+    "scrollExplore": "探索",
+    "featuresLabel": "主な機能",
+    "pricingLabel": "料金プラン",
+    "featureLearnMore": "詳しく見る",
+    "statsConversions": "変換数",
+    "statsLanguages": "言語",
+    "statsUptime": "稼働率",
+    "statsRating": "評価",
+    "navFeatures": "機能",
+    "navPricing": "料金",
     "hero": {
+      "titlePlain": "文書を",
+      "titleEm": "美しいEPUBに",
       "title": "DOCX・TXTをEPUBに即座に変換",
-      "subtitle": "作家・出版社のためのEPUB変換サービス。",
+      "subtitle": "作家・出版社のためのEPUB変換サービス。原稿をアップロードして設定を行い、出版可能なEPUBをダウンロードできます。",
       "cta": "変換を開始"
     },
     "howItWorks": {

@@ -40,15 +40,47 @@ export default function HeroEmailSignup() {
   }
 
   return (
-    <div className="mx-auto max-w-[420px] text-center">
-      <h2 className="text-lg font-semibold tracking-tight text-[var(--content)] sm:text-xl">
+    <div style={{ maxWidth: 480, margin: "0 auto", textAlign: "center" }}>
+      {/* Section label */}
+      <div
+        style={{
+          fontSize: 11,
+          letterSpacing: "0.25em",
+          textTransform: "uppercase",
+          color: "var(--gold)",
+          marginBottom: 10,
+          fontFamily: "var(--font-jost), sans-serif",
+        }}
+      >
+        Newsletter
+      </div>
+
+      <h2
+        style={{
+          fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+          fontSize: 28,
+          fontWeight: 500,
+          color: "var(--cream)",
+          marginBottom: 8,
+        }}
+      >
         {t("title")}
       </h2>
-      <p className="mt-2 text-sm text-[var(--content-muted)]">
+
+      <p
+        style={{
+          fontSize: 14,
+          fontWeight: 300,
+          color: "var(--cream-dim)",
+          marginBottom: 24,
+          lineHeight: 1.6,
+        }}
+      >
         {t("subtitle")}
       </p>
-      <form onSubmit={handleSubmit} className="mt-4">
-        <div className="flex flex-col gap-2 sm:flex-row">
+
+      <form onSubmit={handleSubmit}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
           <input
             type="email"
             value={email}
@@ -56,33 +88,82 @@ export default function HeroEmailSignup() {
             placeholder={t("placeholder")}
             required
             disabled={status === "loading"}
-            className="min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 text-base text-[var(--content)] shadow-[var(--shadow-card)] transition placeholder:text-[var(--content-muted)] focus:border-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:opacity-60"
+            style={{
+              flex: "1 1 220px",
+              minWidth: 0,
+              background: "rgba(58,42,34,0.6)",
+              border: "1px solid rgba(214,185,123,0.25)",
+              borderRadius: 2,
+              padding: "12px 16px",
+              fontSize: 14,
+              color: "var(--cream)",
+              fontFamily: "var(--font-jost), sans-serif",
+              outline: "none",
+              transition: "border-color 0.2s ease",
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = "rgba(214,185,123,0.6)";
+              e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(214,185,123,0.15)";
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = "rgba(214,185,123,0.25)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
             aria-label="Email address"
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="shrink-0 rounded-xl bg-[var(--primary)] px-6 py-3 text-base font-medium text-white shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--primary-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 disabled:opacity-60"
+            className="btn-gold"
+            style={{
+              padding: "12px 24px",
+              fontSize: 14,
+              borderRadius: 2,
+              border: "none",
+              cursor: status === "loading" ? "wait" : "pointer",
+              fontFamily: "var(--font-jost), sans-serif",
+              letterSpacing: "0.04em",
+              opacity: status === "loading" ? 0.7 : 1,
+              flexShrink: 0,
+            }}
           >
             {status === "loading" ? "…" : t("button")}
           </button>
         </div>
       </form>
-      <p className="mt-3 text-xs text-[var(--content-muted)]">
+
+      <p
+        style={{
+          marginTop: 12,
+          fontSize: 12,
+          color: "rgba(201,184,152,0.4)",
+          letterSpacing: "0.03em",
+        }}
+      >
         {t("trust")}
       </p>
+
       {status === "success" && (
-        <p className="mt-3 text-sm font-medium text-[var(--primary)]" role="status">
+        <p
+          style={{ marginTop: 12, fontSize: 13, color: "var(--gold)", fontWeight: 400 }}
+          role="status"
+        >
           {t("success")}
         </p>
       )}
       {status === "already_subscribed" && (
-        <p className="mt-3 text-sm font-medium text-[var(--content-muted)]" role="status">
+        <p
+          style={{ marginTop: 12, fontSize: 13, color: "var(--cream-dim)" }}
+          role="status"
+        >
           {t("alreadySubscribed")}
         </p>
       )}
       {status === "error" && (
-        <p className="mt-3 text-sm font-medium text-[var(--content-muted)]" role="alert">
+        <p
+          style={{ marginTop: 12, fontSize: 13, color: "#ef4444" }}
+          role="alert"
+        >
           {t("error")}
         </p>
       )}
