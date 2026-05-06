@@ -40,7 +40,7 @@ export default function Footer() {
 
         {/* Links */}
         <nav style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-          {(["terms", "privacy", "refund"] as const).map((key) => (
+          {(["terms", "privacy"] as const).map((key) => (
             <Link
               key={key}
               href={`/${key}`}

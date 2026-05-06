@@ -1,22 +1,8 @@
 import { getTranslations } from "next-intl/server";
-import { createServerClient } from "@/lib/supabase";
 import FileUpload from "@/app/components/FileUpload";
 
 export default async function ConvertPage() {
   const t = await getTranslations("Convert");
-
-  const supabase = await createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  let plan = "free";
-  if (user?.id) {
-    const { data: profile } = await supabase
-      .from("users")
-      .select("subscription_plan")
-      .eq("id", user.id)
-      .single();
-    plan = (profile?.subscription_plan as string) ?? "free";
-  }
 
   return (
     <div className="min-h-screen bg-[var(--page-bg)] font-sans">
@@ -27,7 +13,7 @@ export default async function ConvertPage() {
         <p className="mb-10 text-[var(--content-muted)]">
           {t("subtitle")}
         </p>
-        <FileUpload plan={plan} />
+        <FileUpload />
       </main>
     </div>
   );

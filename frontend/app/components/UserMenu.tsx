@@ -163,7 +163,6 @@ export default function UserMenu({ user, locale }: Props) {
             [
               { href: "/dashboard", label: t("dashboard") },
               { href: "/account", label: t("account") },
-              { href: "/subscription", label: t("manageSubscription") },
             ] as const
           ).map((item) => (
             <Link

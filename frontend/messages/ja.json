@@ -14,25 +14,23 @@
     }
   },
   "Home": {
-    "beta": "パブリックベータ — 変換にはログインが必要です。アップロードしたファイルは1時間後に自動削除されます。",
-    "heroTagline": "プロフェッショナル文書変換",
-    "heroCtaSecondary": "料金を見る",
-    "scrollExplore": "探索",
+    "heroTagline": "無料。ブラウザで。いつまでも。",
     "featuresLabel": "主な機能",
-    "pricingLabel": "料金プラン",
     "featureLearnMore": "詳しく見る",
-    "statsConversions": "変換数",
-    "statsLanguages": "言語",
-    "statsUptime": "稼働率",
-    "statsRating": "評価",
     "navFeatures": "機能",
-    "navPricing": "料金",
     "hero": {
-      "titlePlain": "文書を",
-      "titleEm": "美しいEPUBに",
-      "title": "DOCX・TXTをEPUBに即座に変換",
-      "subtitle": "作家・出版社のためのEPUB変換サービス。原稿をアップロードして設定を行い、出版可能なEPUBをダウンロードできます。",
-      "cta": "変換を開始"
+      "titlePlain": "美しく書きましょう。",
+      "titleEm": "今すぐEPUBを作成しましょう。",
+      "subtitle": "デジタルライティングのための静かな場所。アカウント不要で原稿を美しいEPUBに変換できます。",
+      "cta": "変換を開始",
+      "ctaSecondary": "使い方を見る",
+      "freeBadge": "永久無料 · アカウント不要 · 制限なし"
+    },
+    "freeForever": {
+      "label": "サブスクなし",
+      "title": "永久に無料でご利用ください。",
+      "desc": "EPUBMakerはPandoc搭載の無料ツールです。サインアップ・支払い・制限なし。ブラウザで何でも変換できます。",
+      "cta": "エディタを開く"
     },
     "howItWorks": {
       "title": "使い方",
@@ -83,16 +81,12 @@
   },
   "Dashboard": {
     "title": "ダッシュボード",
-    "subtitle": "変換履歴と使用量。",
+    "subtitle": "変換履歴を確認できます。",
     "usage": "使用量",
-    "plan": "プラン",
-    "conversionsCount": "期間内の変換数",
+    "conversionsCount": "合計変換数",
     "recentConversions": "最近の変換",
     "noConversions": "まだ変換履歴がありません。",
-    "convertMore": "別のファイルを変換",
-    "changePlan": "プラン変更",
-    "manageSubscription": "サブスクリプション管理",
-    "noSubscription": "サブスクリプションが見つかりません。"
+    "convertMore": "別のファイルを変換"
   },
   "Login": {
     "title": "サインイン",
@@ -131,18 +125,23 @@
     "convertButton": "EPUBに変換",
     "converting": "変換中…",
     "errorConversionFailed": "変換に失敗しました。",
-    "dailyLimit": "1日3回の制限に達しました。0時にリセットされます。",
-    "errorFileType": "DOCX、TXTまたはPDFファイルをアップロードしてください。「{name}」は対応していません。",
+    "errorFileType": "DOCXまたはTXTファイルをアップロードしてください。\"{name}\"はサポートされていません。",
     "errorFileSize": "ファイルサイズは10MB以下にしてください。",
-    "errorTextLength": "テキストは{max}文字以下にしてください（現在: {current}）。",
     "errorCoverSize": "表紙画像は10MB以下にしてください。",
     "batchTitle": "一括変換",
-    "batchHint": "複数ファイルを選択（無料：3、スターター：20、プロ：無制限）。",
-    "batchLimitReached": "無料プランは1回あたり最大{max}ファイルまでです。",
+    "batchHint": "複数のファイルを選択して一度に変換できます。",
     "convertAll": "すべてEPUBに変換",
     "convertingBatch": "変換中 {current} / {total}…",
     "downloadAllZip": "すべてZIPでダウンロード",
-    "downloadFile": "ダウンロード"
+    "downloadFile": "ダウンロード",
+    "uploadFile": "ファイルをアップロード",
+    "recentLabel": "最近のプロジェクト",
+    "importGoogleDocs": "Google Docsから取り込む",
+    "importNotion": "Notionから取り込む",
+    "notionUrlPlaceholder": "Notionページ URL…",
+    "notionImportButton": "取り込む",
+    "notionImporting": "取り込み中…",
+    "notionError": "Notionページを読み込めません。URLを確認して、ページがインテグレーションと共有されていることを確認してください。"
   },
   "EpubCompatibilityCheck": {
     "title": "EPUB互換性チェック",
@@ -200,7 +199,6 @@
   "UserMenu": {
     "dashboard": "ダッシュボード",
     "account": "アカウント",
-    "manageSubscription": "サブスクリプション管理",
     "admin": "管理者",
     "logout": "ログアウト",
     "login": "ログイン",
@@ -210,7 +208,6 @@
     "title": "アカウント",
     "subtitle": "アカウント設定を管理します。",
     "email": "メール",
-    "plan": "プラン",
     "changePassword": "パスワード変更",
     "newPassword": "新しいパスワード",
     "confirmPassword": "パスワードの確認",

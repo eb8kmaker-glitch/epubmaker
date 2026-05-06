@@ -14,25 +14,23 @@
     }
   },
   "Home": {
-    "beta": "Öffentliche Beta — Zum Konvertieren ist ein Login erforderlich. Hochgeladene Dateien werden nach 1 Stunde automatisch gelöscht.",
-    "heroTagline": "Professionelle Dokumentenkonvertierung",
-    "heroCtaSecondary": "Preise ansehen",
-    "scrollExplore": "Erkunden",
+    "heroTagline": "Kostenlos. Im Browser. Für immer.",
     "featuresLabel": "Was enthalten ist",
-    "pricingLabel": "Preispläne",
     "featureLearnMore": "Mehr erfahren",
-    "statsConversions": "Konvertierungen",
-    "statsLanguages": "Sprachen",
-    "statsUptime": "Verfügbarkeit",
-    "statsRating": "Bewertung",
     "navFeatures": "Funktionen",
-    "navPricing": "Preise",
     "hero": {
-      "titlePlain": "Dokumente konvertieren in",
-      "titleEm": "schöne EPUBs",
-      "title": "DOCX und TXT sofort in EPUB umwandeln",
-      "subtitle": "Professionelle EPUB-Konvertierung für Autoren und Verlage. Laden Sie Ihr Manuskript hoch, konfigurieren Sie die Einstellungen und laden Sie ein druckfertiges Ebook herunter.",
-      "cta": "Konvertierung starten"
+      "titlePlain": "Schreibe schön.",
+      "titleEm": "Erstelle EPUBs sofort.",
+      "subtitle": "Ein ruhiger Ort zum digitalen Schreiben. Konvertiere deine Manuskripte in schöne EPUBs – kein Konto erforderlich.",
+      "cta": "Konvertierung starten",
+      "ctaSecondary": "Wie es funktioniert",
+      "freeBadge": "Für immer kostenlos · Kein Konto · Keine Limits"
+    },
+    "freeForever": {
+      "label": "Keine Abonnements",
+      "title": "Dein für immer, kostenlos.",
+      "desc": "EPUBMaker ist ein kostenloses Tool auf Basis von Pandoc. Konvertiere so viele Dokumente du willst – direkt im Browser. Keine Anmeldung, keine Zahlung, kein Haken.",
+      "cta": "Editor öffnen"
     },
     "howItWorks": {
       "title": "So funktioniert's",
@@ -83,16 +81,12 @@
   },
   "Dashboard": {
     "title": "Dashboard",
-    "subtitle": "Deine Konvertierungsverlauf und Nutzung.",
+    "subtitle": "Dein Konvertierungsverlauf.",
     "usage": "Nutzung",
-    "plan": "Tarif",
-    "conversionsCount": "Konvertierungen in diesem Zeitraum",
+    "conversionsCount": "Conversions gesamt",
     "recentConversions": "Letzte Konvertierungen",
     "noConversions": "Noch keine Konvertierungen.",
-    "convertMore": "Weitere Datei konvertieren",
-    "changePlan": "Tarif ändern",
-    "manageSubscription": "Abonnement verwalten",
-    "noSubscription": "Kein Abonnement gefunden."
+    "convertMore": "Weitere Datei konvertieren"
   },
   "Login": {
     "title": "Anmelden",
@@ -131,18 +125,23 @@
     "convertButton": "In EPUB konvertieren",
     "converting": "Wird konvertiert…",
     "errorConversionFailed": "Konvertierung fehlgeschlagen.",
-    "dailyLimit": "Tageslimit erreicht (3 pro Tag). Wird um Mitternacht zurückgesetzt.",
-    "errorFileType": "Bitte DOCX-, TXT- oder PDF-Datei hochladen. \"{name}\" wird nicht unterstützt.",
+    "errorFileType": "Bitte lade eine DOCX- oder TXT-Datei hoch. \"{name}\" wird nicht unterstützt.",
     "errorFileSize": "Dateigröße darf maximal 10 MB sein.",
-    "errorTextLength": "Text darf maximal {max} Zeichen haben (aktuell: {current}).",
     "errorCoverSize": "Cover darf maximal 10 MB groß sein.",
     "batchTitle": "Stapelkonvertierung",
-    "batchHint": "Mehrere Dateien wählen (Kostenlos: 3, Starter: 20, Pro: unbegrenzt).",
-    "batchLimitReached": "Kostenloser Tarif erlaubt max. {max} Dateien pro Stapel.",
+    "batchHint": "Wähle mehrere Dateien aus, um sie alle auf einmal zu konvertieren.",
     "convertAll": "Alle zu EPUB konvertieren",
     "convertingBatch": "Konvertiere {current} von {total}…",
     "downloadAllZip": "Alle als ZIP herunterladen",
-    "downloadFile": "Herunterladen"
+    "downloadFile": "Herunterladen",
+    "uploadFile": "Datei hochladen",
+    "recentLabel": "Letzte Projekte",
+    "importGoogleDocs": "Aus Google Docs importieren",
+    "importNotion": "Aus Notion importieren",
+    "notionUrlPlaceholder": "Notion-Seite URL einfügen…",
+    "notionImportButton": "Importieren",
+    "notionImporting": "Wird importiert…",
+    "notionError": "Notion-Seite konnte nicht geladen werden. Überprüfe die URL und dass die Seite mit deiner Integration geteilt ist."
   },
   "EpubCompatibilityCheck": {
     "title": "EPUB-Kompatibilitätsprüfung",
@@ -200,7 +199,6 @@
   "UserMenu": {
     "dashboard": "Dashboard",
     "account": "Konto",
-    "manageSubscription": "Abonnement verwalten",
     "admin": "Admin",
     "logout": "Abmelden",
     "login": "Anmelden",
@@ -210,7 +208,6 @@
     "title": "Konto",
     "subtitle": "Verwalte deine Kontoeinstellungen.",
     "email": "E-Mail",
-    "plan": "Tarif",
     "changePassword": "Passwort ändern",
     "newPassword": "Neues Passwort",
     "confirmPassword": "Passwort bestätigen",

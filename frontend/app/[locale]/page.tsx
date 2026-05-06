@@ -1,8 +1,7 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Hero from "@/app/components/home/Hero";
-import StatsBar from "@/app/components/home/StatsBar";
 import FeatureCards from "@/app/components/home/FeatureCards";
-import PricingCards from "@/app/components/home/PricingCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
 import HeroEmailSignup from "@/app/components/HeroEmailSignup";
 
@@ -11,40 +10,15 @@ export default async function HomePage() {
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      {/* Beta banner */}
-      <div
-        style={{
-          borderBottom: "1px solid rgba(214,185,123,0.12)",
-          background: "rgba(43,30,23,0.5)",
-          padding: "10px 24px",
-          textAlign: "center",
-        }}
-      >
-        <p
-          style={{
-            fontSize: 13,
-            color: "var(--cream-dim)",
-            fontWeight: 300,
-            letterSpacing: "0.02em",
-          }}
-        >
-          {t("beta")}
-        </p>
-      </div>
-
       {/* Hero */}
       <Hero />
-
-      {/* Stats */}
-      <StatsBar />
 
       {/* Features */}
       <section
         id="features"
-        style={{ padding: "80px 24px" }}
+        style={{ padding: "72px 24px" }}
       >
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
-          {/* Section label */}
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <div
               style={{
@@ -79,40 +53,59 @@ export default async function HomePage() {
         <GoldDivider />
       </div>
 
-      {/* Pricing */}
-      <section
-        id="pricing"
-        style={{ padding: "80px 24px" }}
-      >
-        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
-          {/* Section label */}
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div
-              style={{
-                fontSize: 11,
-                letterSpacing: "0.25em",
-                textTransform: "uppercase",
-                color: "var(--gold)",
-                marginBottom: 10,
-                fontFamily: "var(--font-jost), sans-serif",
-              }}
-            >
-              {t("pricingLabel")}
-            </div>
-            <h2
-              style={{
-                fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
-                fontSize: 36,
-                fontWeight: 500,
-                color: "var(--cream)",
-                margin: 0,
-              }}
-            >
-              {t("plans.title")}
-            </h2>
-          </div>
-
-          <PricingCards />
+      {/* Free forever callout */}
+      <section style={{ padding: "72px 24px", textAlign: "center" }}>
+        <div style={{ maxWidth: 600, margin: "0 auto" }}>
+          <p
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.25em",
+              textTransform: "uppercase",
+              color: "var(--gold)",
+              marginBottom: 16,
+              fontFamily: "var(--font-jost), sans-serif",
+            }}
+          >
+            {t("freeForever.label")}
+          </p>
+          <h2
+            style={{
+              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+              fontSize: "clamp(28px, 4vw, 42px)",
+              fontWeight: 500,
+              color: "var(--cream)",
+              lineHeight: 1.2,
+              marginBottom: 16,
+            }}
+          >
+            {t("freeForever.title")}
+          </h2>
+          <p
+            style={{
+              fontSize: 15,
+              color: "var(--cream-dim)",
+              lineHeight: 1.75,
+              marginBottom: 32,
+              fontWeight: 300,
+            }}
+          >
+            {t("freeForever.desc")}
+          </p>
+          <Link
+            href="/convert"
+            className="btn-gold"
+            style={{
+              display: "inline-block",
+              padding: "13px 36px",
+              fontSize: 14,
+              letterSpacing: "0.06em",
+              borderRadius: 2,
+              textDecoration: "none",
+              fontFamily: "var(--font-jost), sans-serif",
+            }}
+          >
+            {t("freeForever.cta")}
+          </Link>
         </div>
       </section>
 

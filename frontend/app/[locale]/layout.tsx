@@ -36,7 +36,6 @@ export default async function LocaleLayout({ children, params }: Props) {
         user={user ? { email: user.email ?? "" } : null}
         locale={locale}
         navFeatures={tHome("navFeatures")}
-        navPricing={tHome("navPricing")}
         siteName={t("siteName")}
       />
       <div className="flex min-h-screen flex-col">

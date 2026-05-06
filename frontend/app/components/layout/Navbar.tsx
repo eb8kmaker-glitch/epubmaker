@@ -6,11 +6,10 @@ interface NavbarProps {
   user: { email: string } | null;
   locale: string;
   navFeatures: string;
-  navPricing: string;
   siteName: string;
 }
 
-export default function Navbar({ user, locale, navFeatures, navPricing, siteName }: NavbarProps) {
+export default function Navbar({ user, locale, navFeatures, siteName }: NavbarProps) {
   return (
     <header
       style={{
@@ -88,20 +87,6 @@ export default function Navbar({ user, locale, navFeatures, navPricing, siteName
             }}
           >
             {navFeatures}
-          </Link>
-          <Link
-            href="/pricing"
-            className="nav-link"
-            style={{
-              fontSize: 13,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              fontFamily: "var(--font-jost), sans-serif",
-              fontWeight: 400,
-            }}
-          >
-            {navPricing}
           </Link>
         </nav>
 

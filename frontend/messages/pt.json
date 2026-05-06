@@ -14,25 +14,23 @@
     }
   },
   "Home": {
-    "beta": "Beta público — É necessário fazer login para converter arquivos. Os arquivos enviados são excluídos automaticamente após 1 hora.",
-    "heroTagline": "Conversão Profissional de Documentos",
-    "heroCtaSecondary": "Ver preços",
-    "scrollExplore": "Explorar",
+    "heroTagline": "Gratuito. No seu navegador. Para sempre.",
     "featuresLabel": "O que está incluído",
-    "pricingLabel": "Planos de preços",
     "featureLearnMore": "Saiba mais",
-    "statsConversions": "Conversões",
-    "statsLanguages": "Idiomas",
-    "statsUptime": "Disponibilidade",
-    "statsRating": "Avaliação",
     "navFeatures": "Recursos",
-    "navPricing": "Preços",
     "hero": {
-      "titlePlain": "Converta documentos para",
-      "titleEm": "EPUB elegante",
-      "title": "Converta DOCX e TXT para EPUB instantaneamente",
-      "subtitle": "Conversão profissional para EPUB para escritores e editores. Envie seu manuscrito, configure as definições e baixe um ebook pronto para publicar.",
-      "cta": "Começar a converter"
+      "titlePlain": "Escreva com beleza.",
+      "titleEm": "Crie EPUBs instantaneamente.",
+      "subtitle": "Um lugar tranquilo para a escrita digital. Converta seus manuscritos em belos EPUBs — sem necessidade de conta.",
+      "cta": "Começar a converter",
+      "ctaSecondary": "Ver como funciona",
+      "freeBadge": "Gratuito para sempre · Sem conta · Sem limites"
+    },
+    "freeForever": {
+      "label": "Sem assinaturas",
+      "title": "Seu para usar, grátis para sempre.",
+      "desc": "EPUBMaker é uma ferramenta gratuita baseada em Pandoc. Converta quantos documentos quiser, direto no navegador. Sem cadastro, sem pagamento, sem pegadinhas.",
+      "cta": "Abrir o editor"
     },
     "howItWorks": {
       "title": "Como funciona",
@@ -83,16 +81,12 @@
   },
   "Dashboard": {
     "title": "Painel",
-    "subtitle": "Seu histórico de conversões e uso.",
+    "subtitle": "Seu histórico de conversões.",
     "usage": "Uso",
-    "plan": "Plano",
-    "conversionsCount": "Conversões neste período",
+    "conversionsCount": "Total de conversões",
     "recentConversions": "Conversões recentes",
     "noConversions": "Nenhuma conversão ainda.",
-    "convertMore": "Converter outro arquivo",
-    "changePlan": "Mudar plano",
-    "manageSubscription": "Gerenciar assinatura",
-    "noSubscription": "Nenhuma assinatura encontrada."
+    "convertMore": "Converter outro arquivo"
   },
   "Login": {
     "title": "Entrar",
@@ -131,18 +125,23 @@
     "convertButton": "Converter para EPUB",
     "converting": "Convertendo…",
     "errorConversionFailed": "Falha na conversão.",
-    "dailyLimit": "Limite diário atingido (3 por dia). Reinicia à meia-noite.",
-    "errorFileType": "Envie um arquivo DOCX, TXT ou PDF. \"{name}\" não é suportado.",
+    "errorFileType": "Por favor, envie um arquivo DOCX ou TXT. \"{name}\" não é compatível.",
     "errorFileSize": "O arquivo deve ter 10 MB ou menos.",
-    "errorTextLength": "O texto deve ter {max} caracteres ou menos (atual: {current}).",
     "errorCoverSize": "A capa deve ter 10 MB ou menos.",
     "batchTitle": "Conversão em lote",
-    "batchHint": "Selecione vários arquivos (Grátis: 3, Starter: 20, Pro: ilimitado).",
-    "batchLimitReached": "O plano gratuito permite no máximo {max} arquivos por lote.",
+    "batchHint": "Selecione vários arquivos para converter todos de uma vez.",
     "convertAll": "Converter tudo para EPUB",
     "convertingBatch": "Convertendo {current} de {total}…",
     "downloadAllZip": "Baixar tudo em ZIP",
-    "downloadFile": "Baixar"
+    "downloadFile": "Baixar",
+    "uploadFile": "Enviar arquivo",
+    "recentLabel": "Projetos recentes",
+    "importGoogleDocs": "Importar do Google Docs",
+    "importNotion": "Importar do Notion",
+    "notionUrlPlaceholder": "Cole a URL da página Notion…",
+    "notionImportButton": "Importar",
+    "notionImporting": "Importando…",
+    "notionError": "Não foi possível carregar a página Notion. Verifique a URL e se a página está compartilhada com sua integração."
   },
   "EpubCompatibilityCheck": {
     "title": "Verificação de compatibilidade EPUB",
@@ -200,7 +199,6 @@
   "UserMenu": {
     "dashboard": "Painel",
     "account": "Conta",
-    "manageSubscription": "Gerenciar assinatura",
     "admin": "Admin",
     "logout": "Sair",
     "login": "Entrar",
@@ -210,7 +208,6 @@
     "title": "Conta",
     "subtitle": "Gerencie as configurações da sua conta.",
     "email": "E-mail",
-    "plan": "Plano",
     "changePassword": "Alterar senha",
     "newPassword": "Nova senha",
     "confirmPassword": "Confirmar senha",

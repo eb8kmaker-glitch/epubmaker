@@ -14,21 +14,7 @@ export default async function AccountPage({ params }: Props) {
   } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/login`);
 
-  const { data: profile } = await supabase
-    .from("users")
-    .select("subscription_plan")
-    .eq("id", user.id)
-    .single();
-
   const t = await getTranslations("Account");
-
-  const planLabels: Record<string, string> = {
-    free: "Free",
-    starter: "Starter",
-    pro: "Pro",
-    pay_per_use: "Pay per use",
-  };
-  const plan = (profile?.subscription_plan as string) ?? "free";
 
   // Email users can change password; Google-only OAuth users cannot
   const isEmailUser =
@@ -53,14 +39,6 @@ export default async function AccountPage({ params }: Props) {
                 {t("email")}
               </p>
               <p className="mt-1 text-sm text-[var(--content)]">{user.email}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-[var(--content-muted)]">
-                {t("plan")}
-              </p>
-              <p className="mt-1 text-sm text-[var(--content)]">
-                {planLabels[plan] ?? plan}
-              </p>
             </div>
           </div>
         </section>

@@ -14,25 +14,23 @@
     }
   },
   "Home": {
-    "beta": "公开测试版 — 转换文件需要登录。上传的文件会在1小时后自动删除。",
-    "heroTagline": "专业文档转换",
-    "heroCtaSecondary": "查看价格",
-    "scrollExplore": "探索",
+    "heroTagline": "免费。在浏览器中。永久。",
     "featuresLabel": "包含功能",
-    "pricingLabel": "定价方案",
     "featureLearnMore": "了解更多",
-    "statsConversions": "转换次数",
-    "statsLanguages": "语言",
-    "statsUptime": "正常运行时间",
-    "statsRating": "评分",
     "navFeatures": "功能",
-    "navPricing": "价格",
     "hero": {
-      "titlePlain": "将文档转换为",
-      "titleEm": "精美的 EPUB",
-      "title": "将 DOCX 和 TXT 即时转换为 EPUB",
-      "subtitle": "为作者和出版商提供的专业 EPUB 转换服务。上传您的稿件，配置设置，下载可发布的电子书。",
-      "cta": "开始转换"
+      "titlePlain": "写出精彩。",
+      "titleEm": "即刻创建 EPUB。",
+      "subtitle": "数字写作的宁静之地。无需账号，将您的手稿转换为精美的 EPUB。",
+      "cta": "开始转换",
+      "ctaSecondary": "了解使用方法",
+      "freeBadge": "永久免费 · 无需账号 · 无使用限制"
+    },
+    "freeForever": {
+      "label": "无订阅",
+      "title": "永久免费，任你使用。",
+      "desc": "EPUBMaker 是基于 Pandoc 的免费工具。在浏览器中随心转换文档，无需注册、无需付费、无任何限制。",
+      "cta": "打开编辑器"
     },
     "howItWorks": {
       "title": "使用方式",
@@ -83,16 +81,12 @@
   },
   "Dashboard": {
     "title": "仪表盘",
-    "subtitle": "你的转换记录与使用量。",
+    "subtitle": "您的转换记录。",
     "usage": "使用量",
-    "plan": "套餐",
-    "conversionsCount": "本周期转换次数",
+    "conversionsCount": "总转换数",
     "recentConversions": "最近转换",
     "noConversions": "暂无转换记录。",
-    "convertMore": "转换其他文件",
-    "changePlan": "更换套餐",
-    "manageSubscription": "管理订阅",
-    "noSubscription": "未找到订阅信息。"
+    "convertMore": "转换其他文件"
   },
   "Login": {
     "title": "登录",
@@ -131,18 +125,23 @@
     "convertButton": "转换为 EPUB",
     "converting": "转换中…",
     "errorConversionFailed": "转换失败。",
-    "dailyLimit": "已达每日限制（每日 3 次）。午夜重置。",
-    "errorFileType": "请上传 DOCX、TXT 或 PDF 文件。「{name}」不受支持。",
+    "errorFileType": "请上传 DOCX 或 TXT 文件。\"{name}\" 不受支持。",
     "errorFileSize": "文件大小须在 10MB 以内。",
-    "errorTextLength": "文本须在 {max} 字以内（当前：{current}）。",
     "errorCoverSize": "封面图片须在 10MB 以内。",
     "batchTitle": "批量转换",
-    "batchHint": "选择多个文件（免费：3，入门：20，专业：无限制）。",
-    "batchLimitReached": "免费计划每批最多 {max} 个文件。",
+    "batchHint": "选择多个文件，一次性全部转换。",
     "convertAll": "全部转换为 EPUB",
     "convertingBatch": "正在转换 {current} / {total}…",
     "downloadAllZip": "全部下载为 ZIP",
-    "downloadFile": "下载"
+    "downloadFile": "下载",
+    "uploadFile": "上传文件",
+    "recentLabel": "最近项目",
+    "importGoogleDocs": "从 Google Docs 导入",
+    "importNotion": "从 Notion 导入",
+    "notionUrlPlaceholder": "粘贴 Notion 页面 URL…",
+    "notionImportButton": "导入",
+    "notionImporting": "导入中…",
+    "notionError": "无法加载 Notion 页面。请检查 URL，确保页面已与您的集成共享。"
   },
   "EpubCompatibilityCheck": {
     "title": "EPUB 兼容性检查",
@@ -200,7 +199,6 @@
   "UserMenu": {
     "dashboard": "仪表盘",
     "account": "账户",
-    "manageSubscription": "管理订阅",
     "admin": "管理员",
     "logout": "退出登录",
     "login": "登录",
@@ -210,7 +208,6 @@
     "title": "账户",
     "subtitle": "管理您的账户设置。",
     "email": "邮箱",
-    "plan": "套餐",
     "changePassword": "修改密码",
     "newPassword": "新密码",
     "confirmPassword": "确认密码",
