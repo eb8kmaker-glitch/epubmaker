@@ -1,15 +1,14 @@
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
-import UserMenu from "@/app/components/UserMenu";
+import NavbarUserClient from "@/app/components/layout/NavbarUserClient";
 
 interface NavbarProps {
-  user: { email: string } | null;
   locale: string;
   navFeatures: string;
   siteName: string;
 }
 
-export default function Navbar({ user, locale, navFeatures, siteName }: NavbarProps) {
+export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
   return (
     <header
       style={{
@@ -92,7 +91,7 @@ export default function Navbar({ user, locale, navFeatures, siteName }: NavbarPr
 
         {/* Right actions */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <UserMenu user={user} locale={locale} />
+          <NavbarUserClient locale={locale} />
           <LanguageSwitcher />
         </div>
       </div>

@@ -7,7 +7,6 @@ import { routing } from "@/i18n/routing";
 import SetHtmlLang from "@/app/components/SetHtmlLang";
 import Footer from "@/app/components/Footer";
 import Navbar from "@/app/components/layout/Navbar";
-import { createServerClient } from "@/lib/supabase";
 
 type Props = {
   children: React.ReactNode;
@@ -24,16 +23,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   const t = await getTranslations("common");
   const tHome = await getTranslations("Home");
 
-  const supabase = await createServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <SetHtmlLang locale={locale} />
       <Navbar
-        user={user ? { email: user.email ?? "" } : null}
         locale={locale}
         navFeatures={tHome("navFeatures")}
         siteName={t("siteName")}

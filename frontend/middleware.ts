@@ -1,11 +1,8 @@
 /**
- * Next.js middleware: i18n (next-intl) + 인증 보호.
+ * Next.js middleware: i18n (next-intl) + auth protection.
  *
- * - 보호된 라우트: /[locale]/dashboard, /[locale]/convert → 로그인 필수.
- * - 공개 라우트: /, /[locale]/pricing, /api/webhooks/stripe (api는 matcher에서 제외되어 통과).
- * - 미인증 접근 시: /[locale]/login?redirect=원래URL 로 리다이렉트.
- * - 로그인 상태에서 /[locale]/login 접근 시: /[locale]/dashboard 로 리다이렉트.
- * - Supabase 세션 쿠키 갱신: createServerClient (Edge용 request/response 쿠키).
+ * Protected routes: /[locale]/dashboard, /[locale]/account, /[locale]/admin
+ * Public: everything else — including /convert (no login required).
  */
 
 import createIntlMiddleware from "next-intl/middleware";
@@ -13,7 +10,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { routing } from "./i18n/routing";
 
-const PROTECTED_SEGMENTS = ["dashboard", "convert", "account", "subscription", "admin"];
+const PROTECTED_SEGMENTS = ["dashboard", "account", "admin"];
 const LOGIN_SEGMENT = "login";
 
 function isProtectedPath(pathname: string): boolean {
@@ -40,6 +37,11 @@ export default async function middleware(request: NextRequest) {
 
   const intlMiddleware = createIntlMiddleware(routing);
   let response = intlMiddleware(request);
+
+  // Skip Supabase auth entirely for public paths — avoids cold-start latency
+  if (!isProtectedPath(pathname) && !isLoginPath(pathname)) {
+    return response;
+  }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -83,7 +85,7 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.redirect(dashboardUrl);
     }
 
-    // Admin 경로: ADMIN_EMAIL과 불일치 시 /dashboard로 리다이렉트
+    // Admin: only allow ADMIN_EMAIL
     const segments = pathname.split("/").filter(Boolean);
     if (segments[1] === "admin" && hasSession) {
       const adminEmail = process.env.ADMIN_EMAIL;

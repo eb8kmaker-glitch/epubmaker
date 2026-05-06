@@ -1,6 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Hero from "@/app/components/home/Hero";
+
+export const dynamic = "force-static";
+export const revalidate = 3600;
 import FeatureCards from "@/app/components/home/FeatureCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
 import HeroEmailSignup from "@/app/components/HeroEmailSignup";
