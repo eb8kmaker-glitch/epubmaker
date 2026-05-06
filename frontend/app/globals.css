@@ -1,148 +1,197 @@
 @import "tailwindcss";
 
-/* ─── Library Dark Theme ─── */
+/* ─── Warm Library Theme ─────────────────────────────────── */
 :root {
-  --deep-brown: #2B1E17;
-  --dark-wood: #3A2A22;
-  --mid-brown: #5A4636;
-  --vintage-wood: #8B6B4A;
-  --gold: #D6B97B;
-  --gold-light: #E8D09A;
-  --cream: #F3E6C9;
-  --cream-dim: #C9B898;
-  --panel: #301F16;
-  --panel-light: #3E2A1E;
+  /* Backgrounds */
+  --lib-bg:         #F8F5F0;
+  --lib-bg-2:       #F5EFE6;
+  --lib-bg-3:       #EDE6DA;
+  --lib-panel:      #FDFAF6;
 
-  /* Semantic tokens — dark theme */
-  --primary: #7B5029;
-  --primary-hover: #6A4220;
-  --accent: rgba(214, 185, 123, 0.15);
-  --accent-soft: rgba(214, 185, 123, 0.08);
-  --page-bg: #1A100A;
-  --secondary-bg: #1F1209;
-  --card: #2A1C13;
-  --border: rgba(214, 185, 123, 0.18);
-  --content: #F3E6C9;
-  --content-muted: #C9B898;
-  --guide-bg: rgba(214, 185, 123, 0.08);
-  --guide-border: rgba(214, 185, 123, 0.3);
-  --dropzone-hover: #3E2A1E;
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --background: var(--page-bg);
-  --foreground: var(--content);
+  /* Borders */
+  --lib-border:     #DDD4C8;
+  --lib-border-2:   #C8BAA8;
+
+  /* Wood tones */
+  --lib-wood-light: #B8997E;
+  --lib-wood:       #8A6F58;
+  --lib-wood-dim:   #6B5645;
+
+  /* Accents */
+  --lib-gold:       #C8A96B;
+  --lib-olive:      #5E665B;
+
+  /* Text */
+  --lib-ink:        #2C2420;
+  --lib-dusk:       #5A4E46;
+  --lib-dust:       #8A7D75;
+
+  /* ── Legacy aliases — keep non-redesigned pages working ── */
+  --page-bg:        var(--lib-bg);
+  --card:           var(--lib-panel);
+  --border:         var(--lib-border);
+  --content:        var(--lib-ink);
+  --content-muted:  var(--lib-dusk);
+  --primary:        var(--lib-wood-dim);
+  --panel:          var(--lib-panel);
+  --gold:           var(--lib-gold);
+  --cream:          var(--lib-dusk);
+  --cream-dim:      var(--lib-dust);
+  --deep-brown:     var(--lib-bg-3);
+  --dropzone-hover: var(--lib-bg-3);
+  --guide-bg:       var(--lib-bg-2);
+  --guide-border:   var(--lib-border);
+  --background:     var(--lib-bg);
+  --foreground:     var(--lib-ink);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --lib-bg:         #1E1812;
+    --lib-bg-2:       #231D16;
+    --lib-bg-3:       #2A2119;
+    --lib-panel:      #29211A;
+    --lib-border:     #3A2F26;
+    --lib-border-2:   #4A3C30;
+    --lib-wood-light: #A0806A;
+    --lib-wood:       #8A6F58;
+    --lib-wood-dim:   #C4A080;
+    --lib-gold:       #D4B87A;
+    --lib-olive:      #7A8475;
+    --lib-ink:        #F0E8DC;
+    --lib-dusk:       #C4B5A5;
+    --lib-dust:       #8A7B6E;
+  }
+}
+
+/* ─── Tailwind v4 theme tokens ──────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-jost), system-ui, sans-serif;
-  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-mono: var(--font-geist-mono);
+  /* Colors */
+  --color-lib-bg:         var(--lib-bg);
+  --color-lib-bg-2:       var(--lib-bg-2);
+  --color-lib-bg-3:       var(--lib-bg-3);
+  --color-lib-panel:      var(--lib-panel);
+  --color-lib-border:     var(--lib-border);
+  --color-lib-border-2:   var(--lib-border-2);
+  --color-lib-wood-light: var(--lib-wood-light);
+  --color-lib-wood:       var(--lib-wood);
+  --color-lib-wood-dim:   var(--lib-wood-dim);
+  --color-lib-gold:       var(--lib-gold);
+  --color-lib-olive:      var(--lib-olive);
+  --color-lib-ink:        var(--lib-ink);
+  --color-lib-dusk:       var(--lib-dusk);
+  --color-lib-dust:       var(--lib-dust);
+
+  /* Semantic tokens for Tailwind classes */
+  --color-background:     var(--lib-bg);
+  --color-foreground:     var(--lib-ink);
+
+  /* Fonts */
+  --font-serif: var(--font-serif), Georgia, serif;
+  --font-sans:  var(--font-sans), system-ui, sans-serif;
+  --font-mono:  var(--font-mono), monospace;
 }
 
+/* ─── Base ───────────────────────────────────────────────── */
 body {
-  background-color: #1A100A;
-  background-image:
-    repeating-linear-gradient(92deg, transparent, transparent 120px, rgba(0, 0, 0, 0.03) 120px, rgba(0, 0, 0, 0.03) 121px),
-    repeating-linear-gradient(180deg, transparent, transparent 40px, rgba(255, 200, 120, 0.015) 40px, rgba(255, 200, 120, 0.015) 41px);
-  color: var(--cream);
-  font-family: var(--font-jost), "Jost", system-ui, sans-serif;
+  background-color: var(--lib-bg);
+  color: var(--lib-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
   line-height: 1.6;
-  letter-spacing: 0.01em;
 }
 
-/* ─── Feature Card Hover ─── */
+h1, h2, h3 {
+  font-family: var(--font-serif), Georgia, serif;
+}
+
+/* ─── Feature Card ──────────────────────────────────────── */
 .feature-card {
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.feature-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(214, 185, 123, 0.4), transparent);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: all 250ms ease;
 }
 
 .feature-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(214, 185, 123, 0.28) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.feature-card:hover::before {
-  opacity: 1;
+  transform: translateY(-2px);
+  border-color: var(--lib-border-2) !important;
+  box-shadow: 0 6px 24px rgba(44, 36, 32, 0.08);
 }
 
 .feature-card:hover .fc-learn {
-  color: var(--gold);
+  color: var(--lib-wood-dim);
 }
 
-/* ─── Pricing Card Hover ─── */
-.pricing-card {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.pricing-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-}
-
-/* ─── Library Buttons ─── */
-.btn-gold {
-  background: var(--gold);
-  color: var(--deep-brown);
+/* ─── Buttons ────────────────────────────────────────────── */
+.btn-primary {
+  background: var(--lib-wood-dim);
+  color: #F8F5F0;
   font-weight: 500;
-  transition: all 0.25s ease;
+  transition: all 200ms ease;
 }
 
-.btn-gold:hover {
-  background: var(--gold-light);
+.btn-primary:hover {
+  background: var(--lib-wood);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(214, 185, 123, 0.3);
 }
 
-.btn-gold:active {
+.btn-primary:active {
   transform: translateY(0);
 }
 
+.btn-ghost {
+  border: 1px solid var(--lib-border-2);
+  color: var(--lib-dusk);
+  transition: all 200ms ease;
+}
+
+.btn-ghost:hover {
+  background: var(--lib-bg-2);
+  border-color: var(--lib-wood-light);
+  color: var(--lib-wood-dim);
+}
+
+/* Keep old class names as aliases so FileUpload / existing components compile */
+.btn-gold {
+  background: var(--lib-wood-dim);
+  color: #F8F5F0;
+  font-weight: 500;
+  transition: all 200ms ease;
+}
+
+.btn-gold:hover {
+  background: var(--lib-wood);
+  transform: translateY(-1px);
+}
+
 .btn-ghost-gold {
-  border: 1px solid rgba(214, 185, 123, 0.3);
-  color: var(--cream-dim);
-  transition: all 0.25s ease;
+  border: 1px solid var(--lib-border-2);
+  color: var(--lib-dusk);
+  transition: all 200ms ease;
 }
 
 .btn-ghost-gold:hover {
-  border-color: var(--gold);
-  background: rgba(214, 185, 123, 0.06);
-  color: var(--gold);
+  background: var(--lib-bg-2);
+  border-color: var(--lib-wood-light);
+  color: var(--lib-wood-dim);
 }
 
-/* ─── Scroll Indicator ─── */
-@keyframes scroll-pulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.95); }
-  50% { opacity: 0.8; transform: scaleY(1); }
+/* ─── Nav link ───────────────────────────────────────────── */
+.nav-link {
+  color: var(--lib-dusk);
+  transition: color 200ms ease;
 }
 
-.scroll-line {
-  animation: scroll-pulse 2.2s ease-in-out infinite;
+.nav-link:hover {
+  color: var(--lib-wood-dim);
 }
 
-/* ─── Pricing Feature Checkmarks ─── */
+/* ─── Pricing / plan feature list ───────────────────────── */
 .plan-feature {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   font-size: 14px;
-  color: var(--cream-dim);
+  color: var(--lib-dusk);
   font-weight: 300;
 }
 
@@ -153,19 +202,19 @@ body {
   height: 16px;
   margin-top: 2px;
   border-radius: 50%;
-  border: 1px solid rgba(214, 185, 123, 0.35);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8.5l3 3 6-6' stroke='%23D6B97B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  border: 1px solid var(--lib-border-2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3.5 8.5l3 3 6-6' stroke='%236B5645' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size: 12px 12px;
   background-repeat: no-repeat;
   background-position: center;
 }
 
-/* ─── Navbar link hover ─── */
-.nav-link {
-  color: var(--cream-dim);
-  transition: color 0.2s ease;
+/* ─── Scroll indicator (kept for Hero compat) ──────────── */
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.95); }
+  50%       { opacity: 0.7; transform: scaleY(1); }
 }
 
-.nav-link:hover {
-  color: var(--gold);
+.scroll-line {
+  animation: scroll-pulse 2.2s ease-in-out infinite;
 }

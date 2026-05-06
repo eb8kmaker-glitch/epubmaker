@@ -15,11 +15,11 @@ export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        height: 68,
+        height: 60,
         display: "flex",
         alignItems: "center",
-        background: "linear-gradient(180deg, #1A100A 0%, rgba(26,16,10,0.92) 100%)",
-        borderBottom: "1px solid rgba(214,185,123,0.18)",
+        background: "var(--lib-panel)",
+        borderBottom: "1px solid var(--lib-border)",
         backdropFilter: "blur(8px)",
         WebkitBackdropFilter: "blur(8px)",
         padding: "0 24px",
@@ -42,29 +42,28 @@ export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
             textDecoration: "none",
             display: "flex",
             flexDirection: "column",
-            lineHeight: 1,
+            lineHeight: 1.2,
             flexShrink: 0,
+            gap: 1,
           }}
         >
           <span
             style={{
-              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
-              fontSize: 22,
-              fontWeight: 600,
-              letterSpacing: "0.02em",
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: 18,
+              fontWeight: 500,
+              color: "var(--lib-wood-dim)",
+              letterSpacing: "0.01em",
             }}
           >
-            <span style={{ color: "var(--gold)" }}>EPUB</span>
-            <span style={{ color: "var(--cream)" }}>Maker</span>
+            EPUBMaker
           </span>
           <span
             style={{
-              fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+              fontFamily: "var(--font-sans), system-ui, sans-serif",
               fontSize: 11,
-              fontStyle: "italic",
-              color: "var(--cream-dim)",
-              letterSpacing: "0.08em",
-              opacity: 0.7,
+              color: "var(--lib-dust)",
+              letterSpacing: "0.04em",
             }}
           >
             {siteName}
@@ -72,17 +71,14 @@ export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
         </Link>
 
         {/* Nav links */}
-        <nav style={{ display: "flex", gap: 28, flex: 1 }}>
+        <nav style={{ display: "flex", gap: 24, flex: 1 }}>
           <Link
             href="/#features"
             className="nav-link"
             style={{
               fontSize: 13,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
               textDecoration: "none",
-              fontFamily: "var(--font-jost), sans-serif",
-              fontWeight: 400,
+              fontFamily: "var(--font-sans), system-ui, sans-serif",
             }}
           >
             {navFeatures}

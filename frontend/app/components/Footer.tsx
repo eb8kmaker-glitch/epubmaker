@@ -11,8 +11,9 @@ export default function Footer() {
     <footer
       style={{
         marginTop: "auto",
-        borderTop: "1px solid rgba(214,185,123,0.1)",
-        padding: "24px",
+        background: "var(--lib-bg-2)",
+        borderTop: "1px solid var(--lib-border)",
+        padding: "28px 36px",
       }}
     >
       <div
@@ -29,27 +30,29 @@ export default function Footer() {
         {/* Brand */}
         <span
           style={{
-            fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
-            fontSize: 18,
-            color: "rgba(214,185,123,0.6)",
-            letterSpacing: "0.04em",
+            fontFamily: "var(--font-serif), Georgia, serif",
+            fontSize: 15,
+            fontStyle: "italic",
+            color: "var(--lib-dust)",
+            letterSpacing: "0.02em",
           }}
         >
           EPUBMaker
         </span>
 
         {/* Links */}
-        <nav style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
+        <nav style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
           {(["terms", "privacy"] as const).map((key) => (
             <Link
               key={key}
               href={`/${key}`}
               style={{
                 fontSize: 12,
-                color: "rgba(201,184,152,0.5)",
+                color: "var(--lib-dust)",
                 textDecoration: "none",
-                transition: "color 0.2s ease",
-                letterSpacing: "0.05em",
+                transition: "color 200ms ease",
+                letterSpacing: "0.03em",
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
               }}
               className="nav-link"
             >
@@ -62,8 +65,9 @@ export default function Footer() {
         <p
           style={{
             fontSize: 12,
-            color: "rgba(201,184,152,0.3)",
-            letterSpacing: "0.03em",
+            color: "var(--lib-dust)",
+            letterSpacing: "0.02em",
+            fontFamily: "var(--font-sans), system-ui, sans-serif",
           }}
         >
           {t("copyright", { year })}

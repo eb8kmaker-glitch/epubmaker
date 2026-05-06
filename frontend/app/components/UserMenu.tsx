@@ -12,6 +12,34 @@ interface Props {
   locale: string;
 }
 
+const ghostStyle: React.CSSProperties = {
+  display: "inline-block",
+  padding: "7px 16px",
+  fontSize: 13,
+  borderRadius: 6,
+  textDecoration: "none",
+  fontFamily: "var(--font-sans), system-ui, sans-serif",
+  border: "1px solid var(--lib-border-2)",
+  color: "var(--lib-dusk)",
+  background: "transparent",
+  cursor: "pointer",
+  transition: "all 200ms ease",
+};
+
+const fillStyle: React.CSSProperties = {
+  display: "inline-block",
+  padding: "7px 16px",
+  fontSize: 13,
+  borderRadius: 6,
+  textDecoration: "none",
+  fontFamily: "var(--font-sans), system-ui, sans-serif",
+  background: "var(--lib-wood-dim)",
+  color: "#F8F5F0",
+  border: "none",
+  cursor: "pointer",
+  transition: "all 200ms ease",
+};
+
 export default function UserMenu({ user, locale }: Props) {
   const t = useTranslations("UserMenu");
   const [isOpen, setIsOpen] = useState(false);
@@ -20,10 +48,7 @@ export default function UserMenu({ user, locale }: Props) {
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     }
@@ -34,35 +59,10 @@ export default function UserMenu({ user, locale }: Props) {
   if (!user) {
     return (
       <div className="flex shrink-0 items-center gap-2">
-        <Link
-          href="/login"
-          className="btn-ghost-gold"
-          style={{
-            display: "inline-block",
-            padding: "7px 16px",
-            fontSize: 13,
-            letterSpacing: "0.05em",
-            borderRadius: 2,
-            textDecoration: "none",
-            fontFamily: "var(--font-jost), sans-serif",
-            background: "transparent",
-          }}
-        >
+        <Link href="/login" style={ghostStyle} className="btn-ghost">
           {t("login")}
         </Link>
-        <Link
-          href="/signup"
-          className="btn-gold"
-          style={{
-            display: "inline-block",
-            padding: "7px 16px",
-            fontSize: 13,
-            letterSpacing: "0.05em",
-            borderRadius: 2,
-            textDecoration: "none",
-            fontFamily: "var(--font-jost), sans-serif",
-          }}
-        >
+        <Link href="/signup" style={fillStyle} className="btn-primary">
           {t("signUp")}
         </Link>
       </div>
@@ -76,16 +76,19 @@ export default function UserMenu({ user, locale }: Props) {
       <button
         type="button"
         onClick={() => setIsOpen((o) => !o)}
-        className="btn-ghost-gold"
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 8,
-          padding: "7px 12px",
+          gap: 7,
+          padding: "5px 10px 5px 5px",
           fontSize: 13,
-          borderRadius: 2,
+          borderRadius: 6,
           background: "transparent",
+          border: "1px solid var(--lib-border)",
           cursor: "pointer",
+          color: "var(--lib-dusk)",
+          transition: "all 200ms ease",
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
         }}
         aria-expanded={isOpen}
         aria-haspopup="menu"
@@ -98,9 +101,9 @@ export default function UserMenu({ user, locale }: Props) {
             width: 24,
             height: 24,
             borderRadius: "50%",
-            background: "var(--gold)",
-            color: "var(--deep-brown)",
-            fontSize: 11,
+            background: "var(--lib-wood-dim)",
+            color: "#F8F5F0",
+            fontSize: 10,
             fontWeight: 600,
             flexShrink: 0,
           }}
@@ -108,18 +111,13 @@ export default function UserMenu({ user, locale }: Props) {
           {initials}
         </span>
         <svg
-          style={{ width: 14, height: 14, opacity: 0.6 }}
+          style={{ width: 12, height: 12, opacity: 0.5 }}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
           aria-hidden
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19 9l-7 7-7-7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
@@ -131,28 +129,27 @@ export default function UserMenu({ user, locale }: Props) {
             right: 0,
             top: "calc(100% + 6px)",
             zIndex: 20,
-            width: 200,
+            width: 192,
             overflow: "hidden",
-            borderRadius: 3,
-            border: "1px solid rgba(214,185,123,0.2)",
-            background: "var(--panel)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+            borderRadius: 8,
+            border: "1px solid var(--lib-border)",
+            background: "var(--lib-panel)",
+            boxShadow: "0 8px 24px rgba(44,36,32,0.12)",
           }}
         >
           <div
             style={{
-              borderBottom: "1px solid rgba(214,185,123,0.12)",
+              borderBottom: "1px solid var(--lib-border)",
               padding: "10px 12px",
             }}
           >
             <p
               style={{
                 fontSize: 11,
-                color: "var(--cream-dim)",
+                color: "var(--lib-dust)",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                opacity: 0.7,
               }}
             >
               {user.email}
@@ -172,11 +169,12 @@ export default function UserMenu({ user, locale }: Props) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "9px 12px",
+                padding: "8px 12px",
                 fontSize: 13,
-                color: "var(--cream-dim)",
+                color: "var(--lib-dusk)",
                 textDecoration: "none",
-                transition: "background 0.2s ease, color 0.2s ease",
+                transition: "background 150ms ease, color 150ms ease",
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
               }}
               className="nav-link"
               role="menuitem"
@@ -192,11 +190,12 @@ export default function UserMenu({ user, locale }: Props) {
               style={{
                 display: "flex",
                 alignItems: "center",
-                padding: "9px 12px",
+                padding: "8px 12px",
                 fontSize: 13,
-                color: "var(--gold)",
+                color: "var(--lib-wood-dim)",
                 textDecoration: "none",
                 fontWeight: 500,
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
               }}
               role="menuitem"
             >
@@ -204,7 +203,7 @@ export default function UserMenu({ user, locale }: Props) {
             </Link>
           )}
 
-          <div style={{ borderTop: "1px solid rgba(214,185,123,0.12)", paddingTop: 4, marginTop: 4 }}>
+          <div style={{ borderTop: "1px solid var(--lib-border)", paddingTop: 4, marginTop: 4 }}>
             <button
               type="button"
               disabled={isPending}
@@ -216,14 +215,15 @@ export default function UserMenu({ user, locale }: Props) {
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
-                padding: "9px 12px",
+                padding: "8px 12px",
                 fontSize: 13,
-                color: "#ef4444",
+                color: "#b91c1c",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                transition: "background 0.2s ease",
+                transition: "background 150ms ease",
                 opacity: isPending ? 0.5 : 1,
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
               }}
               role="menuitem"
             >

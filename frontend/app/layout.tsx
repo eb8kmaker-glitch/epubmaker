@@ -1,34 +1,36 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Cormorant_Garamond, Jost, Geist_Mono } from "next/font/google";
+import { Lora, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import FeedbackButton from "@/app/components/FeedbackButton";
 import "./globals.css";
 
-const cormorantGaramond = Cormorant_Garamond({
-  weight: ["400", "500", "600"],
+const lora = Lora({
+  subsets: ["latin"],
+  weight: ["400", "500"],
   style: ["normal", "italic"],
-  subsets: ["latin"],
-  variable: "--font-cormorant",
+  variable: "--font-serif",
   display: "swap",
 });
 
-const jost = Jost({
+const dmSans = DM_Sans({
+  subsets: ["latin"],
   weight: ["300", "400", "500"],
-  subsets: ["latin"],
-  variable: "--font-jost",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const dmMono = DM_Mono({
   subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-mono",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "DOCX to EPUB Converter",
-  description: "Convert DOCX and TXT to EPUB instantly",
+  title: "EPUBMaker — Free Document to EPUB Converter",
+  description: "Convert DOCX and TXT to beautiful EPUBs instantly, in your browser. Free forever.",
 };
 
 export default function RootLayout({
@@ -37,10 +39,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${cormorantGaramond.variable} ${jost.variable} ${geistMono.variable} antialiased`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${lora.variable} ${dmSans.variable} ${dmMono.variable}`}
+    >
+      <body className="antialiased">
         {children}
         <Analytics />
         <SpeedInsights />
