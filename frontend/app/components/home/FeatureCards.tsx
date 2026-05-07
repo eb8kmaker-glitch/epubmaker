@@ -42,8 +42,8 @@ const ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
-export default async function FeatureCards() {
-  const t = await getTranslations("Home");
+export default async function FeatureCards({ locale }: { locale: string }) {
+  const t = await getTranslations({ locale, namespace: "Home" });
 
   const features = [
     { key: "docxTxt" as const, iconKey: "docxTxt" },

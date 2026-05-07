@@ -1,16 +1,25 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Hero from "@/app/components/home/Hero";
 import FeatureCards from "@/app/components/home/FeatureCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
 import HeroEmailSignup from "@/app/components/HeroEmailSignup";
 import AdBanner from "@/app/components/ads/AdBanner";
+import { routing } from "@/i18n/routing";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
 
-export default async function HomePage() {
-  const t = await getTranslations("Home");
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "Home" });
 
   const steps = [
     { num: "01", titleKey: "step1Title", descKey: "step1Desc" },
@@ -21,7 +30,7 @@ export default async function HomePage() {
   return (
     <div style={{ minHeight: "100vh", background: "var(--lib-bg)" }}>
       {/* ── Hero ── */}
-      <Hero />
+      <Hero locale={locale} />
 
       {/* ── How It Works ── */}
       <section style={{ padding: "72px 36px", background: "var(--lib-bg-2)", borderBottom: "1px solid var(--lib-border)" }}>
@@ -158,7 +167,7 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <FeatureCards />
+          <FeatureCards locale={locale} />
         </div>
       </section>
 
