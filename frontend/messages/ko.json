@@ -141,7 +141,9 @@
     "notionUrlPlaceholder": "Notion 페이지 URL 붙여넣기…",
     "notionImportButton": "가져오기",
     "notionImporting": "가져오는 중…",
-    "notionError": "Notion 페이지를 불러올 수 없습니다. URL을 확인하고, 페이지가 연동에 공유되어 있는지 확인하세요."
+    "notionError": "Notion 페이지를 불러올 수 없습니다. URL을 확인하고, 페이지가 연동에 공유되어 있는지 확인하세요.",
+    "errorTextLength": "파일이 너무 깁니다 (현재 {current}자). 텍스트 파일은 최대 {max}자까지 지원합니다.",
+    "openTocEditor": "목차 편집기 열기"
   },
   "EpubCompatibilityCheck": {
     "title": "EPUB 호환성 검사",
@@ -385,5 +387,36 @@
     "processed": "처리됨",
     "user": "사용자",
     "error": "에러"
+  },
+  "TocEditor": {
+    "title": "목차 편집기",
+    "loading": "목차 로딩 중…",
+    "noNavTitle": "목차 편집기",
+    "noNavDesc": "이 EPUB에는 편집 가능한 목차(TOC)가 없습니다.",
+    "noNavHint": "pandoc으로 변환된 파일이라면 목차를 자동 생성하는 옵션을 켜고 다시 변환해 보세요.",
+    "close": "닫기",
+    "errorTitle": "목차 편집기 오류",
+    "instructions": "드래그하여 순서 변경 · 클릭하여 이름 수정 · ← / → 로 계층 조정",
+    "empty": "목차 항목이 없습니다.",
+    "dragHandle": "드래그하여 이동",
+    "outdent": "내어쓰기",
+    "indent": "들여쓰기",
+    "clickToEdit": "클릭하여 이름 변경",
+    "noLabel": "(제목 없음)",
+    "addItem": "+ 항목 추가",
+    "newChapter": "새 챕터",
+    "saving": "저장 중…",
+    "saveAndDownload": "저장 후 다운로드",
+    "reset": "초기화"
+  },
+  "ConversionList": {
+    "empty": "변환 기록이 없습니다.",
+    "expired": "만료됨",
+    "expiresInDays": "{days}일 후 만료",
+    "expiresInHours": "{hours}시간 후 만료",
+    "fileExpired": "파일 만료됨",
+    "downloadError": "파일을 불러오지 못했습니다.",
+    "download": "다운로드",
+    "editToc": "목차 편집"
   }
 }

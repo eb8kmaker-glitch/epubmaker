@@ -689,7 +689,7 @@ export default function FileUpload() {
               className="btn-ghost-gold"
               style={{ padding: "8px 16px", fontSize: 13, borderRadius: 2, background: "transparent", cursor: "pointer", alignSelf: "flex-start" }}
             >
-              목차 편집기 열기
+              {t("openTocEditor")}
             </button>
           ) : (
             <TocEditor epubBlob={previewFile} filename={previewFilename} onClose={() => setShowTocEditor(false)} />

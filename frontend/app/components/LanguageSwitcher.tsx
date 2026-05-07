@@ -50,6 +50,8 @@ export default function LanguageSwitcher() {
       setIsOpen(false);
       return;
     }
+    // Persist preference — next-intl middleware reads NEXT_LOCALE cookie for root-path detection
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
     setDisplayLocale(newLocale);
     setIsOpen(false);
     startTransition(() => {
@@ -62,7 +64,7 @@ export default function LanguageSwitcher() {
       <button
         type="button"
         onClick={() => setIsOpen((o) => !o)}
-        className="flex items-center gap-1.5 rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm font-medium text-[var(--content)] shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--dropzone-hover)]"
+        className="flex items-center gap-1.5 rounded-[6px] border border-[var(--lib-border)] bg-[var(--lib-panel)] px-3 py-2 text-sm font-medium text-[var(--lib-ink)] shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--lib-bg-3)]"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         aria-label="Select language"
@@ -88,7 +90,7 @@ export default function LanguageSwitcher() {
       {isOpen && (
         <ul
           role="listbox"
-          className="absolute right-0 top-full z-20 mt-1 max-h-64 w-44 overflow-auto rounded-[12px] border border-[var(--border)] bg-[var(--card)] py-1 shadow-[var(--shadow-card)]"
+          className="absolute right-0 top-full z-20 mt-1 max-h-64 w-44 overflow-auto rounded-[10px] border border-[var(--lib-border)] bg-[var(--lib-panel)] py-1 shadow-sm"
         >
           {routing.locales.map((loc) => (
             <li key={loc} role="option" aria-selected={loc === displayLocale}>
@@ -98,8 +100,8 @@ export default function LanguageSwitcher() {
                 disabled={isPending}
                 className={`w-full px-3 py-2 text-left text-sm transition-all duration-200 disabled:opacity-50 ${
                   loc === displayLocale
-                    ? "bg-[var(--guide-bg)] font-medium text-[var(--primary)]"
-                    : "text-[var(--content)] hover:bg-[var(--dropzone-hover)]"
+                    ? "bg-[var(--lib-bg-2)] font-medium text-[var(--lib-wood-dim)]"
+                    : "text-[var(--lib-ink)] hover:bg-[var(--lib-bg-3)]"
                 }`}
               >
                 {languageNames[loc] ?? loc}

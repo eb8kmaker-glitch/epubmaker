@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import JSZip from "jszip";
 
 interface TocItem {
@@ -131,7 +132,6 @@ function updateNavXhtml(originalContent: string, items: TocItem[]): string {
 
   if (!navEl) return originalContent;
 
-  // 기존 ol 제거 후 새 ol 삽입
   const existingOl = navEl.querySelector("ol");
   if (existingOl) navEl.removeChild(existingOl);
 
@@ -149,10 +149,8 @@ function updateNcx(originalContent: string, items: TocItem[]): string {
   const navMap = doc.querySelector("navMap");
   if (!navMap) return originalContent;
 
-  // 기존 navPoint 모두 제거
   while (navMap.firstChild) navMap.removeChild(navMap.firstChild);
 
-  // 새 navPoints 생성 (flat — depth 무시하고 순서만 유지)
   items.forEach((item, idx) => {
     const np = doc.createElement("navPoint");
     np.setAttribute("id", `np${idx + 1}`);
@@ -175,6 +173,8 @@ function updateNcx(originalContent: string, items: TocItem[]): string {
 // ── 컴포넌트 ─────────────────────────────────────────────────────────────────
 
 export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProps) {
+  const t = useTranslations("TocEditor");
+
   const [loaded, setLoaded] = useState<LoadedEpub | null>(null);
   const [items, setItems] = useState<TocItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -187,14 +187,12 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
   const [editingLabel, setEditingLabel] = useState("");
   const editInputRef = useRef<HTMLInputElement>(null);
 
-  // EPUB 로딩
   useEffect(() => {
     let cancelled = false;
     async function load() {
       try {
         const zip = await JSZip.loadAsync(epubBlob);
 
-        // container.xml → OPF 경로
         const containerFile = zip.file("META-INF/container.xml");
         if (!containerFile) throw new Error("Not a valid EPUB: missing META-INF/container.xml");
         const containerXml = await containerFile.async("text");
@@ -203,12 +201,10 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
         const opfPath = opfMatch[1];
         const opfDir = opfPath.includes("/") ? opfPath.slice(0, opfPath.lastIndexOf("/") + 1) : "";
 
-        // OPF 읽기
         const opfFile = zip.file(opfPath);
         if (!opfFile) throw new Error("OPF file not found");
         const opfContent = await opfFile.async("text");
 
-        // nav 문서 찾기: <item> 태그를 속성 순서와 무관하게 파싱 (EPUB3 nav 우선)
         let navRelPath: string | null = null;
         let navFormat: NavFormat = "nav";
         let ncxPath: string | null = null;
@@ -267,7 +263,6 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
     return () => { cancelled = true; };
   }, [epubBlob]);
 
-  // 인라인 편집 포커스
   useEffect(() => {
     if (editingId && editInputRef.current) {
       editInputRef.current.focus();
@@ -275,7 +270,6 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
     }
   }, [editingId]);
 
-  // 드래그앤드롭
   const handleDragStart = useCallback((idx: number) => setDragIndex(idx), []);
   const handleDragOver = useCallback((e: React.DragEvent, idx: number) => {
     e.preventDefault();
@@ -298,7 +292,6 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
     setDragOverIndex(null);
   }, []);
 
-  // 인라인 편집
   const startEdit = useCallback((item: TocItem) => {
     setEditingId(item.id);
     setEditingLabel(item.label);
@@ -311,25 +304,22 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
     setEditingId(null);
   }, [editingId, editingLabel]);
 
-  // 항목 삭제
   const deleteItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   }, []);
 
-  // 항목 추가
   const addItem = useCallback(() => {
     const minDepth = items.length > 0 ? Math.min(...items.map((i) => i.depth)) : 0;
     const newItem: TocItem = {
       id: `toc-new-${Date.now()}`,
-      label: "New Chapter",
+      label: t("newChapter"),
       href: "",
       depth: minDepth,
     };
     setItems((prev) => [...prev, newItem]);
     setTimeout(() => startEdit(newItem), 0);
-  }, [items, startEdit]);
+  }, [items, startEdit, t]);
 
-  // 깊이 조절
   const adjustDepth = useCallback((id: string, delta: number) => {
     setItems((prev) =>
       prev.map((item) =>
@@ -338,28 +328,23 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
     );
   }, []);
 
-  // 저장 후 다운로드
   const saveAndDownload = useCallback(async () => {
     if (!loaded) return;
     setSaving(true);
     try {
       const { zip, navPath, navFormat } = loaded;
 
-      // 원본 nav 내용 가져오기
       const navFile = zip.file(navPath);
       if (!navFile) throw new Error("Nav file lost");
       const originalContent = await navFile.async("text");
 
-      // 업데이트된 nav 내용 생성
       const updatedContent =
         navFormat === "nav"
           ? updateNavXhtml(originalContent, items)
           : updateNcx(originalContent, items);
 
-      // ZIP 업데이트
       zip.file(navPath, updatedContent);
 
-      // 다운로드
       const blob = await zip.generateAsync({ type: "blob", mimeType: "application/epub+zip" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -378,24 +363,24 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
 
   if (loading) {
     return (
-      <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-6 shadow-[var(--shadow-card)]">
-        <p className="text-sm text-[var(--content-muted)]">목차 로딩 중…</p>
+      <div className="rounded-[12px] border border-[var(--lib-border)] bg-[var(--lib-panel)] p-6">
+        <p className="text-sm text-[var(--lib-dust)]">{t("loading")}</p>
       </div>
     );
   }
 
   if (noNav) {
     return (
-      <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 text-sm text-[var(--content-muted)]">
-        <p className="font-medium text-[var(--content)]">목차 편집기</p>
-        <p className="mt-1">이 EPUB에는 편집 가능한 목차(TOC)가 없습니다.</p>
-        <p className="mt-1 text-xs">pandoc으로 변환된 파일이라면 목차를 자동 생성하는 옵션을 켜고 다시 변환해 보세요.</p>
+      <div className="rounded-[12px] border border-[var(--lib-border)] bg-[var(--lib-panel)] p-4 text-sm text-[var(--lib-dust)]">
+        <p className="font-medium text-[var(--lib-ink)]">{t("noNavTitle")}</p>
+        <p className="mt-1">{t("noNavDesc")}</p>
+        <p className="mt-1 text-xs">{t("noNavHint")}</p>
         <button
           type="button"
           onClick={onClose}
-          className="mt-2 underline underline-offset-2 hover:text-[var(--primary)]"
+          className="mt-2 underline underline-offset-2 hover:text-[var(--lib-wood-dim)]"
         >
-          닫기
+          {t("close")}
         </button>
       </div>
     );
@@ -404,40 +389,40 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
   if (error) {
     return (
       <div className="rounded-[12px] border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-        <p className="font-medium">목차 편집기 오류</p>
+        <p className="font-medium">{t("errorTitle")}</p>
         <p className="mt-1">{error}</p>
         <button
           type="button"
           onClick={onClose}
           className="mt-2 underline underline-offset-2"
         >
-          닫기
+          {t("close")}
         </button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)]">
+    <div className="rounded-[12px] border border-[var(--lib-border)] bg-[var(--lib-panel)] p-4">
       {/* 헤더 */}
       <div className="mb-4 flex items-center justify-between gap-2">
-        <h3 className="text-sm font-semibold text-[var(--content)]">목차 편집기</h3>
+        <h3 className="text-sm font-semibold text-[var(--lib-ink)]">{t("title")}</h3>
         <button
           type="button"
           onClick={onClose}
-          className="text-xs text-[var(--content-muted)] underline underline-offset-2 hover:text-[var(--primary)]"
+          className="text-xs text-[var(--lib-dust)] underline underline-offset-2 hover:text-[var(--lib-wood-dim)]"
         >
-          닫기
+          {t("close")}
         </button>
       </div>
 
-      <p className="mb-3 text-xs text-[var(--content-muted)]">
-        드래그하여 순서 변경 · 클릭하여 이름 수정 · 들여쓰기/내어쓰기로 계층 조정
+      <p className="mb-3 text-xs text-[var(--lib-dust)]">
+        {t("instructions")}
       </p>
 
       {items.length === 0 ? (
-        <p className="rounded-lg bg-[var(--secondary-bg)] px-4 py-3 text-sm text-[var(--content-muted)]">
-          목차 항목이 없습니다.
+        <p className="rounded-lg bg-[var(--lib-bg-2)] px-4 py-3 text-sm text-[var(--lib-dust)]">
+          {t("empty")}
         </p>
       ) : (
         <ul className="space-y-1">
@@ -452,14 +437,14 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
               style={{ paddingLeft: `${item.depth * 20}px` }}
               className={`flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors ${
                 dragOverIndex === idx && dragIndex !== idx
-                  ? "bg-[var(--primary)]/10 outline outline-2 outline-[var(--primary)]"
-                  : "bg-[var(--secondary-bg)]"
+                  ? "bg-[var(--lib-wood-dim)]/10 outline outline-2 outline-[var(--lib-wood-dim)]"
+                  : "bg-[var(--lib-bg-2)]"
               } ${dragIndex === idx ? "opacity-40" : ""}`}
             >
               {/* 드래그 핸들 */}
               <span
-                className="shrink-0 cursor-grab text-[var(--content-muted)] active:cursor-grabbing"
-                title="드래그하여 이동"
+                className="shrink-0 cursor-grab text-[var(--lib-dust)] active:cursor-grabbing"
+                title={t("dragHandle")}
                 aria-hidden
               >
                 ⠿
@@ -470,16 +455,16 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
                 type="button"
                 onClick={() => adjustDepth(item.id, -1)}
                 disabled={item.depth === 0}
-                className="shrink-0 rounded px-1 text-xs text-[var(--content-muted)] hover:bg-[var(--border)] disabled:opacity-30"
-                title="내어쓰기"
+                className="shrink-0 rounded px-1 text-xs text-[var(--lib-dust)] hover:bg-[var(--lib-border)] disabled:opacity-30"
+                title={t("outdent")}
               >
                 ←
               </button>
               <button
                 type="button"
                 onClick={() => adjustDepth(item.id, 1)}
-                className="shrink-0 rounded px-1 text-xs text-[var(--content-muted)] hover:bg-[var(--border)]"
-                title="들여쓰기"
+                className="shrink-0 rounded px-1 text-xs text-[var(--lib-dust)] hover:bg-[var(--lib-border)]"
+                title={t("indent")}
               >
                 →
               </button>
@@ -496,21 +481,21 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
                     if (e.key === "Enter") commitEdit();
                     if (e.key === "Escape") setEditingId(null);
                   }}
-                  className="min-w-0 flex-1 rounded border border-[var(--primary)] bg-[var(--card)] px-2 py-0.5 text-sm text-[var(--content)] focus:outline-none"
+                  className="min-w-0 flex-1 rounded border border-[var(--lib-wood-light)] bg-[var(--lib-panel)] px-2 py-0.5 text-sm text-[var(--lib-ink)] focus:outline-none"
                 />
               ) : (
                 <span
-                  className="min-w-0 flex-1 cursor-pointer truncate text-sm text-[var(--content)] hover:underline"
+                  className="min-w-0 flex-1 cursor-pointer truncate text-sm text-[var(--lib-ink)] hover:underline"
                   onClick={() => startEdit(item)}
-                  title="클릭하여 이름 변경"
+                  title={t("clickToEdit")}
                 >
-                  {item.label || <span className="italic text-[var(--content-muted)]">(제목 없음)</span>}
+                  {item.label || <span className="italic text-[var(--lib-dust)]">{t("noLabel")}</span>}
                 </span>
               )}
 
               {/* href 표시 (짧게) */}
               {item.href && (
-                <span className="hidden shrink-0 max-w-[80px] truncate font-mono text-[10px] text-[var(--content-muted)] sm:block" title={item.href}>
+                <span className="hidden shrink-0 max-w-[80px] truncate font-mono text-[10px] text-[var(--lib-dust)] sm:block" title={item.href}>
                   {item.href}
                 </span>
               )}
@@ -520,7 +505,7 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
                 type="button"
                 onClick={() => deleteItem(item.id)}
                 className="shrink-0 rounded px-1.5 py-0.5 text-xs text-red-400 hover:bg-red-50 hover:text-red-600"
-                title="항목 삭제"
+                title="✕"
               >
                 ✕
               </button>
@@ -534,24 +519,24 @@ export default function TocEditor({ epubBlob, filename, onClose }: TocEditorProp
         <button
           type="button"
           onClick={addItem}
-          className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-3 py-1.5 text-sm font-medium text-[var(--content)] hover:bg-[var(--secondary-bg)]"
+          className="rounded-xl border border-[var(--lib-border)] bg-[var(--lib-panel)] px-3 py-1.5 text-sm font-medium text-[var(--lib-ink)] hover:bg-[var(--lib-bg-2)]"
         >
-          + 항목 추가
+          {t("addItem")}
         </button>
         <button
           type="button"
           onClick={saveAndDownload}
           disabled={saving}
-          className="rounded-xl bg-[var(--primary)] px-4 py-1.5 text-sm font-medium text-white hover:bg-[var(--primary-hover)] disabled:opacity-50"
+          className="rounded-xl bg-[var(--lib-wood-dim)] px-4 py-1.5 text-sm font-medium text-[#F8F5F0] hover:bg-[var(--lib-wood)] disabled:opacity-50"
         >
-          {saving ? "저장 중…" : "저장 후 다운로드"}
+          {saving ? t("saving") : t("saveAndDownload")}
         </button>
         <button
           type="button"
           onClick={() => setItems(loaded?.items ?? [])}
-          className="text-xs text-[var(--content-muted)] underline underline-offset-2 hover:text-[var(--primary)]"
+          className="text-xs text-[var(--lib-dust)] underline underline-offset-2 hover:text-[var(--lib-wood-dim)]"
         >
-          초기화
+          {t("reset")}
         </button>
       </div>
     </div>

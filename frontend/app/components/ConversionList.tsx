@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import TocEditor from "./TocEditor";
 
 interface ConversionRow {
@@ -24,22 +25,24 @@ function isAvailable(row: ConversionRow): boolean {
   return true;
 }
 
-function formatExpiry(expires_at: string | null): string {
-  if (!expires_at) return "";
-  const d = new Date(expires_at);
-  const now = new Date();
-  const diffMs = d.getTime() - now.getTime();
-  if (diffMs <= 0) return "만료됨";
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays >= 1) return `${diffDays}일 후 만료`;
-  return `${diffHours}시간 후 만료`;
-}
-
 export default function ConversionList({ conversions }: Props) {
+  const t = useTranslations("ConversionList");
+  const locale = useLocale();
   const [tocTarget, setTocTarget] = useState<{ blob: Blob; filename: string } | null>(null);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
+
+  function formatExpiry(expires_at: string | null): string {
+    if (!expires_at) return "";
+    const d = new Date(expires_at);
+    const now = new Date();
+    const diffMs = d.getTime() - now.getTime();
+    if (diffMs <= 0) return t("expired");
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays >= 1) return t("expiresInDays", { days: diffDays });
+    return t("expiresInHours", { hours: diffHours });
+  }
 
   const fetchBlob = useCallback(async (id: string): Promise<Blob | null> => {
     setLoadingId(id);
@@ -86,7 +89,7 @@ export default function ConversionList({ conversions }: Props) {
 
   if (!conversions.length) {
     return (
-      <p className="text-sm text-[var(--content-muted)]">변환 기록이 없습니다.</p>
+      <p className="text-sm text-[var(--lib-dust)]">{t("empty")}</p>
     );
   }
 
@@ -110,26 +113,26 @@ export default function ConversionList({ conversions }: Props) {
         return (
           <li
             key={c.id}
-            className="rounded-lg border border-[var(--border)] px-4 py-3 text-sm"
+            className="rounded-lg border border-[var(--lib-border)] px-4 py-3 text-sm"
           >
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="truncate font-medium text-[var(--content)]">
+                <p className="truncate font-medium text-[var(--lib-ink)]">
                   {c.original_filename}
                 </p>
-                <p className="mt-0.5 text-xs text-[var(--content-muted)]">
-                  {new Date(c.created_at).toLocaleDateString("ko-KR")}
+                <p className="mt-0.5 text-xs text-[var(--lib-dust)]">
+                  {new Date(c.created_at).toLocaleDateString(locale)}
                   {available && c.expires_at && (
-                    <span className="ml-2 text-[var(--content-muted)]">
+                    <span className="ml-2 text-[var(--lib-dust)]">
                       · {formatExpiry(c.expires_at)}
                     </span>
                   )}
                   {!available && c.storage_path === null && (
-                    <span className="ml-2 text-[var(--content-muted)]">· 파일 만료됨</span>
+                    <span className="ml-2 text-[var(--lib-dust)]">· {t("fileExpired")}</span>
                   )}
                 </p>
                 {hasError && (
-                  <p className="mt-1 text-xs text-red-500">파일을 불러오지 못했습니다.</p>
+                  <p className="mt-1 text-xs text-red-500">{t("downloadError")}</p>
                 )}
               </div>
 
@@ -139,17 +142,17 @@ export default function ConversionList({ conversions }: Props) {
                     type="button"
                     disabled={loading}
                     onClick={() => handleDownload(c)}
-                    className="rounded-lg border border-[var(--border)] px-3 py-1 text-xs font-medium text-[var(--content)] hover:bg-[var(--secondary-bg)] disabled:opacity-50"
+                    className="rounded-lg border border-[var(--lib-border)] px-3 py-1 text-xs font-medium text-[var(--lib-ink)] hover:bg-[var(--lib-bg-3)] disabled:opacity-50"
                   >
-                    {loading ? "..." : "다운로드"}
+                    {loading ? "…" : t("download")}
                   </button>
                   <button
                     type="button"
                     disabled={loading}
                     onClick={() => handleEdit(c)}
-                    className="rounded-lg bg-[var(--primary)] px-3 py-1 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
+                    className="rounded-lg bg-[var(--lib-wood-dim)] px-3 py-1 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50"
                   >
-                    {loading ? "..." : "목차 편집"}
+                    {loading ? "…" : t("editToc")}
                   </button>
                 </div>
               )}

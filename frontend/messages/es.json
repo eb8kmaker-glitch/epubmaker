@@ -141,7 +141,9 @@
     "notionUrlPlaceholder": "Pega la URL de la página de Notion…",
     "notionImportButton": "Importar",
     "notionImporting": "Importando…",
-    "notionError": "No se pudo cargar la página de Notion. Verifica la URL y que la página se comparta con tu integración."
+    "notionError": "No se pudo cargar la página de Notion. Verifica la URL y que la página se comparta con tu integración.",
+    "errorTextLength": "File is too long ({current} characters). Text files are limited to {max} characters.",
+    "openTocEditor": "Open TOC Editor"
   },
   "EpubCompatibilityCheck": {
     "title": "Comprobación de compatibilidad EPUB",
@@ -385,5 +387,36 @@
     "processed": "Procesado",
     "user": "Usuario",
     "error": "Error"
+  },
+  "TocEditor": {
+    "title": "TOC Editor",
+    "loading": "Loading table of contents…",
+    "noNavTitle": "TOC Editor",
+    "noNavDesc": "This EPUB has no editable table of contents.",
+    "noNavHint": "If converted with pandoc, try enabling TOC generation and reconverting.",
+    "close": "Close",
+    "errorTitle": "TOC Editor Error",
+    "instructions": "Drag to reorder · Click to rename · ← / → to adjust indent level",
+    "empty": "No TOC items found.",
+    "dragHandle": "Drag to move",
+    "outdent": "Outdent",
+    "indent": "Indent",
+    "clickToEdit": "Click to rename",
+    "noLabel": "(untitled)",
+    "addItem": "+ Add item",
+    "newChapter": "New Chapter",
+    "saving": "Saving…",
+    "saveAndDownload": "Save & Download",
+    "reset": "Reset"
+  },
+  "ConversionList": {
+    "empty": "No conversion history.",
+    "expired": "Expired",
+    "expiresInDays": "Expires in {days} days",
+    "expiresInHours": "Expires in {hours} hours",
+    "fileExpired": "File expired",
+    "downloadError": "Failed to load file.",
+    "download": "Download",
+    "editToc": "Edit TOC"
   }
 }

@@ -141,7 +141,9 @@
     "notionUrlPlaceholder": "粘贴 Notion 页面 URL…",
     "notionImportButton": "导入",
     "notionImporting": "导入中…",
-    "notionError": "无法加载 Notion 页面。请检查 URL，确保页面已与您的集成共享。"
+    "notionError": "无法加载 Notion 页面。请检查 URL，确保页面已与您的集成共享。",
+    "errorTextLength": "File is too long ({current} characters). Text files are limited to {max} characters.",
+    "openTocEditor": "Open TOC Editor"
   },
   "EpubCompatibilityCheck": {
     "title": "EPUB 兼容性检查",
@@ -385,5 +387,36 @@
     "processed": "已处理",
     "user": "用户",
     "error": "错误"
+  },
+  "TocEditor": {
+    "title": "TOC Editor",
+    "loading": "Loading table of contents…",
+    "noNavTitle": "TOC Editor",
+    "noNavDesc": "This EPUB has no editable table of contents.",
+    "noNavHint": "If converted with pandoc, try enabling TOC generation and reconverting.",
+    "close": "Close",
+    "errorTitle": "TOC Editor Error",
+    "instructions": "Drag to reorder · Click to rename · ← / → to adjust indent level",
+    "empty": "No TOC items found.",
+    "dragHandle": "Drag to move",
+    "outdent": "Outdent",
+    "indent": "Indent",
+    "clickToEdit": "Click to rename",
+    "noLabel": "(untitled)",
+    "addItem": "+ Add item",
+    "newChapter": "New Chapter",
+    "saving": "Saving…",
+    "saveAndDownload": "Save & Download",
+    "reset": "Reset"
+  },
+  "ConversionList": {
+    "empty": "No conversion history.",
+    "expired": "Expired",
+    "expiresInDays": "Expires in {days} days",
+    "expiresInHours": "Expires in {hours} hours",
+    "fileExpired": "File expired",
+    "downloadError": "Failed to load file.",
+    "download": "Download",
+    "editToc": "Edit TOC"
   }
 }

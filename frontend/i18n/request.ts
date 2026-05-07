@@ -14,5 +14,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale,
     messages,
     timeZone: "UTC",
+    getMessageFallback({ namespace, key }) {
+      // Return a safe key-path string instead of crashing on missing translations
+      return [namespace, key].filter(Boolean).join(".");
+    },
+    onError(error) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[next-intl]", error.message);
+      }
+    },
   };
 });
