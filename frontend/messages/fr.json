@@ -143,7 +143,9 @@
     "notionImporting": "Import en cours…",
     "notionError": "Impossible de charger la page Notion. Vérifiez l'URL et que la page est partagée avec votre intégration.",
     "errorTextLength": "File is too long ({current} characters). Text files are limited to {max} characters.",
-    "openTocEditor": "Open TOC Editor"
+    "openTocEditor": "Open TOC Editor",
+    "ariaUpload": "Upload DOCX, TXT, PDF, HTML, or MD file",
+    "chooseFile": "Choose file"
   },
   "EpubCompatibilityCheck": {
     "title": "Vérification de compatibilité EPUB",
@@ -421,6 +423,50 @@
     "editToc": "Edit TOC"
   },
   "Navbar": {
-    "convert": "Convertir"
+    "convert": "Convertir",
+    "blog": "Bibliotheque",
+    "faq": "FAQ"
+  },
+  "Blog": {
+    "title": "La bibliotheque EPUB",
+    "subtitle": "Articles, guides et conseils pour la publication numerique.",
+    "readMore": "Lire l'article",
+    "minRead": "{min} min de lecture",
+    "noArticles": "Aucun article trouve.",
+    "backToBlog": "Retour a la bibliotheque",
+    "relatedArticles": "Articles connexes",
+    "tableOfContents": "Sommaire",
+    "postedOn": "Publie le"
+  },
+  "FAQ": {
+    "title": "Foire aux questions",
+    "subtitle": "Tout sur EPUBMaker et la publication numerique.",
+    "q1": "What file formats can I upload?",
+    "a1": "EPUBMaker supports DOCX (Word), TXT, PDF, HTML, and Markdown (.md) files. All are converted to standard EPUB 3 or EPUB 2.",
+    "q2": "Do I need an account to convert files?",
+    "a2": "No. Basic conversion works without any account. Create a free account if you want to save your conversion history.",
+    "q3": "Is there a file size limit?",
+    "a3": "Files must be 50 MB or smaller. Cover images must be 10 MB or smaller. Most manuscripts are well within these limits.",
+    "q4": "Which EPUB version should I choose?",
+    "a4": "EPUB 3 is recommended — it supports rich media, better typography, and modern reading apps. Use EPUB 2 only for older devices.",
+    "q5": "Why doesn't my table of contents appear?",
+    "a5": "For DOCX files, the TOC is generated from Heading styles. Make sure your document uses Word's built-in heading styles, not manually bolded text.",
+    "q6": "What cover image dimensions work best?",
+    "a6": "Amazon Kindle recommends 2,560 x 1,600 px. Apple Books recommends 1,400 x 2,100 px. A safe universal size is 1,600 x 2,400 px.",
+    "q7": "Can I edit the table of contents after conversion?",
+    "a7": "Yes. After conversion, use the built-in TOC Editor to reorder, rename, indent, or delete chapters before downloading.",
+    "q8": "Is EPUBMaker free forever?",
+    "a8": "Yes. EPUBMaker is a free tool with no conversion limits, supported by non-intrusive advertising.",
+    "count": "8"
+  },
+  "Guides": {
+    "title": "Guides",
+    "subtitle": "Guides etape par etape pour creer des EPUBs professionnels.",
+    "comingSoon": "Plus de guides a venir.",
+    "readGuide": "Lire le guide",
+    "backToGuides": "Retour aux guides"
+  },
+  "LanguageSwitcher": {
+    "ariaLabel": "Selectionner la langue"
   }
 }

@@ -74,17 +74,20 @@ export default async function Navbar({ locale }: NavbarProps) {
 
         {/* Nav links */}
         <nav style={{ display: "flex", gap: 24, flex: 1 }}>
-          <Link
-            href="/convert"
-            className="nav-link"
-            style={{
-              fontSize: 13,
-              textDecoration: "none",
-              fontFamily: "var(--font-sans), system-ui, sans-serif",
-            }}
-          >
-            {t("convert")}
-          </Link>
+          {(["convert", "blog", "faq"] as const).map((key) => (
+            <Link
+              key={key}
+              href={key === "convert" ? "/convert" : `/${key}`}
+              className="nav-link"
+              style={{
+                fontSize: 13,
+                textDecoration: "none",
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
+              }}
+            >
+              {t(key)}
+            </Link>
+          ))}
         </nav>
 
         {/* Right actions */}

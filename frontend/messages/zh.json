@@ -143,7 +143,9 @@
     "notionImporting": "导入中…",
     "notionError": "无法加载 Notion 页面。请检查 URL，确保页面已与您的集成共享。",
     "errorTextLength": "File is too long ({current} characters). Text files are limited to {max} characters.",
-    "openTocEditor": "Open TOC Editor"
+    "openTocEditor": "Open TOC Editor",
+    "ariaUpload": "Upload DOCX, TXT, PDF, HTML, or MD file",
+    "chooseFile": "Choose file"
   },
   "EpubCompatibilityCheck": {
     "title": "EPUB 兼容性检查",
@@ -421,6 +423,50 @@
     "editToc": "Edit TOC"
   },
   "Navbar": {
-    "convert": "转换"
+    "convert": "转换",
+    "blog": "图书馆",
+    "faq": "FAQ"
+  },
+  "Blog": {
+    "title": "EPUB图书馆",
+    "subtitle": "数字出版的文章、指南和技巧",
+    "readMore": "阅读文章",
+    "minRead": "{min}分钟阅读",
+    "noArticles": "暂无文章。",
+    "backToBlog": "返回图书馆",
+    "relatedArticles": "相关文章",
+    "tableOfContents": "目录",
+    "postedOn": "发布日期"
+  },
+  "FAQ": {
+    "title": "常见问题",
+    "subtitle": "关于EPUBMaker和数字出版的一切",
+    "q1": "What file formats can I upload?",
+    "a1": "EPUBMaker supports DOCX (Word), TXT, PDF, HTML, and Markdown (.md) files. All are converted to standard EPUB 3 or EPUB 2.",
+    "q2": "Do I need an account to convert files?",
+    "a2": "No. Basic conversion works without any account. Create a free account if you want to save your conversion history.",
+    "q3": "Is there a file size limit?",
+    "a3": "Files must be 50 MB or smaller. Cover images must be 10 MB or smaller. Most manuscripts are well within these limits.",
+    "q4": "Which EPUB version should I choose?",
+    "a4": "EPUB 3 is recommended — it supports rich media, better typography, and modern reading apps. Use EPUB 2 only for older devices.",
+    "q5": "Why doesn't my table of contents appear?",
+    "a5": "For DOCX files, the TOC is generated from Heading styles. Make sure your document uses Word's built-in heading styles, not manually bolded text.",
+    "q6": "What cover image dimensions work best?",
+    "a6": "Amazon Kindle recommends 2,560 x 1,600 px. Apple Books recommends 1,400 x 2,100 px. A safe universal size is 1,600 x 2,400 px.",
+    "q7": "Can I edit the table of contents after conversion?",
+    "a7": "Yes. After conversion, use the built-in TOC Editor to reorder, rename, indent, or delete chapters before downloading.",
+    "q8": "Is EPUBMaker free forever?",
+    "a8": "Yes. EPUBMaker is a free tool with no conversion limits, supported by non-intrusive advertising.",
+    "count": "8"
+  },
+  "Guides": {
+    "title": "指南",
+    "subtitle": "创建专业EPUB的分步指南",
+    "comingSoon": "更多指南即将推出。",
+    "readGuide": "阅读指南",
+    "backToGuides": "返回指南"
+  },
+  "LanguageSwitcher": {
+    "ariaLabel": "选择语言"
   }
 }

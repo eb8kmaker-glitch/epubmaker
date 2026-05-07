@@ -1,0 +1,15 @@
+import type { MetadataRoute } from "next";
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/api/", "/admin/", "/account/", "/dashboard/"],
+      },
+    ],
+    sitemap: "https://epubmaker.org/sitemap.xml",
+    host: "https://epubmaker.org",
+  };
+}

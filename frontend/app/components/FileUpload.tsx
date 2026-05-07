@@ -364,7 +364,7 @@ export default function FileUpload() {
 
       {/* Drop zone */}
       <label className="block">
-        <span className="sr-only">Choose file</span>
+        <span className="sr-only">{t("chooseFile")}</span>
         <div
           onDrop={onDrop}
           onDragOver={onDragOver}
@@ -395,7 +395,7 @@ export default function FileUpload() {
             multiple
             onChange={onInputChange}
             style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }}
-            aria-label="Upload DOCX, TXT, PDF, HTML, or MD file"
+            aria-label={t("ariaUpload")}
           />
           <span style={{ fontSize: 32, marginBottom: 10 }} aria-hidden>📄</span>
           <p style={{ fontSize: 14, color: "var(--cream-dim)", textAlign: "center", fontWeight: 300 }}>

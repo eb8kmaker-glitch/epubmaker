@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { useTransition, useState, useRef, useEffect } from "react";
@@ -24,6 +24,7 @@ function getLocaleFromPath(): string | null {
 
 export default function LanguageSwitcher() {
   const locale = useLocale();
+  const t = useTranslations("LanguageSwitcher");
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -67,7 +68,7 @@ export default function LanguageSwitcher() {
         className="flex items-center gap-1.5 rounded-[6px] border border-[var(--lib-border)] bg-[var(--lib-panel)] px-3 py-2 text-sm font-medium text-[var(--lib-ink)] shadow-sm transition-all duration-200 ease-in-out hover:bg-[var(--lib-bg-3)]"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
-        aria-label="Select language"
+        aria-label={t("ariaLabel")}
       >
         <span className="max-w-[7rem] truncate sm:max-w-none">
           {languageNames[displayLocale] ?? displayLocale}
