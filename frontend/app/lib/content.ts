@@ -119,10 +119,24 @@ export function getAllPostSlugs(locale: string, section: string): string[] {
 
 export function getAllPosts(locale: string, section: string): PostMeta[] {
   const slugs = getAllPostSlugs(locale, section);
-  return slugs
-    .map((slug) => getPostMeta(locale, section, slug))
-    .filter(Boolean)
-    .sort((a, b) => new Date(b!.date).getTime() - new Date(a!.date).getTime()) as PostMeta[];
+  if (slugs.length > 0) {
+    return slugs
+      .map((slug) => getPostMeta(locale, section, slug))
+      .filter(Boolean)
+      .sort((a, b) => new Date(b!.date).getTime() - new Date(a!.date).getTime()) as PostMeta[];
+  }
+
+  // Fallback to English — log so untranslated content can be tracked
+  if (locale !== "en") {
+    console.warn(`[content] No ${section} posts found for locale "${locale}" — falling back to "en"`);
+    const enSlugs = getAllPostSlugs("en", section);
+    return enSlugs
+      .map((slug) => getPostMeta("en", section, slug))
+      .filter(Boolean)
+      .sort((a, b) => new Date(b!.date).getTime() - new Date(a!.date).getTime()) as PostMeta[];
+  }
+
+  return [];
 }
 
 export function getPostMeta(
@@ -155,10 +169,19 @@ export async function getPost(
   section: string,
   slug: string
 ): Promise<Post | null> {
-  const meta = getPostMeta(locale, section, slug);
+  let meta = getPostMeta(locale, section, slug);
+  let resolvedLocale = locale;
+
+  // Fallback to English if locale-specific file doesn't exist
+  if (!meta && locale !== "en") {
+    console.warn(`[content] Post "${slug}" not found for locale "${locale}" — falling back to "en"`);
+    meta = getPostMeta("en", section, slug);
+    resolvedLocale = "en";
+  }
+
   if (!meta) return null;
 
-  const filePath = path.join(getContentPath(locale, section), `${slug}.md`);
+  const filePath = path.join(getContentPath(resolvedLocale, section), `${slug}.md`);
   const raw = fs.readFileSync(filePath, "utf-8");
   const { body } = parseFrontmatter(raw);
 

@@ -73,34 +73,51 @@ async function callClaude(prompt: string): Promise<string> {
 }
 
 // ── Prompts ───────────────────────────────────────────────────────
+const LOCALE_STYLES: Record<string, string> = {
+  en: "Warm, informative tone — like a knowledgeable librarian helping a writer.",
+  ko: "친절하고 부드러운 SaaS 서비스 문체. 너무 딱딱하지 않게, 실제 사용자에게 말하듯 자연스럽게.",
+  ja: "丁寧で落ち着いた文体。「〜できます」「〜してください」を基本とし、読者に寄り添う説明を心がける。",
+  es: "Tono cercano y práctico, propio de un servicio web de calidad. Evita el estilo de manual técnico o la traducción literal del inglés.",
+  de: "Klar, direkt und funktionsorientiert. Kurze Sätze bevorzugen. Kein übermäßig formeller Ton.",
+  zh: "自然流畅的互联网产品文案风格。简洁明了，避免生硬的直译表达，使用简体中文。",
+  fr: "Ton professionnel mais accessible, adapté aux services numériques. Phrases claires et bien structurées.",
+  pt: "Tom amigável e direto, como se fosse um serviço digital brasileiro/português de qualidade. Evite traduções literais do inglês.",
+};
+
 function buildPrompt(topic: string, locale: string, slug: string, section: string): string {
   const langName =
     { en: "English", ko: "Korean", es: "Spanish", ja: "Japanese", zh: "Chinese", pt: "Portuguese", de: "German", fr: "French" }[locale] ?? locale;
+  const style = LOCALE_STYLES[locale] ?? "Clear, helpful and natural for a native speaker.";
 
   return `You are an expert technical writer specializing in digital publishing and EPUB creation.
+You are writing for native ${langName} speakers — NOT translating from English.
+This must feel like content written by a local author, not a translation tool.
 
-Write a comprehensive, SEO-optimized ${section === "guides" ? "how-to guide" : "blog article"} in ${langName} about the following topic:
+Write a comprehensive, SEO-optimized ${section === "guides" ? "how-to guide" : "blog article"} in ${langName} about:
 
 **Topic:** ${topic}
+
+Tone & Style (critical):
+${style}
 
 Requirements:
 1. Write ONLY the Markdown content — no preamble, no explanations
 2. Start with a YAML frontmatter block wrapped in --- delimiters
 3. Frontmatter must include:
-   - title (compelling, SEO-optimized, in ${langName})
+   - title (compelling, SEO-optimized, natural in ${langName} — not a literal English translation)
    - description (150-160 chars, in ${langName})
    - date (today's date: ${new Date().toISOString().split("T")[0]})
-   - tags (array of 3-6 relevant lowercase tags)
+   - tags (array of 3-6 relevant lowercase tags, in ${langName} if appropriate)
    - readingTime (estimated minutes to read)
    - slugs section with: ${locale}: ${slug}
 4. Article body:
    - 800-1200 words in ${langName}
-   - Use ## and ### headings
-   - Include practical examples and code blocks where relevant
-   - Use tables for comparisons
-   - End with a clear conclusion or summary
-   - Link naturally to EPUBMaker features (conversion, TOC editor, CSS presets)
-5. Warm, informative tone — like a knowledgeable librarian helping a writer
+   - Use ## and ### headings (in ${langName})
+   - Include practical examples and comparison tables where relevant
+   - Use natural ${langName} terminology for: EPUB, table of contents (TOC), metadata, manuscript, cover image
+   - End with a clear, actionable conclusion
+   - Reference EPUBMaker features naturally (conversion, TOC editor, CSS presets)
+5. Do NOT produce a literal translation — adapt idioms, examples, and terminology to feel native
 
 Output ONLY the frontmatter + Markdown body. Nothing else.`;
 }
