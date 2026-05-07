@@ -1,14 +1,11 @@
 /**
  * EPUB Conversion API — free, no auth required.
  *
- * Flow: rate-limit → parse file + options → validate → convert → (if logged in: save record) → return EPUB blob.
+ * Flow: rate-limit → parse file + options → validate → convert → return EPUB blob.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
-import { createServerClient } from "@/lib/supabase";
-import { createAdminClient } from "@/lib/supabase";
-import { uploadInputFile, uploadOutputFile } from "@/lib/storage";
 import { fileTypeFromBuffer } from "file-type";
 import { convert } from "pandoc-wasm";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
@@ -31,8 +28,6 @@ const INPUT_FILENAME = "input.docx";
 const OUTPUT_FILENAME = "output.epub";
 const INTERMEDIATE_HTML_FILENAME = "output.html";
 const STYLE_FILENAME = "style.css";
-
-const STORAGE_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days for all users
 
 interface ConversionOptionsInput {
   toc?: boolean;
@@ -80,14 +75,7 @@ async function validateFileType(
       error: `Invalid file: expected plain text. Got: ${detected.mime} (${detected.ext}).`,
     };
   }
-  return { ok: true, inputFormat: "txt" };
-}
-
-function getClientIp(request: NextRequest): string | null {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (!forwarded) return null;
-  const first = forwarded.split(",")[0]?.trim();
-  return first ?? null;
+  return { ok: true, inputFormat: getInputFormat(ext) };
 }
 
 function buildPandocOptions(params: {
@@ -283,7 +271,6 @@ async function removeTitlePage(buffer: Buffer): Promise<Buffer> {
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limit: 10 per minute per IP
     if (!checkRateLimit(request, 10)) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
@@ -291,14 +278,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Auth is optional — anonymous users can convert
-    const supabase = await createServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    const userId = user?.id ?? null;
-
-    // Parse file + options
     const formData = await request.formData();
     const file = formData.get("file");
     if (!file || !(file instanceof File)) {
@@ -321,7 +300,6 @@ export async function POST(request: NextRequest) {
     const coverRaw = formData.get("cover");
     const coverFile = coverRaw instanceof File ? coverRaw : null;
 
-    // Validate
     if (file.size > MAX_FILE_SIZE_BYTES) {
       return NextResponse.json({ error: "File size must be 50MB or less." }, { status: 413 });
     }
@@ -335,64 +313,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
     const inputFormat = validation.inputFormat;
-    const ipAddress = getClientIp(request);
-
-    // Create conversion record (logged-in users only)
-    let conversionId: string | null = null;
-    if (userId) {
-      const admin = createAdminClient();
-      const { data: conversionRow, error: insertError } = await admin
-        .from("conversions")
-        .insert({
-          user_id: userId,
-          original_filename: file.name,
-          original_size_bytes: file.size,
-          input_format: inputFormat,
-          output_format: "epub",
-          status: "processing",
-          ip_address: ipAddress,
-        })
-        .select("id")
-        .single();
-      if (!insertError && conversionRow) {
-        conversionId = conversionRow.id as string;
-        // Upload input file
-        try {
-          await uploadInputFile(userId, conversionId, file);
-        } catch (e) {
-          console.warn("[convert] input upload failed:", e instanceof Error ? e.message : e);
-        }
-      }
-    }
 
     try {
-      // Convert
       const epubBuffer = await removeTitlePage(
         await runConversion(file, inputFormat, options, coverFile)
       );
-
-      // Save output (logged-in users only)
-      if (userId && conversionId) {
-        const admin = createAdminClient();
-        let storagePath: string | null = null;
-        try {
-          await uploadOutputFile(userId, conversionId, epubBuffer);
-          storagePath = `${userId}/${conversionId}/output.epub`;
-        } catch (e) {
-          console.warn("[convert] output upload failed:", e instanceof Error ? e.message : e);
-        }
-        const now = new Date();
-        const expiresAt = new Date(now.getTime() + STORAGE_EXPIRY_MS);
-        await admin
-          .from("conversions")
-          .update({
-            status: "completed",
-            completed_at: now.toISOString(),
-            expires_at: expiresAt.toISOString(),
-            storage_path: storagePath,
-          })
-          .eq("id", conversionId);
-      }
 
       const baseName = (options.title || file.name.replace(/\.[^.]+$/, ""))
         .replace(/[^\w\s-]/g, "")
@@ -404,20 +329,12 @@ export async function POST(request: NextRequest) {
         headers: {
           "Content-Type": "application/epub+zip",
           "Content-Disposition": `attachment; filename="${outputFilename}"`,
-          ...(conversionId ? { "X-Conversion-Id": conversionId } : {}),
         },
       });
     } catch (conversionErr) {
       Sentry.captureException(conversionErr);
       const errMessage = conversionErr instanceof Error ? conversionErr.message : String(conversionErr);
       console.error("[convert] error:", conversionErr);
-      if (userId && conversionId) {
-        const admin = createAdminClient();
-        await admin
-          .from("conversions")
-          .update({ status: "failed", error_message: errMessage })
-          .eq("id", conversionId);
-      }
       return NextResponse.json({ error: errMessage }, { status: 500 });
     }
   } catch (err) {

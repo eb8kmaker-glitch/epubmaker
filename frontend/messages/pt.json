@@ -22,7 +22,7 @@
       "titlePlain": "Escreva com beleza.",
       "titleEm": "Crie EPUBs instantaneamente.",
       "subtitle": "Um lugar tranquilo para a escrita digital. Converta seus manuscritos em belos EPUBs — sem necessidade de conta.",
-      "cta": "Começar a converter",
+      "cta": "Converter gratuitamente",
       "ctaSecondary": "Ver como funciona",
       "freeBadge": "Gratuito para sempre · Sem conta · Sem limites"
     },
@@ -30,7 +30,7 @@
       "label": "Sem assinaturas",
       "title": "Seu para usar, grátis para sempre.",
       "desc": "EPUBMaker é uma ferramenta gratuita baseada em Pandoc. Converta quantos documentos quiser, direto no navegador. Sem cadastro, sem pagamento, sem pegadinhas.",
-      "cta": "Abrir o editor"
+      "cta": "Converter gratuitamente"
     },
     "howItWorks": {
       "title": "Como funciona",
@@ -72,7 +72,7 @@
     },
     "cta": {
       "text": "Converta seu manuscrito para EPUB hoje.",
-      "button": "Converter agora"
+      "button": "Converter gratuitamente"
     }
   },
   "Convert": {
@@ -120,6 +120,7 @@
     "dropText": "Arraste seu arquivo aqui",
     "dropHere": "Soltar aqui",
     "browse": "ou clique para procurar — {extensions}",
+    "localStorageNote": "Salvo apenas neste navegador",
     "uploadedFile": "Arquivo enviado",
     "removeFile": "Remover arquivo",
     "convertButton": "Converter para EPUB",
@@ -328,7 +329,8 @@
     "terms": "Termos de uso",
     "privacy": "Política de privacidade",
     "refund": "Política de reembolso",
-    "copyright": "© {year} EPUB Converter. Todos os direitos reservados."
+    "announcement": "Aviso de serviço",
+    "copyright": "© {year} EPUBMaker. Grátis para sempre."
   },
   "Terms": {
     "title": "Termos de uso",
@@ -425,7 +427,8 @@
   "Navbar": {
     "convert": "Converter",
     "blog": "Biblioteca",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "startFree": "Começar grátis"
   },
   "Blog": {
     "title": "Biblioteca EPUB",
@@ -468,5 +471,30 @@
   },
   "LanguageSwitcher": {
     "ariaLabel": "Selecionar idioma"
+  },
+  "Announcement": {
+    "badge": "Atualização de serviço",
+    "title": "EPUBMaker agora é totalmente grátis — sem necessidade de conta",
+    "subtitle": "Removemos todos os requisitos de associação. EPUBMaker agora é uma ferramenta completamente gratuita e aberta que qualquer pessoa pode usar instantaneamente — sem inscrição, sem assinatura, sem limites.",
+    "keyMessage": "De agora em diante, EPUBMaker é grátis para todos. Basta abrir a ferramenta e começar a criar EPUBs — sem necessidade de login.",
+    "whatChangedTitle": "O que mudou",
+    "change1": "Sistema de associação e login removido — sem necessidade de conta",
+    "change2": "Todos os recursos de conversão agora estão disponíveis gratuitamente sem limites",
+    "change3": "Seu histórico de conversão é salvo localmente no seu navegador (IndexedDB) — os dados nunca saem do seu dispositivo",
+    "change4": "Boletim informativo e coleta de e-mail foram descontinuados",
+    "dataNoticeTitle": "Observação sobre dados de conta anteriores",
+    "dataNoticeBody": "Se você tinha uma conta no EPUBMaker, todos os dados da conta (e-mail, histórico de conversão, registros de assinatura) serão excluídos permanentemente de nossos servidores até 1º de agosto de 2026. Nenhuma ação é necessária de sua parte.",
+    "faqTitle": "Perguntas frequentes",
+    "faq": {
+      "q1": "Preciso fazer login para usar o EPUBMaker?",
+      "a1": "Não. O sistema de login foi removido. Basta acessar epubmaker.org e começar a converter arquivos imediatamente.",
+      "q2": "Onde meu histórico de conversão é salvo?",
+      "a2": "Seu histórico de conversão recente e configurações são salvos localmente no armazenamento do seu navegador (IndexedDB). Esses dados permanecem apenas no seu dispositivo.",
+      "q3": "O que aconteceu com meus dados de conta anteriores?",
+      "a3": "Todos os dados de conta anteriores serão excluídos de forma permanente e segura de nossos servidores até 1º de agosto de 2026.",
+      "q4": "Há um limite para quantos arquivos posso converter?",
+      "a4": "Não. Não há limites diários, limites mensais ou limites de conversão. Converta quantos arquivos precisar."
+    },
+    "cta": "Converter gratuitamente"
   }
 }

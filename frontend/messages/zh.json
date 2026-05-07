@@ -22,7 +22,7 @@
       "titlePlain": "写出精彩。",
       "titleEm": "即刻创建 EPUB。",
       "subtitle": "数字写作的宁静之地。无需账号，将您的手稿转换为精美的 EPUB。",
-      "cta": "开始转换",
+      "cta": "免费开始转换",
       "ctaSecondary": "了解使用方法",
       "freeBadge": "永久免费 · 无需账号 · 无使用限制"
     },
@@ -30,7 +30,7 @@
       "label": "无订阅",
       "title": "永久免费，任你使用。",
       "desc": "EPUBMaker 是基于 Pandoc 的免费工具。在浏览器中随心转换文档，无需注册、无需付费、无任何限制。",
-      "cta": "打开编辑器"
+      "cta": "免费开始转换"
     },
     "howItWorks": {
       "title": "使用方式",
@@ -72,7 +72,7 @@
     },
     "cta": {
       "text": "立即将您的稿件转换为 EPUB。",
-      "button": "立即转换"
+      "button": "免费开始转换"
     }
   },
   "Convert": {
@@ -120,6 +120,7 @@
     "dropText": "将文件拖拽到此处",
     "dropHere": "放置于此",
     "browse": "或点击选择 — {extensions}",
+    "localStorageNote": "仅保存在此浏览器中",
     "uploadedFile": "已上传文件",
     "removeFile": "删除文件",
     "convertButton": "转换为EPUB",
@@ -328,7 +329,8 @@
     "terms": "服务条款",
     "privacy": "隐私政策",
     "refund": "退款政策",
-    "copyright": "© {year} EPUB Converter. 保留所有权利。"
+    "announcement": "服务公告",
+    "copyright": "© {year} EPUBMaker. 永久免费。"
   },
   "Terms": {
     "title": "服务条款",
@@ -425,7 +427,8 @@
   "Navbar": {
     "convert": "转换",
     "blog": "图书馆",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "startFree": "免费开始"
   },
   "Blog": {
     "title": "EPUB图书馆",
@@ -468,5 +471,30 @@
   },
   "LanguageSwitcher": {
     "ariaLabel": "选择语言"
+  },
+  "Announcement": {
+    "badge": "服务更新",
+    "title": "EPUBMaker 现已完全免费 — 无需账户",
+    "subtitle": "我们已移除所有会员要求。EPUBMaker 现在是一个完全免费的开放工具，任何人都可以即时使用 — 无需注册、无需订阅、无需限制。",
+    "keyMessage": "从现在起，每个人都可以免费使用 EPUBMaker。只需打开工具并开始创建 EPUB — 无需登录。",
+    "whatChangedTitle": "变更内容",
+    "change1": "会员和登录系统已移除 — 无需账户",
+    "change2": "所有转换功能现在都可以无限制地免费使用",
+    "change3": "您的转换历史保存在本地浏览器中（IndexedDB）— 数据永远不会离开您的设备",
+    "change4": "通讯和电子邮件收集已停止",
+    "dataNoticeTitle": "关于之前账户数据的说明",
+    "dataNoticeBody": "如果您之前拥有 EPUBMaker 账户，所有账户数据（电子邮件、转换历史、订阅记录）将在 2026 年 8 月 1 日之前从我们的服务器永久删除。您无需采取任何行动。",
+    "faqTitle": "常见问题",
+    "faq": {
+      "q1": "使用 EPUBMaker 需要登录吗？",
+      "a1": "不需要。登录系统已被移除。只需访问 epubmaker.org 并立即开始转换文件。",
+      "q2": "我的转换历史保存在哪里？",
+      "a2": "您最近的转换历史和设置保存在浏览器的本地存储（IndexedDB）中。此数据仅保留在您的设备上。",
+      "q3": "我之前的账户数据怎样了？",
+      "a3": "所有先前的账户数据将在 2026 年 8 月 1 日之前从我们的服务器永久安全地删除。",
+      "q4": "我可以转换的文件数量有限制吗？",
+      "a4": "没有。没有每日限制、每月限制或转换上限。您可以根据需要转换任意数量的文件。"
+    },
+    "cta": "免费开始转换"
   }
 }

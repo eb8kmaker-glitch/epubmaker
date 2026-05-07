@@ -3,7 +3,6 @@ import { Link } from "@/i18n/navigation";
 import Hero from "@/app/components/home/Hero";
 import FeatureCards from "@/app/components/home/FeatureCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
-import HeroEmailSignup from "@/app/components/HeroEmailSignup";
 import AdBanner from "@/app/components/ads/AdBanner";
 import { routing } from "@/i18n/routing";
 
@@ -232,15 +231,6 @@ export default async function HomePage({ params }: Props) {
             {t("freeForever.cta")}
           </Link>
         </div>
-      </section>
-
-      <div style={{ maxWidth: 1060, margin: "0 auto", padding: "0 36px" }}>
-        <GoldDivider />
-      </div>
-
-      {/* ── Newsletter ── */}
-      <section style={{ padding: "64px 36px 80px", textAlign: "center", background: "var(--lib-bg)" }}>
-        <HeroEmailSignup />
       </section>
 
       {/* ── Ad — home page bottom ── */}

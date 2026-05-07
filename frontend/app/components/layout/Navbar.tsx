@@ -1,13 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
-import NavbarUserClient from "@/app/components/layout/NavbarUserClient";
 
 interface NavbarProps {
   locale: string;
 }
 
-export default async function Navbar({ locale }: NavbarProps) {
+export default async function Navbar({ locale: _locale }: NavbarProps) {
   const t = await getTranslations("Navbar");
   const tCommon = await getTranslations("common");
 
@@ -92,7 +91,22 @@ export default async function Navbar({ locale }: NavbarProps) {
 
         {/* Right actions */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <NavbarUserClient locale={locale} />
+          <Link
+            href="/convert"
+            className="btn-primary"
+            style={{
+              display: "inline-block",
+              padding: "7px 16px",
+              fontSize: 13,
+              borderRadius: 6,
+              textDecoration: "none",
+              fontFamily: "var(--font-sans), system-ui, sans-serif",
+              background: "var(--lib-wood-dim)",
+              color: "#F8F5F0",
+            }}
+          >
+            {t("startFree")}
+          </Link>
           <LanguageSwitcher />
         </div>
       </div>
