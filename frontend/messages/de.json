@@ -319,7 +319,8 @@
     "trust": "Kein Spam. Jederzeit abmelden.",
     "success": "Du bist dabei! 🚀 Wir benachrichtigen dich bei neuen Funktionen.",
     "alreadySubscribed": "Diese E-Mail-Adresse ist bereits registriert.",
-    "error": "Etwas ist schiefgelaufen. Bitte versuche es später erneut."
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+    "label": "Newsletter"
   },
   "Footer": {
     "terms": "Nutzungsbedingungen",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "Konvertieren"
   }
 }

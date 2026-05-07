@@ -12,15 +12,126 @@ export const revalidate = 3600;
 export default async function HomePage() {
   const t = await getTranslations("Home");
 
+  const steps = [
+    { num: "01", titleKey: "step1Title", descKey: "step1Desc" },
+    { num: "02", titleKey: "step2Title", descKey: "step2Desc" },
+    { num: "03", titleKey: "step3Title", descKey: "step3Desc" },
+  ] as const;
+
   return (
     <div style={{ minHeight: "100vh", background: "var(--lib-bg)" }}>
-      {/* Hero */}
+      {/* ── Hero ── */}
       <Hero />
 
-      {/* Features */}
+      {/* ── How It Works ── */}
+      <section style={{ padding: "72px 36px", background: "var(--lib-bg-2)", borderBottom: "1px solid var(--lib-border)" }}>
+        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 52 }}>
+            <div
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--lib-dust)",
+                marginBottom: 10,
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
+              }}
+            >
+              {t("hero.ctaSecondary")}
+            </div>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif), Georgia, serif",
+                fontSize: 30,
+                fontWeight: 500,
+                color: "var(--lib-ink)",
+                margin: 0,
+              }}
+            >
+              {t("howItWorks.title")}
+            </h2>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 32,
+            }}
+          >
+            {steps.map((step) => (
+              <div
+                key={step.num}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-serif), Georgia, serif",
+                    fontSize: 36,
+                    fontWeight: 500,
+                    color: "var(--lib-border-2)",
+                    lineHeight: 1,
+                  }}
+                >
+                  {step.num}
+                </span>
+                <h3
+                  style={{
+                    fontFamily: "var(--font-serif), Georgia, serif",
+                    fontSize: 17,
+                    fontWeight: 500,
+                    color: "var(--lib-ink)",
+                    margin: 0,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  {t(`howItWorks.${step.titleKey}`)}
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "var(--font-sans), system-ui, sans-serif",
+                    fontSize: 13,
+                    fontWeight: 300,
+                    color: "var(--lib-dusk)",
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}
+                >
+                  {t(`howItWorks.${step.descKey}`)}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: "center", marginTop: 44 }}>
+            <Link
+              href="/convert"
+              style={{
+                display: "inline-block",
+                padding: "11px 28px",
+                fontSize: 14,
+                fontWeight: 500,
+                borderRadius: 7,
+                textDecoration: "none",
+                background: "var(--lib-wood-dim)",
+                color: "#F8F5F0",
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
+              }}
+              className="btn-primary"
+            >
+              {t("hero.cta")}
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features ── */}
       <section id="features" style={{ padding: "72px 36px", background: "var(--lib-bg)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
-          {/* Section header */}
           <div style={{ textAlign: "center", marginBottom: 48 }}>
             <div
               style={{
@@ -55,7 +166,7 @@ export default async function HomePage() {
         <GoldDivider />
       </div>
 
-      {/* Free forever callout */}
+      {/* ── Free forever callout + CTA ── */}
       <section style={{ padding: "72px 36px", textAlign: "center", background: "var(--lib-bg)" }}>
         <div style={{ maxWidth: 600, margin: "0 auto" }}>
           <p
@@ -118,12 +229,12 @@ export default async function HomePage() {
         <GoldDivider />
       </div>
 
-      {/* Newsletter */}
+      {/* ── Newsletter ── */}
       <section style={{ padding: "64px 36px 80px", textAlign: "center", background: "var(--lib-bg)" }}>
         <HeroEmailSignup />
       </section>
 
-      {/* Ad — home page bottom */}
+      {/* ── Ad — home page bottom ── */}
       <section style={{ padding: "0 36px 48px", background: "var(--lib-bg)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <AdBanner adSlot="1234567890" style={{ minHeight: 90 }} />

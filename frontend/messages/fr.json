@@ -319,7 +319,8 @@
     "trust": "Pas de spam. Désabonnez-vous à tout moment.",
     "success": "Vous êtes sur la liste ! 🚀 Nous vous informerons lors des nouvelles fonctionnalités.",
     "alreadySubscribed": "Vous êtes déjà abonné avec cet e-mail.",
-    "error": "Une erreur s'est produite. Veuillez réessayer plus tard."
+    "error": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+    "label": "Newsletter"
   },
   "Footer": {
     "terms": "Conditions d'utilisation",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "Convertir"
   }
 }

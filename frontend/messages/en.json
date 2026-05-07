@@ -319,7 +319,8 @@
     "trust": "No spam. Unsubscribe anytime.",
     "success": "You're on the list 🚀 We'll notify you when new features launch.",
     "alreadySubscribed": "You're already subscribed with this email.",
-    "error": "Something went wrong. Please try again later."
+    "error": "Something went wrong. Please try again later.",
+    "label": "Newsletter"
   },
   "Footer": {
     "terms": "Terms of Service",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "Convert"
   }
 }

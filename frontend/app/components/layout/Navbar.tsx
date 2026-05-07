@@ -1,14 +1,16 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
 import NavbarUserClient from "@/app/components/layout/NavbarUserClient";
 
 interface NavbarProps {
   locale: string;
-  navFeatures: string;
-  siteName: string;
 }
 
-export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
+export default async function Navbar({ locale }: NavbarProps) {
+  const t = await getTranslations("Navbar");
+  const tCommon = await getTranslations("common");
+
   return (
     <header
       style={{
@@ -66,14 +68,14 @@ export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
               letterSpacing: "0.04em",
             }}
           >
-            {siteName}
+            {tCommon("siteName")}
           </span>
         </Link>
 
         {/* Nav links */}
         <nav style={{ display: "flex", gap: 24, flex: 1 }}>
           <Link
-            href="/#features"
+            href="/convert"
             className="nav-link"
             style={{
               fontSize: 13,
@@ -81,7 +83,7 @@ export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
               fontFamily: "var(--font-sans), system-ui, sans-serif",
             }}
           >
-            {navFeatures}
+            {t("convert")}
           </Link>
         </nav>
 

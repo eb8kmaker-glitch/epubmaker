@@ -45,22 +45,22 @@ export default function HeroEmailSignup() {
       <div
         style={{
           fontSize: 11,
-          letterSpacing: "0.25em",
+          letterSpacing: "0.12em",
           textTransform: "uppercase",
-          color: "var(--gold)",
+          color: "var(--lib-dust)",
           marginBottom: 10,
-          fontFamily: "var(--font-jost), sans-serif",
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
         }}
       >
-        Newsletter
+        {t("label")}
       </div>
 
       <h2
         style={{
-          fontFamily: "var(--font-cormorant), 'Cormorant Garamond', serif",
+          fontFamily: "var(--font-serif), Georgia, serif",
           fontSize: 28,
           fontWeight: 500,
-          color: "var(--cream)",
+          color: "var(--lib-ink)",
           marginBottom: 8,
         }}
       >
@@ -71,9 +71,10 @@ export default function HeroEmailSignup() {
         style={{
           fontSize: 14,
           fontWeight: 300,
-          color: "var(--cream-dim)",
+          color: "var(--lib-dusk)",
           marginBottom: 24,
           lineHeight: 1.6,
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
         }}
       >
         {t("subtitle")}
@@ -91,40 +92,37 @@ export default function HeroEmailSignup() {
             style={{
               flex: "1 1 220px",
               minWidth: 0,
-              background: "rgba(58,42,34,0.6)",
-              border: "1px solid rgba(214,185,123,0.25)",
-              borderRadius: 2,
-              padding: "12px 16px",
+              background: "var(--lib-bg-3)",
+              border: "1px solid var(--lib-border)",
+              borderRadius: 6,
+              padding: "10px 14px",
               fontSize: 14,
-              color: "var(--cream)",
-              fontFamily: "var(--font-jost), sans-serif",
+              color: "var(--lib-ink)",
+              fontFamily: "var(--font-sans), system-ui, sans-serif",
               outline: "none",
               transition: "border-color 0.2s ease",
             }}
-            onFocus={(e) => {
-              e.currentTarget.style.borderColor = "rgba(214,185,123,0.6)";
-              e.currentTarget.style.boxShadow = "inset 0 0 0 1px rgba(214,185,123,0.15)";
-            }}
-            onBlur={(e) => {
-              e.currentTarget.style.borderColor = "rgba(214,185,123,0.25)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-            aria-label="Email address"
+            onFocus={(e) => { e.currentTarget.style.borderColor = "var(--lib-border-2)"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--lib-border)"; }}
+            aria-label={t("placeholder")}
           />
           <button
             type="submit"
             disabled={status === "loading"}
-            className="btn-gold"
             style={{
-              padding: "12px 24px",
+              padding: "10px 22px",
               fontSize: 14,
-              borderRadius: 2,
+              fontWeight: 500,
+              borderRadius: 6,
               border: "none",
+              background: "var(--lib-wood-dim)",
+              color: "#F8F5F0",
               cursor: status === "loading" ? "wait" : "pointer",
-              fontFamily: "var(--font-jost), sans-serif",
-              letterSpacing: "0.04em",
+              fontFamily: "var(--font-sans), system-ui, sans-serif",
+              letterSpacing: "0.02em",
               opacity: status === "loading" ? 0.7 : 1,
               flexShrink: 0,
+              transition: "opacity 200ms ease",
             }}
           >
             {status === "loading" ? "…" : t("button")}
@@ -136,8 +134,9 @@ export default function HeroEmailSignup() {
         style={{
           marginTop: 12,
           fontSize: 12,
-          color: "rgba(201,184,152,0.4)",
+          color: "var(--lib-dust)",
           letterSpacing: "0.03em",
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
         }}
       >
         {t("trust")}
@@ -145,7 +144,7 @@ export default function HeroEmailSignup() {
 
       {status === "success" && (
         <p
-          style={{ marginTop: 12, fontSize: 13, color: "var(--gold)", fontWeight: 400 }}
+          style={{ marginTop: 12, fontSize: 13, color: "var(--lib-gold)", fontWeight: 400 }}
           role="status"
         >
           {t("success")}
@@ -153,7 +152,7 @@ export default function HeroEmailSignup() {
       )}
       {status === "already_subscribed" && (
         <p
-          style={{ marginTop: 12, fontSize: 13, color: "var(--cream-dim)" }}
+          style={{ marginTop: 12, fontSize: 13, color: "var(--lib-dusk)" }}
           role="status"
         >
           {t("alreadySubscribed")}

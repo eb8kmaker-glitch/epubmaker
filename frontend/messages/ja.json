@@ -319,7 +319,8 @@
     "trust": "スパムなし。いつでも配信停止できます。",
     "success": "登録完了 🚀 新機能リリース時にお知らせします。",
     "alreadySubscribed": "このメールアドレスはすでに登録済みです。",
-    "error": "エラーが発生しました。しばらくしてからもう一度お試しください。"
+    "error": "エラーが発生しました。しばらくしてからもう一度お試しください。",
+    "label": "ニュースレター"
   },
   "Footer": {
     "terms": "利用規約",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "変換する"
   }
 }

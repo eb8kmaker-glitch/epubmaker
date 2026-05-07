@@ -319,7 +319,8 @@
     "trust": "Sem spam. Cancele quando quiser.",
     "success": "Você está na lista! 🚀 Avisaremos quando novos recursos forem lançados.",
     "alreadySubscribed": "Este e-mail já está inscrito.",
-    "error": "Algo deu errado. Por favor, tente novamente mais tarde."
+    "error": "Algo deu errado. Por favor, tente novamente mais tarde.",
+    "label": "Newsletter"
   },
   "Footer": {
     "terms": "Termos de uso",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "Converter"
   }
 }

@@ -319,7 +319,8 @@
     "trust": "Sin spam. Cancela cuando quieras.",
     "success": "¡Estás en la lista! 🚀 Te avisaremos cuando se lancen nuevas funciones.",
     "alreadySubscribed": "Ya estás suscrito con este correo electrónico.",
-    "error": "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
+    "error": "Algo salió mal. Por favor, inténtalo de nuevo más tarde.",
+    "label": "Boletín"
   },
   "Footer": {
     "terms": "Términos de uso",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "Convertir"
   }
 }

@@ -319,7 +319,8 @@
     "trust": "无垃圾邮件，随时可取消订阅。",
     "success": "订阅成功！🚀 新功能上线时我们会通知您。",
     "alreadySubscribed": "该电子邮件已订阅。",
-    "error": "发生错误，请稍后重试。"
+    "error": "发生错误，请稍后重试。",
+    "label": "通讯"
   },
   "Footer": {
     "terms": "服务条款",
@@ -418,5 +419,8 @@
     "downloadError": "Failed to load file.",
     "download": "Download",
     "editToc": "Edit TOC"
+  },
+  "Navbar": {
+    "convert": "转换"
   }
 }
