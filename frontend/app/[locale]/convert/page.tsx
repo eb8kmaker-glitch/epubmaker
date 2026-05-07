@@ -221,7 +221,7 @@ export default async function ConvertPage() {
             fontFamily: "var(--font-sans), system-ui, sans-serif",
           }}
         >
-          {tGuide("note").slice(0, 4) === "Docu" ? "Note" : tGuide("title")}
+          {tGuide("title")}
         </p>
 
         <p

@@ -61,7 +61,7 @@ export default function Navbar({ locale, navFeatures, siteName }: NavbarProps) {
           <span
             style={{
               fontFamily: "var(--font-sans), system-ui, sans-serif",
-              fontSize: 11,
+              fontSize: 13,
               color: "var(--lib-dust)",
               letterSpacing: "0.04em",
             }}

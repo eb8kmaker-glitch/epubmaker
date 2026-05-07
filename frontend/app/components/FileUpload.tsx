@@ -320,8 +320,8 @@ export default function FileUpload() {
         <div
           style={{
             borderRadius: 3,
-            border: "1px solid rgba(214,185,123,0.12)",
-            background: "rgba(43,30,23,0.3)",
+            border: "1px solid var(--lib-border)",
+            background: "var(--lib-bg-2)",
             padding: "12px 16px",
           }}
         >
@@ -378,11 +378,11 @@ export default function FileUpload() {
             justifyContent: "center",
             borderRadius: 3,
             border: isDragging
-              ? "2px dashed rgba(214,185,123,0.6)"
-              : "2px dashed rgba(214,185,123,0.2)",
+              ? "2px dashed var(--lib-gold)"
+              : "2px dashed var(--lib-border-2)",
             background: isDragging
-              ? "rgba(214,185,123,0.06)"
-              : "rgba(43,30,23,0.3)",
+              ? "var(--lib-bg-3)"
+              : "var(--lib-bg-2)",
             padding: "32px 24px",
             cursor: "pointer",
             transition: "all 0.2s ease",
@@ -437,8 +437,8 @@ export default function FileUpload() {
             flexWrap: "wrap",
             gap: 8,
             borderRadius: 3,
-            border: "1px solid rgba(214,185,123,0.2)",
-            background: "rgba(43,30,23,0.3)",
+            border: "1px solid var(--lib-border)",
+            background: "var(--lib-bg-2)",
             padding: 12,
           }}
         >
@@ -451,8 +451,8 @@ export default function FileUpload() {
             style={{
               flex: "1 1 200px",
               minWidth: 0,
-              background: "rgba(58,42,34,0.6)",
-              border: "1px solid rgba(214,185,123,0.2)",
+              background: "var(--lib-panel)",
+              border: "1px solid var(--lib-border)",
               borderRadius: 2,
               padding: "8px 12px",
               fontSize: 13,
@@ -476,8 +476,8 @@ export default function FileUpload() {
       <div
         style={{
           borderRadius: 3,
-          border: "1px solid rgba(214,185,123,0.12)",
-          background: "rgba(43,30,23,0.2)",
+          border: "1px solid var(--lib-border)",
+          background: "var(--lib-bg-2)",
           padding: "12px 16px",
         }}
         role="region"
@@ -501,8 +501,8 @@ export default function FileUpload() {
         <div
           style={{
             borderRadius: 3,
-            border: "1px solid rgba(214,185,123,0.12)",
-            background: "rgba(43,30,23,0.3)",
+            border: "1px solid var(--lib-border)",
+            background: "var(--lib-bg-2)",
             padding: 16,
           }}
         >
@@ -518,7 +518,7 @@ export default function FileUpload() {
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: 8,
-                  background: "rgba(58,42,34,0.4)",
+                  background: "var(--lib-bg-3)",
                   borderRadius: 2,
                   padding: "6px 10px",
                 }}
@@ -543,7 +543,7 @@ export default function FileUpload() {
               <p style={{ fontSize: 13, color: "var(--cream-dim)" }}>
                 {t("convertingBatch", { current: batchProgress.current, total: batchProgress.total })}
               </p>
-              <div style={{ marginTop: 8, height: 3, background: "rgba(214,185,123,0.1)", borderRadius: 2 }}>
+              <div style={{ marginTop: 8, height: 3, background: "var(--lib-bg-3)", borderRadius: 2 }}>
                 <div
                   style={{
                     height: "100%",
@@ -604,7 +604,7 @@ export default function FileUpload() {
 
       {/* Errors */}
       {error && (
-        <div style={{ borderRadius: 3, border: "1px solid rgba(214,185,123,0.2)", background: "rgba(43,30,23,0.5)", padding: "10px 14px", fontSize: 13, color: "var(--gold)" }} role="alert">
+        <div style={{ borderRadius: 3, border: "1px solid var(--lib-border-2)", background: "var(--lib-bg-3)", padding: "10px 14px", fontSize: 13, color: "var(--lib-gold)" }} role="alert">
           {error}
         </div>
       )}
@@ -620,8 +620,8 @@ export default function FileUpload() {
           <div
             style={{
               borderRadius: 3,
-              border: "1px solid rgba(214,185,123,0.15)",
-              background: "rgba(43,30,23,0.3)",
+              border: "1px solid var(--lib-border)",
+              background: "var(--lib-bg-2)",
               padding: 16,
             }}
           >
@@ -665,7 +665,7 @@ export default function FileUpload() {
                   border: "none",
                   cursor: converting ? "wait" : "pointer",
                   letterSpacing: "0.04em",
-                  fontFamily: "var(--font-jost), sans-serif",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
                   opacity: converting ? 0.7 : 1,
                   width: "100%",
                 }}

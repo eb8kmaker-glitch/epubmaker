@@ -42,6 +42,17 @@ interface ConversionSettingsProps {
   onCoverFileChange: (file: File | null) => void;
 }
 
+const STYLE_PRESETS: Array<{
+  value: StylePreset;
+  labelKey: "styleDefault" | "styleBook" | "styleNovel" | "styleAcademic" | "styleCustom";
+}> = [
+  { value: "default", labelKey: "styleDefault" },
+  { value: "book",    labelKey: "styleBook" },
+  { value: "novel",   labelKey: "styleNovel" },
+  { value: "academic",labelKey: "styleAcademic" },
+  { value: "custom",  labelKey: "styleCustom" },
+];
+
 export default function ConversionSettings({
   options,
   onChange,
@@ -49,20 +60,36 @@ export default function ConversionSettings({
   onCoverFileChange,
 }: ConversionSettingsProps) {
   const t = useTranslations("ConversionSettings");
-  const setOption = <K extends keyof ConversionOptions>(
-    key: K,
-    value: ConversionOptions[K]
-  ) => {
+
+  const setOption = <K extends keyof ConversionOptions>(key: K, value: ConversionOptions[K]) => {
     onChange({ ...options, [key]: value });
   };
 
-  const inputClass =
-    "w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--content)] placeholder-[var(--content-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]";
-  const labelClass = "mb-1 block text-xs font-medium text-[var(--content-muted)]";
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "7px 10px",
+    borderRadius: 6,
+    border: "1px solid var(--lib-border)",
+    background: "var(--lib-panel)",
+    fontFamily: "var(--font-sans), system-ui, sans-serif",
+    fontSize: 13,
+    color: "var(--lib-ink)",
+    outline: "none",
+    transition: "border-color 200ms ease",
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    marginBottom: 4,
+    fontSize: 12,
+    fontWeight: 500,
+    color: "var(--lib-dust)",
+    fontFamily: "var(--font-sans), system-ui, sans-serif",
+  };
 
   function handleStyleChange(newStyle: StylePreset) {
     if (newStyle === "custom") {
-      // 현재 프리셋 CSS를 베이스로 커스텀 편집기에 로드
       const basePreset = options.style !== "custom" ? options.style : "default";
       const baseCss = EPUB_STYLES[basePreset] ?? EPUB_STYLES.default ?? "";
       onChange({ ...options, style: "custom", customCss: options.customCss || baseCss });
@@ -77,30 +104,52 @@ export default function ConversionSettings({
   }
 
   return (
-    <div className="rounded-[12px] border border-[var(--border)] bg-[var(--card)] p-4 shadow-[var(--shadow-card)] transition-all duration-200">
-      <h3 className="mb-3 text-sm font-semibold text-[var(--content)]">
+    <div
+      style={{
+        borderRadius: 12,
+        border: "1px solid var(--lib-border)",
+        background: "var(--lib-panel)",
+        padding: 16,
+        transition: "all 200ms",
+      }}
+    >
+      <h3
+        style={{
+          marginBottom: 12,
+          fontSize: 13,
+          fontWeight: 600,
+          color: "var(--lib-ink)",
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
+        }}
+      >
         {t("heading")}
       </h3>
 
-      <div className="space-y-4">
-        <label className="flex cursor-pointer items-center gap-2">
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {/* TOC toggle */}
+        <label style={{ display: "flex", cursor: "pointer", alignItems: "center", gap: 8 }}>
           <input
             type="checkbox"
             checked={options.toc}
             onChange={(e) => setOption("toc", e.target.checked)}
-            className="h-4 w-4 rounded border-[var(--border)] text-[var(--primary)] transition-all duration-200 focus:ring-[var(--primary)]"
+            style={{
+              width: 16,
+              height: 16,
+              accentColor: "var(--lib-wood-dim)",
+            }}
           />
-          <span className="text-sm text-[var(--content)]">
+          <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
             {t("includeToc")}
           </span>
         </label>
 
+        {/* TOC depth */}
         <div>
-          <label className={labelClass}>{t("tocDepth")}</label>
+          <label style={labelStyle}>{t("tocDepth")}</label>
           <select
             value={options.tocDepth}
             onChange={(e) => setOption("tocDepth", Number(e.target.value) as 1 | 2 | 3)}
-            className={inputClass}
+            style={inputStyle}
           >
             <option value={1}>1</option>
             <option value={2}>2</option>
@@ -108,50 +157,66 @@ export default function ConversionSettings({
           </select>
         </div>
 
+        {/* EPUB version */}
         <div>
-          <label className={labelClass}>{t("epubVersion")}</label>
+          <label style={labelStyle}>{t("epubVersion")}</label>
           <select
             value={options.epubVersion}
             onChange={(e) => setOption("epubVersion", e.target.value as "epub3" | "epub2")}
-            className={inputClass}
+            style={inputStyle}
           >
             <option value="epub3">{t("epub3")}</option>
             <option value="epub2">{t("epub2")}</option>
           </select>
         </div>
 
-        <p className="border-t border-[var(--border)] pt-4 text-xs font-semibold uppercase tracking-wider text-[var(--content-muted)]">
+        {/* Metadata divider */}
+        <p
+          style={{
+            borderTop: "1px solid var(--lib-border)",
+            paddingTop: 12,
+            fontSize: 11,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            color: "var(--lib-dust)",
+            fontFamily: "var(--font-sans), system-ui, sans-serif",
+          }}
+        >
           {t("metadata")}
         </p>
 
+        {/* Title */}
         <div>
-          <label className={labelClass}>{t("title")}</label>
+          <label style={labelStyle}>{t("title")}</label>
           <input
             type="text"
             value={options.title}
             onChange={(e) => setOption("title", e.target.value)}
             placeholder={t("titlePlaceholder")}
-            className={inputClass}
+            style={inputStyle}
           />
         </div>
 
+        {/* Author */}
         <div>
-          <label className={labelClass}>{t("author")}</label>
+          <label style={labelStyle}>{t("author")}</label>
           <input
             type="text"
             value={options.author}
             onChange={(e) => setOption("author", e.target.value)}
             placeholder={t("authorPlaceholder")}
-            className={inputClass}
+            style={inputStyle}
           />
         </div>
 
+        {/* Language */}
         <div>
-          <label className={labelClass}>{t("language")}</label>
+          <label style={labelStyle}>{t("language")}</label>
           <select
             value={options.language}
             onChange={(e) => setOption("language", e.target.value as ConversionOptions["language"])}
-            className={inputClass}
+            style={inputStyle}
           >
             <option value="ko">Korean (ko)</option>
             <option value="en">English (en)</option>
@@ -160,54 +225,80 @@ export default function ConversionSettings({
           </select>
         </div>
 
+        {/* Publisher */}
         <div>
-          <label className={labelClass}>{t("publisher")}</label>
+          <label style={labelStyle}>{t("publisher")}</label>
           <input
             type="text"
             value={options.publisher}
             onChange={(e) => setOption("publisher", e.target.value)}
             placeholder={t("publisherPlaceholder")}
-            className={inputClass}
+            style={inputStyle}
           />
         </div>
 
+        {/* Date */}
         <div>
-          <label className={labelClass}>{t("date")}</label>
+          <label style={labelStyle}>{t("date")}</label>
           <input
             type="text"
             value={options.date}
             onChange={(e) => setOption("date", e.target.value)}
             placeholder={t("datePlaceholder")}
-            className={inputClass}
+            style={inputStyle}
           />
         </div>
 
+        {/* Style chips */}
         <div>
-          <label className={labelClass}>{t("stylePreset")}</label>
-          <select
-            value={options.style}
-            onChange={(e) => handleStyleChange(e.target.value as StylePreset)}
-            className={inputClass}
-          >
-            <option value="default">{t("styleDefault")}</option>
-            <option value="book">{t("styleBook")}</option>
-            <option value="novel">{t("styleNovel")}</option>
-            <option value="academic">{t("styleAcademic")}</option>
-            <option value="custom">{t("styleCustom")}</option>
-          </select>
+          <label style={labelStyle}>{t("stylePreset")}</label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+            {STYLE_PRESETS.map(({ value, labelKey }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => handleStyleChange(value)}
+                style={{
+                  padding: "4px 10px",
+                  borderRadius: 20,
+                  fontSize: 11,
+                  border: "1px solid var(--lib-border)",
+                  color: options.style === value ? "#F8F5F0" : "var(--lib-dusk)",
+                  background: options.style === value ? "var(--lib-wood-dim)" : "transparent",
+                  cursor: "pointer",
+                  transition: "all 150ms ease",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
+                }}
+              >
+                {t(labelKey)}
+              </button>
+            ))}
+          </div>
         </div>
 
+        {/* Custom CSS editor */}
         {options.style === "custom" && (
           <div>
-            <div className="mb-1 flex items-center justify-between">
-              <label className={labelClass.replace("mb-1 ", "")}>{t("customCssLabel")}</label>
-              <div className="flex gap-1">
+            <div style={{ marginBottom: 4, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <label style={{ ...labelStyle, marginBottom: 0 }}>{t("customCssLabel")}</label>
+              <div style={{ display: "flex", gap: 4 }}>
                 {(["default", "book", "novel", "academic"] as const).map((preset) => (
                   <button
                     key={preset}
                     type="button"
                     onClick={() => handleLoadPreset(preset)}
-                    className="rounded px-2 py-0.5 text-[10px] font-medium text-[var(--primary)] underline underline-offset-2 transition-colors hover:text-[var(--primary-hover)]"
+                    style={{
+                      padding: "2px 6px",
+                      fontSize: 10,
+                      fontWeight: 500,
+                      color: "var(--lib-wood-dim)",
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      textDecoration: "underline",
+                      textUnderlineOffset: 2,
+                      fontFamily: "var(--font-sans), system-ui, sans-serif",
+                    }}
                   >
                     {t(`style${preset.charAt(0).toUpperCase() + preset.slice(1)}` as "styleDefault" | "styleBook" | "styleNovel" | "styleAcademic")}
                   </button>
@@ -220,18 +311,24 @@ export default function ConversionSettings({
               placeholder={t("customCssPlaceholder")}
               rows={14}
               spellCheck={false}
-              className="w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 font-mono text-xs text-[var(--content)] placeholder-[var(--content-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
+              style={{
+                ...inputStyle,
+                fontFamily: "var(--font-mono), monospace",
+                fontSize: 12,
+                resize: "vertical",
+              }}
             />
-            <p className="mt-1 text-[11px] text-[var(--content-muted)]">
+            <p style={{ marginTop: 4, fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
               {t("customCssHint")}
             </p>
           </div>
         )}
 
+        {/* Cover image */}
         <div>
-          <p className={labelClass}>{t("coverImage")}</p>
+          <p style={labelStyle}>{t("coverImage")}</p>
           {!coverFile ? (
-            <label className="flex cursor-pointer items-center gap-2">
+            <label style={{ display: "flex", cursor: "pointer", alignItems: "center", gap: 8 }}>
               <input
                 type="file"
                 accept={COVER_ACCEPT}
@@ -240,21 +337,53 @@ export default function ConversionSettings({
                   if (f) onCoverFileChange(f);
                   e.target.value = "";
                 }}
-                className="text-sm text-[var(--content-muted)] file:mr-2 file:rounded-lg file:border-0 file:bg-[var(--guide-bg)] file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-[var(--primary)] file:transition-all file:duration-200 hover:file:bg-[var(--guide-border)]"
+                style={{ fontSize: 13, color: "var(--lib-dust)" }}
               />
-              <span className="text-xs text-[var(--content-muted)]">
+              <span style={{ fontSize: 12, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
                 {t("coverHint")}
               </span>
             </label>
           ) : (
-            <div className="flex items-center justify-between gap-2 rounded-[10px] border border-[var(--border)] bg-[var(--guide-bg)] px-3 py-2">
-              <span className="min-w-0 truncate text-sm text-[var(--content)]">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+                borderRadius: 6,
+                border: "1px solid var(--lib-border)",
+                background: "var(--lib-bg-2)",
+                padding: "7px 10px",
+              }}
+            >
+              <span
+                style={{
+                  minWidth: 0,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  fontSize: 13,
+                  color: "var(--lib-ink)",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
+                }}
+              >
                 {coverFile.name}
               </span>
               <button
                 type="button"
                 onClick={() => onCoverFileChange(null)}
-                className="shrink-0 text-sm text-[var(--content-muted)] underline underline-offset-2 transition-colors duration-200 hover:text-[var(--primary)]"
+                style={{
+                  flexShrink: 0,
+                  fontSize: 12,
+                  color: "var(--lib-dust)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 2,
+                  transition: "color 200ms ease",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
+                }}
               >
                 {t("remove")}
               </button>
