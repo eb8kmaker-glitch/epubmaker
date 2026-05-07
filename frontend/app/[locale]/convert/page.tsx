@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import FileUpload from "@/app/components/FileUpload";
+import AdBanner from "@/app/components/ads/AdBanner";
 
 export default async function ConvertPage() {
   const t = await getTranslations("Convert");
@@ -199,6 +200,11 @@ export default async function ConvertPage() {
           </p>
 
           <FileUpload />
+
+          {/* Ad — below conversion result area */}
+          <div style={{ marginTop: 40, paddingBottom: 24 }}>
+            <AdBanner adSlot="0987654321" style={{ minHeight: 90 }} />
+          </div>
         </div>
       </main>
 

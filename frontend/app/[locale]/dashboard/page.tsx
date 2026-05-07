@@ -10,6 +10,7 @@ import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase";
 import { Link } from "@/i18n/navigation";
 import ConversionList from "@/app/components/ConversionList";
+import AdBanner from "@/app/components/ads/AdBanner";
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -55,6 +56,11 @@ export default async function DashboardPage({ params }: Props) {
           </h2>
           <ConversionList conversions={conversions ?? []} />
         </section>
+
+        {/* Ad — below conversion history */}
+        <div className="mt-6">
+          <AdBanner adSlot="1122334455" style={{ minHeight: 90 }} />
+        </div>
 
         <div className="mt-8 flex flex-wrap gap-4">
           <Link

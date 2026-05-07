@@ -4,6 +4,7 @@ import Hero from "@/app/components/home/Hero";
 import FeatureCards from "@/app/components/home/FeatureCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
 import HeroEmailSignup from "@/app/components/HeroEmailSignup";
+import AdBanner from "@/app/components/ads/AdBanner";
 
 export const dynamic = "force-static";
 export const revalidate = 3600;
@@ -120,6 +121,13 @@ export default async function HomePage() {
       {/* Newsletter */}
       <section style={{ padding: "64px 36px 80px", textAlign: "center", background: "var(--lib-bg)" }}>
         <HeroEmailSignup />
+      </section>
+
+      {/* Ad — home page bottom */}
+      <section style={{ padding: "0 36px 48px", background: "var(--lib-bg)" }}>
+        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
+          <AdBanner adSlot="1234567890" style={{ minHeight: 90 }} />
+        </div>
       </section>
     </div>
   );
