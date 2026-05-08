@@ -77,7 +77,7 @@
   },
   "Convert": {
     "title": "Sube tu documento",
-    "subtitle": "Se admiten DOCX, TXT y PDF. Arrastra y suelta o haz clic para elegir."
+    "subtitle": "Se admiten DOCX y TXT. Arrastra y suelta o haz clic para elegir."
   },
   "Dashboard": {
     "title": "Panel",
@@ -145,7 +145,7 @@
     "notionError": "No se pudo cargar la página de Notion. Verifica la URL y que la página esté compartida con la integración.",
     "errorTextLength": "El archivo es demasiado largo ({current} caracteres). El límite para archivos de texto es {max} caracteres.",
     "openTocEditor": "Abrir editor de índice",
-    "ariaUpload": "Subir archivo DOCX, TXT, PDF, HTML o MD",
+    "ariaUpload": "Subir archivo DOCX o TXT",
     "chooseFile": "Elegir archivo"
   },
   "EpubCompatibilityCheck": {
@@ -445,7 +445,7 @@
     "title": "Preguntas frecuentes",
     "subtitle": "Todo sobre EPUBMaker y la publicacion digital.",
     "q1": "¿Qué formatos de archivo puedo subir?",
-    "a1": "EPUBMaker admite archivos DOCX (Word), TXT, PDF, HTML y Markdown (.md). Todos se convierten en EPUB 3 o EPUB 2 estándar.",
+    "a1": "EPUBMaker admite archivos DOCX (Word) y TXT. Todos se convierten en EPUB 3 o EPUB 2 estándar.",
     "q2": "¿Necesito una cuenta para convertir archivos?",
     "a2": "No. La conversión básica funciona sin cuenta. Si quieres guardar tu historial de conversiones, crea una cuenta gratuita.",
     "q3": "¿Hay un límite de tamaño de archivo?",

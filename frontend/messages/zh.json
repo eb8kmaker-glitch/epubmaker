@@ -77,7 +77,7 @@
   },
   "Convert": {
     "title": "上传你的文档",
-    "subtitle": "支持 DOCX、TXT 和 PDF。拖放或点击选择文件。"
+    "subtitle": "支持 DOCX 和 TXT。拖放或点击选择文件。"
   },
   "Dashboard": {
     "title": "仪表盘",
@@ -145,7 +145,7 @@
     "notionError": "无法加载Notion页面，请检查URL，并确认页面已与集成共享。",
     "errorTextLength": "文件过长（当前{current}字）。文本文件最多支持{max}字。",
     "openTocEditor": "打开目录编辑器",
-    "ariaUpload": "上传DOCX、TXT、PDF、HTML或MD文件",
+    "ariaUpload": "上传DOCX或TXT文件",
     "chooseFile": "选择文件"
   },
   "EpubCompatibilityCheck": {
@@ -445,7 +445,7 @@
     "title": "常见问题",
     "subtitle": "关于EPUBMaker和数字出版的一切",
     "q1": "我可以上传哪些文件格式？",
-    "a1": "EPUBMaker支持DOCX（Word）、TXT、PDF、HTML和Markdown（.md）文件，均可转换为标准EPUB 3或EPUB 2格式。",
+    "a1": "EPUBMaker支持DOCX（Word）和TXT文件，均可转换为标准EPUB 3或EPUB 2格式。",
     "q2": "转换文件需要注册账号吗？",
     "a2": "不需要。基础转换功能无需账号即可使用。如需保存转换记录，注册免费账号即可。",
     "q3": "文件大小有限制吗？",

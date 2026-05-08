@@ -15,13 +15,10 @@ import type { EpubValidationResult } from "@/app/lib/validateEpub";
 const ACCEPTED_TYPES: Record<string, string> = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
   "text/plain": ".txt",
-  "application/pdf": ".pdf",
-  "text/html": ".html",
-  "text/markdown": ".md",
 };
-const ACCEPTED_EXTENSIONS = [".docx", ".txt", ".pdf", ".html", ".htm", ".md"];
-const ACCEPTED_STRING = ".docx, .txt, .pdf, .html, .md";
-const CONVERT_TO_EPUB_EXTENSIONS = [".docx", ".txt", ".pdf", ".html", ".htm", ".md"];
+const ACCEPTED_EXTENSIONS = [".docx", ".txt"];
+const ACCEPTED_STRING = ".docx, .txt";
+const CONVERT_TO_EPUB_EXTENSIONS = [".docx", ".txt"];
 const MAX_TEXT_CHARS = 30_000;
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 
@@ -168,7 +165,7 @@ export default function FileUpload() {
     if (!isValidFile(f)) { setError(t("errorFileType", { name: f.name })); setFile(null); setFiles([]); return; }
     if (f.size > MAX_FILE_SIZE_BYTES) { setError(t("errorFileSize")); setFile(null); setFiles([]); return; }
     const ext = getExtension(f.name);
-    if (ext === ".txt" || ext === ".md" || ext === ".html" || ext === ".htm") {
+    if (ext === ".txt") {
       const reader = new FileReader();
       reader.onload = () => {
         const text = (reader.result as string) ?? "";

@@ -61,7 +61,7 @@
   },
   "Convert": {
     "title": "문서를 업로드하세요",
-    "subtitle": "DOCX, TXT, PDF, HTML, MD 지원. 드래그 앤 드롭 또는 클릭하여 선택하세요."
+    "subtitle": "DOCX, TXT 지원. 드래그 앤 드롭 또는 클릭하여 선택하세요."
   },
   "FileUpload": {
     "dropText": "파일을 여기에 드래그하여 놓으세요",
@@ -91,7 +91,7 @@
     "notionError": "Notion 페이지를 불러올 수 없습니다. URL을 확인하고, 페이지가 연동에 공유되어 있는지 확인하세요.",
     "errorTextLength": "파일이 너무 깁니다 (현재 {current}자). 텍스트 파일은 최대 {max}자까지 지원합니다.",
     "openTocEditor": "목차 편집기 열기",
-    "ariaUpload": "DOCX, TXT, PDF, HTML 또는 MD 파일 업로드",
+    "ariaUpload": "DOCX 또는 TXT 파일 업로드",
     "chooseFile": "파일 선택",
     "localStorageNote": "이 브라우저에만 저장됩니다"
   },
@@ -234,7 +234,7 @@
     "title": "자주 묻는 질문",
     "subtitle": "EPUBMaker와 디지털 출판에 관한 모든 것.",
     "q1": "어떤 파일 형식을 업로드할 수 있나요?",
-    "a1": "EPUBMaker는 DOCX(Word), TXT, PDF, HTML, Markdown(.md) 파일을 지원합니다. 모두 표준 EPUB 3 또는 EPUB 2로 변환됩니다.",
+    "a1": "EPUBMaker는 DOCX(Word)와 TXT 파일을 지원합니다. 모두 표준 EPUB 3 또는 EPUB 2로 변환됩니다.",
     "q2": "파일 변환에 계정이 필요한가요?",
     "a2": "아니요. EPUBMaker는 완전 무료이며 계정이 필요 없습니다. 파일을 업로드하고 바로 변환하세요.",
     "q3": "파일 크기 제한이 있나요?",

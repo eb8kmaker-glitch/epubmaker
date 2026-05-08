@@ -61,7 +61,7 @@
   },
   "Convert": {
     "title": "Upload your document",
-    "subtitle": "DOCX, TXT, PDF, HTML, MD supported. Drag and drop or click to choose."
+    "subtitle": "DOCX and TXT supported. Drag and drop or click to choose."
   },
   "FileUpload": {
     "dropText": "Drag and drop your file here",
@@ -91,7 +91,7 @@
     "notionError": "Could not load Notion page. Check the URL and that the page is shared with your integration.",
     "errorTextLength": "File is too long ({current} characters). Text files are limited to {max} characters.",
     "openTocEditor": "Open TOC Editor",
-    "ariaUpload": "Upload DOCX, TXT, PDF, HTML, or MD file",
+    "ariaUpload": "Upload DOCX or TXT file",
     "chooseFile": "Choose file",
     "localStorageNote": "Saved in this browser only"
   },
@@ -234,7 +234,7 @@
     "title": "Frequently Asked Questions",
     "subtitle": "Everything about EPUBMaker and digital publishing.",
     "q1": "What file formats can I upload?",
-    "a1": "EPUBMaker supports DOCX (Word), TXT, PDF, HTML, and Markdown (.md) files. All are converted to standard EPUB 3 or EPUB 2.",
+    "a1": "EPUBMaker supports DOCX (Word) and TXT files. All are converted to standard EPUB 3 or EPUB 2.",
     "q2": "Do I need an account to convert files?",
     "a2": "No. EPUBMaker is completely free with no account required. Just upload your file and convert.",
     "q3": "Is there a file size limit?",
