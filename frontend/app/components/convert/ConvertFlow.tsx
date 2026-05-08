@@ -367,6 +367,7 @@ export default function ConvertFlow() {
         <label style={{ display: "block", cursor: "pointer" }}>
           <span className="sr-only">{t("chooseFile")}</span>
           <div
+            data-testid="upload-zone"
             onDrop={onDrop}
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
@@ -428,12 +429,12 @@ export default function ConvertFlow() {
 
       {/* ── Errors ── */}
       {error && (
-        <div style={{ borderRadius: 6, border: "1px solid var(--lib-border-2)", background: "var(--lib-bg-3)", padding: "10px 14px", fontSize: 13, color: "var(--lib-wood-dim)" }} role="alert">
+        <div data-testid="upload-error" style={{ borderRadius: 6, border: "1px solid var(--lib-border-2)", background: "var(--lib-bg-3)", padding: "10px 14px", fontSize: 13, color: "var(--lib-wood-dim)" }} role="alert">
           {error}
         </div>
       )}
       {convertError && (
-        <div style={{ borderRadius: 6, border: "1px solid rgba(220,80,80,0.3)", background: "rgba(40,10,10,0.3)", padding: "10px 14px", fontSize: 13, color: "#ef4444" }} role="alert">
+        <div data-testid="convert-error" style={{ borderRadius: 6, border: "1px solid rgba(220,80,80,0.3)", background: "rgba(40,10,10,0.3)", padding: "10px 14px", fontSize: 13, color: "#ef4444" }} role="alert">
           {convertError}
         </div>
       )}
@@ -481,6 +482,7 @@ export default function ConvertFlow() {
             </div>
             <button
               type="button"
+              data-testid="remove-file-btn"
               onClick={clearFile}
               aria-label={t("removeFile")}
               style={{
@@ -510,6 +512,7 @@ export default function ConvertFlow() {
               <label style={labelSt}>{tCfg("title")}</label>
               <input
                 type="text"
+                data-testid="title-input"
                 value={conversionOptions.title}
                 onChange={(e) => setOpt("title", e.target.value)}
                 placeholder={tCfg("titlePlaceholder")}
@@ -800,7 +803,7 @@ export default function ConvertFlow() {
 
           {/* Convert button */}
           {converting ? (
-            <div>
+            <div data-testid="converting-state">
               <div style={{ marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ fontSize: 13, color: "var(--lib-dusk)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
                   {t("converting")}
@@ -821,6 +824,7 @@ export default function ConvertFlow() {
           ) : (
             <button
               type="button"
+              data-testid="convert-btn"
               onClick={convertToEpub}
               style={{
                 width: "100%",
@@ -898,6 +902,7 @@ export default function ConvertFlow() {
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 <button
                   type="button"
+                  data-testid="convert-all-btn"
                   onClick={convertAll}
                   disabled={converting}
                   style={{
@@ -1018,6 +1023,7 @@ export default function ConvertFlow() {
           {!showTocEditor ? (
             <button
               type="button"
+              data-testid="open-toc-editor-btn"
               onClick={() => setShowTocEditor(true)}
               style={{
                 alignSelf: "flex-start",
