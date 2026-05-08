@@ -26,11 +26,9 @@ test.describe("Home page", () => {
     await expect(ctaLinks.first()).toBeVisible();
   });
 
-  test("navbar has Start Free button linking to /convert", async ({ page }) => {
-    const startFreeBtn = page.locator("header a").filter({ hasText: /Start Free|무료로 시작/i });
-    await expect(startFreeBtn).toBeVisible();
-    const href = await startFreeBtn.getAttribute("href");
-    expect(href).toMatch(/\/convert/);
+  test("navbar has Convert link", async ({ page }) => {
+    const convertLink = page.locator("header nav a").filter({ hasText: /Convert|변환/i });
+    await expect(convertLink).toBeVisible();
   });
 
   test("no login or signup buttons visible", async ({ page }) => {

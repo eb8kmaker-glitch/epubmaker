@@ -87,22 +87,6 @@ export default async function Navbar() {
 
         {/* Right actions */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <Link
-            href="/convert"
-            className="btn-primary"
-            style={{
-              display: "inline-block",
-              padding: "7px 16px",
-              fontSize: 13,
-              borderRadius: 6,
-              textDecoration: "none",
-              fontFamily: "var(--font-sans), system-ui, sans-serif",
-              background: "var(--lib-wood-dim)",
-              color: "#F8F5F0",
-            }}
-          >
-            {t("startFree")}
-          </Link>
           <LanguageSwitcher />
         </div>
       </div>
