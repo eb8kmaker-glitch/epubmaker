@@ -3,9 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import JSZip from "jszip";
-import EpubCompatibilityCheck from "@/app/components/EpubCompatibilityCheck";
-import EpubPreview from "@/app/components/EpubPreview";
-import TocEditor from "@/app/components/TocEditor";
+import EditorLayout from "@/app/components/editor/EditorLayout";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
 import {
   DEFAULT_OPTIONS,
@@ -102,7 +100,6 @@ export default function ConvertFlow() {
   const [batchResults, setBatchResults] = useState<BatchResult[]>([]);
   const [previewFile, setPreviewFile] = useState<Blob | null>(null);
   const [previewFilename, setPreviewFilename] = useState<string>("document.epub");
-  const [showTocEditor, setShowTocEditor] = useState(false);
   const [validationResult, setValidationResult] = useState<EpubValidationResult | null>(null);
   const [validationLoading, setValidationLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -193,7 +190,7 @@ export default function ConvertFlow() {
   const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => { handleFiles(e.target.files); e.target.value = ""; }, [handleFiles]);
 
   const clearFile = useCallback(() => {
-    setPreviewFile(null); setPreviewFilename("document.epub"); setShowTocEditor(false);
+    setPreviewFile(null); setPreviewFilename("document.epub");
     setValidationResult(null); setValidationLoading(false); setValidationError(null);
     setFile(null); setFiles([]); setBatchResults([]); setBatchProgress(null);
     setError(null); setConvertError(null); setCoverFile(null);
@@ -266,7 +263,7 @@ export default function ConvertFlow() {
       const disposition = res.headers.get("Content-Disposition");
       const match = disposition?.match(/filename="?([^";\n]+)"?/);
       const filename = match ? match[1].trim() : "document.epub";
-      setPreviewFile(blob); setPreviewFilename(filename); setShowTocEditor(false);
+      setPreviewFile(blob); setPreviewFilename(filename);
       const downloadUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = downloadUrl; a.download = filename; a.click();
@@ -955,97 +952,20 @@ export default function ConvertFlow() {
         </div>
       )}
 
-      {/* ── Download result card ── */}
-      {previewFile && !converting && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Success card */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              padding: "14px 18px",
-              borderRadius: 8,
-              border: "1px solid var(--lib-border)",
-              background: "var(--lib-bg-2)",
-            }}
-          >
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 8,
-                background: "var(--lib-wood-dim)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F8F5F0" strokeWidth="1.5" aria-hidden>
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-              </svg>
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 13, fontWeight: 500, color: "var(--lib-ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                {previewFilename}
-              </p>
-              <p style={{ fontSize: 12, color: "var(--lib-dust)", marginTop: 2 }}>
-                {t("downloadFile")}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                const url = URL.createObjectURL(previewFile);
-                const a = document.createElement("a");
-                a.href = url; a.download = previewFilename; a.click();
-                URL.revokeObjectURL(url);
-              }}
-              style={{
-                flexShrink: 0,
-                padding: "8px 16px",
-                fontSize: 13,
-                borderRadius: 6,
-                border: "none",
-                cursor: "pointer",
-                background: "var(--lib-wood-dim)",
-                color: "#F8F5F0",
-                fontFamily: "var(--font-sans), system-ui, sans-serif",
-              }}
-            >
-              ↓ {t("downloadFile")}
-            </button>
-          </div>
-
-          {/* TOC Editor toggle */}
-          {!showTocEditor ? (
-            <button
-              type="button"
-              data-testid="open-toc-editor-btn"
-              onClick={() => setShowTocEditor(true)}
-              style={{
-                alignSelf: "flex-start",
-                padding: "7px 14px",
-                fontSize: 13,
-                borderRadius: 6,
-                border: "1px solid var(--lib-border)",
-                cursor: "pointer",
-                background: "transparent",
-                color: "var(--lib-dusk)",
-                fontFamily: "var(--font-sans), system-ui, sans-serif",
-              }}
-            >
-              {t("openTocEditor")}
-            </button>
-          ) : (
-            <TocEditor epubBlob={previewFile} filename={previewFilename} onClose={() => setShowTocEditor(false)} />
-          )}
-
-          <EpubCompatibilityCheck result={validationResult} loading={validationLoading} error={validationError} />
-          <EpubPreview file={previewFile} />
-        </div>
+      {/* ── Editor overlay (after conversion) ── */}
+      {previewFile && (
+        <EditorLayout
+          epubBlob={previewFile}
+          filename={previewFilename}
+          conversionOptions={conversionOptions}
+          onOptionsChange={setConversionOptions}
+          validationResult={validationResult}
+          validationLoading={validationLoading}
+          validationError={validationError}
+          onBack={clearFile}
+          onReconvert={convertToEpub}
+          reconverting={converting}
+        />
       )}
 
       {/* Progress animation styles */}
