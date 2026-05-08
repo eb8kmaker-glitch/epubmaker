@@ -10,7 +10,6 @@ import ConversionSettings, {
 import EpubCompatibilityCheck from "./EpubCompatibilityCheck";
 import EpubPreview from "./EpubPreview";
 import TocEditor from "./TocEditor";
-import GoogleDocsPicker from "./GoogleDocsPicker";
 import type { EpubValidationResult } from "@/app/lib/validateEpub";
 
 const ACCEPTED_TYPES: Record<string, string> = {
@@ -103,9 +102,6 @@ export default function FileUpload() {
   const [validationResult, setValidationResult] = useState<EpubValidationResult | null>(null);
   const [validationLoading, setValidationLoading] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [notionUrl, setNotionUrl] = useState("");
-  const [notionLoading, setNotionLoading] = useState(false);
-  const [showNotionInput, setShowNotionInput] = useState(false);
   const [recent, setRecent] = useState<RecentProject[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -258,32 +254,6 @@ export default function FileUpload() {
 
   const [coverFile, setCoverFile] = useState<File | null>(null);
 
-  const handleGoogleDocSelected = useCallback((docFile: File) => {
-    setError(null); setConvertError(null); setFiles([]); setFile(docFile);
-  }, []);
-
-  const handleNotionImport = useCallback(async () => {
-    const url = notionUrl.trim();
-    if (!url) return;
-    setConvertError(null); setNotionLoading(true);
-    try {
-      const res = await fetch("/api/import-notion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error((data.error as string) || t("notionError"));
-      const html = data.html as string;
-      const title = (data.title as string) || "notion-page";
-      const safeName = title.replace(/[^a-zA-Z0-9-_]/g, "-").slice(0, 80) || "notion-page";
-      setError(null); setFiles([]); setFile(new File([html], `${safeName}.html`, { type: "text/html" }));
-      setNotionUrl(""); setShowNotionInput(false);
-    } catch (e) {
-      setConvertError(e instanceof Error ? e.message : t("notionError"));
-    } finally { setNotionLoading(false); }
-  }, [notionUrl, t]);
-
   const convertToEpub = useCallback(async () => {
     if (!file || !canConvertToEpub(file)) return;
     setConvertError(null); setConverting(true);
@@ -407,7 +377,7 @@ export default function FileUpload() {
         </div>
       </label>
 
-      {/* Import buttons */}
+      {/* Upload button */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button
           type="button"
@@ -417,60 +387,7 @@ export default function FileUpload() {
         >
           {t("uploadFile")}
         </button>
-        <GoogleDocsPicker onFileSelected={handleGoogleDocSelected} onError={setConvertError} disabled={converting}>
-          {t("importGoogleDocs")}
-        </GoogleDocsPicker>
-        <button
-          type="button"
-          onClick={() => setShowNotionInput((v) => !v)}
-          className="btn-ghost-gold"
-          style={{ padding: "8px 16px", fontSize: 13, borderRadius: 2, background: "transparent", cursor: "pointer" }}
-        >
-          {t("importNotion")}
-        </button>
       </div>
-
-      {showNotionInput && (
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 8,
-            borderRadius: 3,
-            border: "1px solid var(--lib-border)",
-            background: "var(--lib-bg-2)",
-            padding: 12,
-          }}
-        >
-          <input
-            type="url"
-            value={notionUrl}
-            onChange={(e) => setNotionUrl(e.target.value)}
-            placeholder={t("notionUrlPlaceholder")}
-            disabled={notionLoading}
-            style={{
-              flex: "1 1 200px",
-              minWidth: 0,
-              background: "var(--lib-panel)",
-              border: "1px solid var(--lib-border)",
-              borderRadius: 2,
-              padding: "8px 12px",
-              fontSize: 13,
-              color: "var(--cream)",
-              outline: "none",
-            }}
-          />
-          <button
-            type="button"
-            onClick={handleNotionImport}
-            disabled={notionLoading || !notionUrl.trim()}
-            className="btn-gold"
-            style={{ padding: "8px 16px", fontSize: 13, borderRadius: 2, border: "none", cursor: "pointer" }}
-          >
-            {notionLoading ? t("notionImporting") : t("notionImportButton")}
-          </button>
-        </div>
-      )}
 
       {/* DOCX guide */}
       <div
