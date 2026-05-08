@@ -3,8 +3,8 @@ import { test, expect } from "@playwright/test";
 test.describe("Home page", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
-    // next-intl redirects / → /en/
-    await page.waitForURL(/\/en\//);
+    // next-intl redirects / → /en (trailing slash not guaranteed)
+    await page.waitForURL(/\/en/);
   });
 
   test("loads without error", async ({ page }) => {

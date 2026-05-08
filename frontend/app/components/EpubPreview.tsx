@@ -20,10 +20,12 @@ export default function EpubPreview({ file }: { file: Blob }) {
   useEffect(() => {
     if (!file || !viewerRef.current) return;
 
-    setLoading(true);
+    /* eslint-disable react-hooks/set-state-in-effect */
+    setLoading(true); // intentional: reset state before async EPUB load
     setError(null);
     setToc([]);
     setCurrentHref(null);
+    /* eslint-enable react-hooks/set-state-in-effect */
     let aborted = false;
 
     const reader = new FileReader();

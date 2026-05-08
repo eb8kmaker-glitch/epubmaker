@@ -95,7 +95,7 @@ test.describe("Removed routes return 404", () => {
 test.describe("Locale routing", () => {
   test("root / redirects to default locale", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveURL(/\/en\//);
+    await expect(page).toHaveURL(/\/en/);
   });
 
   test("/ko/convert loads in Korean", async ({ page }) => {

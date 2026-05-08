@@ -22,6 +22,10 @@ function getLocaleFromPath(): string | null {
   return seg && (routing.locales as readonly string[]).includes(seg) ? seg : null;
 }
 
+function persistLocaleCookie(locale: string) {
+  document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+}
+
 export default function LanguageSwitcher() {
   const locale = useLocale();
   const t = useTranslations("LanguageSwitcher");
@@ -52,7 +56,7 @@ export default function LanguageSwitcher() {
       return;
     }
     // Persist preference — next-intl middleware reads NEXT_LOCALE cookie for root-path detection
-    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    persistLocaleCookie(newLocale);
     setDisplayLocale(newLocale);
     setIsOpen(false);
     startTransition(() => {

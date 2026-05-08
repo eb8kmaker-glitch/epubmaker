@@ -95,18 +95,15 @@ test.describe("EPUB conversion", () => {
   });
 
   test("shows error for invalid file type", async ({ page }) => {
-    // Create an in-memory file with wrong extension via JS
-    await page.evaluate(() => {
-      const dt = new DataTransfer();
-      const file = new File(["invalid content"], "test.invalid", { type: "text/plain" });
-      dt.items.add(file);
-      const input = document.querySelector('input[type="file"]') as HTMLInputElement;
-      Object.defineProperty(input, "files", { value: dt.files });
-      input.dispatchEvent(new Event("change", { bubbles: true }));
+    const fileInput = page.locator('input[type="file"]');
+    await fileInput.setInputFiles({
+      name: "test.invalid",
+      mimeType: "application/octet-stream",
+      buffer: Buffer.from("invalid content"),
     });
 
-    // Error message appears
-    await expect(page.locator('[role="alert"], .error, p').filter({ hasText: /not supported|지원되지|Please upload/i })).toBeVisible({ timeout: 5_000 });
+    // Error message appears in role="alert" div
+    await expect(page.locator('[role="alert"]').filter({ hasText: /not supported|지원되지|Please upload/i })).toBeVisible({ timeout: 5_000 });
   });
 
   test("EPUB preview appears after successful conversion", async ({ page }) => {
@@ -120,7 +117,7 @@ test.describe("EPUB conversion", () => {
     await downloadPromise;
 
     // EPUB preview or TOC editor button should appear
-    const postConversionEl = page.locator("button, div").filter({ hasText: /TOC Editor|Open TOC|목차 편집/i });
+    const postConversionEl = page.locator("button, div").filter({ hasText: /TOC Editor|Open TOC|목차 편집/i }).first();
     await expect(postConversionEl).toBeVisible({ timeout: 10_000 });
   });
 });

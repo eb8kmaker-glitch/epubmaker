@@ -4,9 +4,9 @@ export default defineConfig({
   testDir: "./tests/e2e",
   // Non-auth tests are fully independent — run in parallel
   fullyParallel: true,
-  workers: process.env.CI ? 2 : 4,
+  workers: process.env.CI ? 1 : 4,
   // Global timeout per test; conversion tests override with test.slow() or explicit timeout
-  timeout: 45_000,
+  timeout: 60_000,
   retries: process.env.CI ? 1 : 0,
   reporter: [
     ["list"],

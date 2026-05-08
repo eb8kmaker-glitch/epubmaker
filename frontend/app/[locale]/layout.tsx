@@ -49,7 +49,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <SetHtmlLang locale={locale} />
-      <Navbar locale={locale} />
+      <Navbar />
       <div className="flex min-h-screen flex-col">
         {children}
         <Footer />

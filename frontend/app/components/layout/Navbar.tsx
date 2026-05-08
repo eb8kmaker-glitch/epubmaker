@@ -2,11 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "@/app/components/LanguageSwitcher";
 
-interface NavbarProps {
-  locale: string;
-}
-
-export default async function Navbar({ locale: _locale }: NavbarProps) {
+export default async function Navbar() {
   const t = await getTranslations("Navbar");
   const tCommon = await getTranslations("common");
 
