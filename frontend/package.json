@@ -13,7 +13,8 @@
     "test:e2e:home": "playwright test tests/e2e/home.spec.ts",
     "test:e2e:convert": "playwright test tests/e2e/convert.spec.ts",
     "test:e2e:nav": "playwright test tests/e2e/navigation.spec.ts",
-    "test:e2e:storage": "playwright test tests/e2e/storage.spec.ts"
+    "test:e2e:storage": "playwright test tests/e2e/storage.spec.ts",
+    "test:unit": "node --experimental-strip-types app/lib/__tests__/mergeChapters.test.ts"
   },
   "dependencies": {
     "@likecoin/epubcheck-ts": "^0.3.7",

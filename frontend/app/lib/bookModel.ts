@@ -109,9 +109,22 @@ export function mergeChapters(chapters: Chapter[], chapterId: string): Chapter[]
   if (idx <= 0) return chapters;
   const prev = chapters[idx - 1];
   const curr = chapters[idx];
+
+  // Strip the sole default-empty placeholder so it doesn't bleed into the merged content.
+  const isDefaultEmpty = (b: Block) =>
+    b.type === "paragraph" && (b as TextBlock).html === "";
+  const prevBlocks =
+    prev.blocks.length === 1 && isDefaultEmpty(prev.blocks[0]) ? [] : prev.blocks;
+  const currBlocks =
+    curr.blocks.length === 1 && isDefaultEmpty(curr.blocks[0]) ? [] : curr.blocks;
+
+  const mergedBlocks = [...prevBlocks, ...currBlocks];
+
   const merged: Chapter = {
     ...prev,
-    blocks: [...prev.blocks, ...curr.blocks],
+    blocks: mergedBlocks.length > 0
+      ? mergedBlocks
+      : [{ id: uid(), type: "paragraph", html: "" }],
   };
   const updated = [...chapters];
   updated.splice(idx - 1, 2, merged);

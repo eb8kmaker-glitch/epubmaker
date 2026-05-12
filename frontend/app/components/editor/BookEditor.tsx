@@ -112,7 +112,11 @@ export default function BookEditor({
   };
 
   const handleMerge = (id: string) => {
+    const idx = book.chapters.findIndex((c) => c.id === id);
+    if (idx <= 0) return;
+    const prevId = book.chapters[idx - 1].id; // merged result keeps prev's id
     updateBook((b) => ({ ...b, chapters: mergeChapters(b.chapters, id) }));
+    setActiveChapterId(prevId);
   };
 
   const updateBlocks = useCallback(
