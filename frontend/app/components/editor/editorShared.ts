@@ -18,12 +18,12 @@ export const BLOCK_TYPE_ICONS: Record<BlockType, string> = {
   image: "🖼",
 };
 
-export const BLOCK_TAG: Record<Exclude<BlockType, "image">, string> = {
+export const BLOCK_TAG = {
   paragraph: "p",
   h2: "h2",
   h3: "h3",
   quote: "blockquote",
-};
+} as const satisfies Record<Exclude<BlockType, "image">, keyof React.JSX.IntrinsicElements>;
 
 export const BLOCK_PLACEHOLDER: Record<Exclude<BlockType, "image">, string> = {
   paragraph: "내용을 입력하세요... ('/' 명령어)",
