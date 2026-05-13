@@ -104,6 +104,9 @@ export function splitChapter(chapters: Chapter[], chapterId: string, blockIndex:
   return updated;
 }
 
+// Titles that carry no semantic meaning and should not become heading blocks.
+const PLACEHOLDER_TITLES = new Set(["", "새 챕터", "제목 없음"]);
+
 export function mergeChapters(chapters: Chapter[], chapterId: string): Chapter[] {
   const idx = chapters.findIndex((c) => c.id === chapterId);
   if (idx <= 0) return chapters;
@@ -118,7 +121,24 @@ export function mergeChapters(chapters: Chapter[], chapterId: string): Chapter[]
   const currBlocks =
     curr.blocks.length === 1 && isDefaultEmpty(curr.blocks[0]) ? [] : curr.blocks;
 
-  const mergedBlocks = [...prevBlocks, ...currBlocks];
+  // Convert curr.title to an h2 block so the chapter heading is preserved visually.
+  // Skip if the title is empty/placeholder, or if the first block already IS that heading
+  // (split-then-merge round-trip should not duplicate).
+  const titleText = curr.title.trim();
+  const firstIsMatchingH2 =
+    currBlocks.length > 0 &&
+    currBlocks[0].type === "h2" &&
+    (currBlocks[0] as TextBlock).html === titleText;
+  const titleBlock: TextBlock | null =
+    !PLACEHOLDER_TITLES.has(titleText) && !firstIsMatchingH2
+      ? { id: uid(), type: "h2", html: titleText }
+      : null;
+
+  const mergedBlocks = [
+    ...prevBlocks,
+    ...(titleBlock ? [titleBlock] : []),
+    ...currBlocks,
+  ];
 
   const merged: Chapter = {
     ...prev,
