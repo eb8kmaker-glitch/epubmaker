@@ -2,8 +2,8 @@
 /**
  * ConvertFlow — Entry point for the EPUB editor.
  *
- * Two entry paths:
- *  A) Upload a file → convert via API → parse EPUB → BookEditor
+ * Entry paths:
+ *  A) Upload file(s) → configure → convert via API → download + parse → BookEditor
  *  B) "Start blank" → empty BookModel → BookEditor
  */
 
@@ -57,7 +57,7 @@ function isValidFile(f: File) { return ACCEPTED_EXTENSIONS.includes(getExtension
 
 // ── Main Component ────────────────────────────────────────────────────────────
 
-type Phase = "landing" | "parsing" | "editing";
+type Phase = "landing" | "configure" | "parsing" | "editing";
 
 export default function ConvertFlow() {
   const t = useTranslations("FileUpload");
@@ -68,6 +68,10 @@ export default function ConvertFlow() {
   const [isDragging, setIsDragging] = useState(false);
   const [parseProgress, setParseProgress] = useState<string>("파일 분석 중…");
   const [recent, setRecent] = useState<RecentProject[]>([]);
+
+  // Configure phase state
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [configTitle, setConfigTitle] = useState("");
 
   // Keep original file + options for reconvert
   const [sourceFile, setSourceFile] = useState<File | null>(null);
@@ -81,7 +85,8 @@ export default function ConvertFlow() {
 
   // ── File processing ──────────────────────────────────────────────────────
 
-  const processFile = useCallback(async (file: File) => {
+  const processFile = useCallback(async (file: File, extraOpts?: Partial<ConversionOptions>) => {
+    const opts = { ...conversionOptions, ...extraOpts };
     setError(null);
     setPhase("parsing");
     setSourceFile(file);
@@ -103,7 +108,7 @@ export default function ConvertFlow() {
       setParseProgress("서버에서 변환 중…");
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("options", JSON.stringify(conversionOptions));
+      formData.append("options", JSON.stringify(opts));
 
       const res = await fetch("/api/convert", { method: "POST", body: formData });
       if (!res.ok) {
@@ -114,24 +119,32 @@ export default function ConvertFlow() {
       const epubBlob = await res.blob();
       const disposition = res.headers.get("Content-Disposition");
       const fnMatch = disposition?.match(/filename="?([^";\n]+)"?/);
-      const filename = fnMatch?.[1]?.trim() ?? "document.epub";
+      const filename = fnMatch?.[1]?.trim() ?? `${opts.title || file.name.replace(/\.[^.]+$/, "")}.epub`;
+
+      // Trigger EPUB download
+      const dlUrl = URL.createObjectURL(epubBlob);
+      const a = document.createElement("a");
+      a.href = dlUrl;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(dlUrl), 1000);
 
       // Parse EPUB → BookModel
       setParseProgress("챕터 구조 분석 중…");
       const parsed = await epubBlobToBook(epubBlob, {
-        title: conversionOptions.title || file.name.replace(/\.[^.]+$/, ""),
-        author: conversionOptions.author,
-        language: conversionOptions.language,
-        publisher: conversionOptions.publisher,
-        date: conversionOptions.date,
-        epubVersion: conversionOptions.epubVersion,
-        toc: conversionOptions.toc,
-        tocDepth: conversionOptions.tocDepth as 1 | 2 | 3,
-        style: conversionOptions.style as BookModel["meta"]["style"],
-        customCss: conversionOptions.customCss,
+        title: opts.title || file.name.replace(/\.[^.]+$/, ""),
+        author: opts.author,
+        language: opts.language,
+        publisher: opts.publisher,
+        date: opts.date,
+        epubVersion: opts.epubVersion,
+        toc: opts.toc,
+        tocDepth: opts.tocDepth as 1 | 2 | 3,
+        style: opts.style as BookModel["meta"]["style"],
+        customCss: opts.customCss,
       });
 
-      pushRecent(file.name, parsed.meta.title || conversionOptions.title);
+      pushRecent(file.name, parsed.meta.title || opts.title);
       setRecent(loadRecent());
       setBook(parsed);
       setPhase("editing");
@@ -143,8 +156,17 @@ export default function ConvertFlow() {
 
   const handleFiles = useCallback((fileList: FileList | null) => {
     if (!fileList?.length) return;
-    processFile(fileList[0]);
-  }, [processFile]);
+    const files = Array.from(fileList);
+    const invalidFile = files.find((f) => !isValidFile(f));
+    if (invalidFile) {
+      setError(t("errorFileType", { name: invalidFile.name }));
+      return;
+    }
+    setError(null);
+    setPendingFiles(files);
+    setConfigTitle(files[0].name.replace(/\.[^.]+$/, ""));
+    setPhase("configure");
+  }, [t]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragging(false);
@@ -156,6 +178,16 @@ export default function ConvertFlow() {
   const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     handleFiles(e.target.files); e.target.value = "";
   }, [handleFiles]);
+
+  const startConvert = useCallback(() => {
+    if (!pendingFiles[0]) return;
+    processFile(pendingFiles[0], { title: configTitle || pendingFiles[0].name.replace(/\.[^.]+$/, "") });
+  }, [pendingFiles, configTitle, processFile]);
+
+  const startConvertAll = useCallback(() => {
+    // Batch: process first file (batch queue support is planned)
+    startConvert();
+  }, [startConvert]);
 
   // Reconvert from original source
   const handleReconvert = useCallback(async () => {
@@ -196,6 +228,7 @@ export default function ConvertFlow() {
   const goBack = () => {
     setBook(null);
     setSourceFile(null);
+    setPendingFiles([]);
     setPhase("landing");
     setError(null);
   };
@@ -218,12 +251,15 @@ export default function ConvertFlow() {
 
   if (phase === "parsing") {
     return (
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        minHeight: "calc(100vh - 104px)",
-        flexDirection: "column", gap: 20,
-        background: "var(--lib-panel)",
-      }}>
+      <div
+        data-testid="converting-state"
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "center",
+          minHeight: "calc(100vh - 104px)",
+          flexDirection: "column", gap: 20,
+          background: "var(--lib-panel)",
+        }}
+      >
         <div style={{
           width: 64, height: 64, borderRadius: 18,
           background: "var(--lib-bg-2)",
@@ -258,6 +294,154 @@ export default function ConvertFlow() {
             100% { transform: translateX(250%) scaleX(0.5); }
           }
         `}</style>
+      </div>
+    );
+  }
+
+  // ── Phase: Configure ──────────────────────────────────────────────────────
+
+  if (phase === "configure" && pendingFiles.length > 0) {
+    const isBatch = pendingFiles.length > 1;
+
+    return (
+      <div style={{
+        minHeight: "calc(100vh - 60px)",
+        display: "flex", flexDirection: "column",
+        background: "var(--lib-panel)",
+      }}>
+        <div style={{ flex: 1, maxWidth: 680, margin: "0 auto", padding: "60px 28px 80px", width: "100%" }}>
+
+          {/* Header */}
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <h1 style={{
+              fontFamily: "var(--font-serif), Georgia, serif",
+              fontSize: 26, fontWeight: 500, color: "var(--lib-ink)",
+              letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 8,
+            }}>
+              {isBatch ? "Batch conversion" : "변환 설정"}
+            </h1>
+            <p style={{ fontSize: 14, color: "var(--lib-dusk)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+              {isBatch
+                ? `${pendingFiles.length}개 파일을 EPUB으로 변환합니다`
+                : "제목을 확인하고 변환을 시작하세요"}
+            </p>
+          </div>
+
+          {/* File card(s) */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
+            {pendingFiles.map((f) => (
+              <div
+                key={f.name + f.size}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "12px 16px", borderRadius: 12,
+                  background: "var(--lib-bg-2)",
+                  border: "1px solid var(--lib-border)",
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--lib-wood)" strokeWidth="1.8" aria-hidden>
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: "var(--lib-ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                    {f.name}
+                  </p>
+                  <p style={{ fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                    {formatBytes(f.size)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Single file: title input */}
+          {!isBatch && (
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--lib-dust)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8, fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                제목
+              </label>
+              <input
+                data-testid="title-input"
+                type="text"
+                value={configTitle}
+                onChange={(e) => setConfigTitle(e.target.value)}
+                placeholder="제목을 입력하세요"
+                style={{
+                  width: "100%", padding: "11px 14px", borderRadius: 10,
+                  border: "1px solid var(--lib-border-2)",
+                  background: "var(--lib-bg-2)", color: "var(--lib-ink)",
+                  fontSize: 15, outline: "none",
+                  fontFamily: "var(--font-serif), Georgia, serif",
+                  boxSizing: "border-box",
+                  transition: "border-color 0.15s ease",
+                }}
+                onFocus={(e) => { e.currentTarget.style.borderColor = "var(--lib-wood-dim)"; }}
+                onBlur={(e) => { e.currentTarget.style.borderColor = "var(--lib-border-2)"; }}
+              />
+            </div>
+          )}
+
+          {/* Action buttons */}
+          <div style={{ display: "flex", gap: 10 }}>
+            <button
+              type="button"
+              data-testid="remove-file-btn"
+              onClick={() => { setPendingFiles([]); setPhase("landing"); }}
+              style={{
+                padding: "11px 20px", borderRadius: 10,
+                border: "1px solid var(--lib-border)",
+                background: "var(--lib-bg-2)", color: "var(--lib-dusk)",
+                fontSize: 14, fontWeight: 500, cursor: "pointer",
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
+                transition: "all 0.15s ease",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--lib-dust)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--lib-border)"; }}
+            >
+              취소
+            </button>
+
+            {isBatch ? (
+              <button
+                type="button"
+                data-testid="convert-all-btn"
+                onClick={startConvertAll}
+                style={{
+                  flex: 1, padding: "11px 20px", borderRadius: 10, border: "none",
+                  background: "var(--lib-wood-dim)", color: "#F8F5F0",
+                  fontSize: 14, fontWeight: 600, cursor: "pointer",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
+              >
+                일괄 변환 ({pendingFiles.length}개)
+              </button>
+            ) : (
+              <button
+                type="button"
+                data-testid="convert-btn"
+                onClick={startConvert}
+                style={{
+                  flex: 1, padding: "11px 20px", borderRadius: 10, border: "none",
+                  background: "var(--lib-wood-dim)", color: "#F8F5F0",
+                  fontSize: 14, fontWeight: 600, cursor: "pointer",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
+              >
+                EPUB으로 변환
+              </button>
+            )}
+          </div>
+
+        </div>
       </div>
     );
   }
@@ -349,6 +533,7 @@ export default function ConvertFlow() {
               ref={fileInputRef}
               type="file"
               accept={ACCEPTED_STRING}
+              multiple
               onChange={onInputChange}
               style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }}
               aria-label={t("ariaUpload")}

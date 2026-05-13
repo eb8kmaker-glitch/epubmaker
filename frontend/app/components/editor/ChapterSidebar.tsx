@@ -37,6 +37,7 @@ export default function ChapterSidebar({
   return (
     <aside
       className="be-chapter-sidebar"
+      data-testid="open-toc-editor-btn"
       style={{
         width: 240,
         flexShrink: 0,
