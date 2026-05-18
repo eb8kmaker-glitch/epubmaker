@@ -4,7 +4,7 @@ import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { FAQJsonLd, BreadcrumbJsonLd } from "@/app/components/content/JsonLd";
-import AdBanner from "@/app/components/ads/AdBanner";
+import AdFitBanner from "@/app/components/ads/AdFitBanner";
 
 const BASE_URL = "https://epubmaker.org";
 const FAQ_COUNT = 8;
@@ -101,11 +101,12 @@ export default async function FAQPage({ params }: Props) {
         <section style={{ padding: "48px 36px 80px" }}>
           <div style={{ maxWidth: 760, margin: "0 auto" }}>
             <dl>
-              {items.map((item, i) => (
+              {/* FAQ 상반부 (1~4번) */}
+              {items.slice(0, 4).map((item, i) => (
                 <div
                   key={i}
                   style={{
-                    borderBottom: i < items.length - 1 ? "1px solid var(--lib-border)" : "none",
+                    borderBottom: "1px solid var(--lib-border)",
                     paddingBottom: 28,
                     marginBottom: 28,
                   }}
@@ -138,9 +139,66 @@ export default async function FAQPage({ params }: Props) {
               ))}
             </dl>
 
-            {/* Ad */}
+            {/*
+             * ── Ad: FAQ 중간 ───────────────────────────────────────────────────
+             * 4번 항목 직후, 5번 항목 직전에 삽입 (자연스러운 시선 흐름)
+             * adUnit: 애드핏 승인 후 "DAN-xxxxxxxxxx" 형식의 단위 ID 로 교체
+             * ─────────────────────────────────────────────────────────────────
+             */}
+            <div style={{ margin: "8px 0 36px" }}>
+              <AdFitBanner
+                adUnit="DAN-PLACEHOLDER_FAQ_MID"
+                desktopSize="728x90"
+                mobileSize="300x250"
+              />
+            </div>
+
+            <dl>
+              {/* FAQ 하반부 (5~8번) */}
+              {items.slice(4).map((item, i) => (
+                <div
+                  key={i + 4}
+                  style={{
+                    borderBottom: i < items.length - 5 ? "1px solid var(--lib-border)" : "none",
+                    paddingBottom: 28,
+                    marginBottom: 28,
+                  }}
+                >
+                  <dt
+                    style={{
+                      fontFamily: "var(--font-serif), Georgia, serif",
+                      fontSize: 18,
+                      fontWeight: 500,
+                      color: "var(--lib-ink)",
+                      marginBottom: 10,
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    {item.question}
+                  </dt>
+                  <dd
+                    style={{
+                      fontSize: 14,
+                      color: "var(--lib-dusk)",
+                      lineHeight: 1.75,
+                      fontFamily: "var(--font-sans), system-ui, sans-serif",
+                      fontWeight: 300,
+                      margin: 0,
+                    }}
+                  >
+                    {item.answer}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            {/* Ad: FAQ 하단 */}
             <div style={{ marginTop: 48 }}>
-              <AdBanner adSlot="4455667788" style={{ minHeight: 90 }} />
+              <AdFitBanner
+                adUnit="DAN-PLACEHOLDER_FAQ_BOTTOM"
+                desktopSize="728x90"
+                mobileSize="320x50"
+              />
             </div>
           </div>
         </section>

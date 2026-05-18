@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import Hero from "@/app/components/home/Hero";
 import FeatureCards from "@/app/components/home/FeatureCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
-import AdBanner from "@/app/components/ads/AdBanner";
+import AdFitBanner from "@/app/components/ads/AdFitBanner";
 import { routing } from "@/i18n/routing";
 
 export const dynamic = "force-static";
@@ -30,6 +30,19 @@ export default async function HomePage({ params }: Props) {
     <div style={{ minHeight: "100vh", background: "var(--lib-bg)" }}>
       {/* ── Hero ── */}
       <Hero locale={locale} />
+
+      {/* ── Ad: Hero 아래 ──────────────────────────────────────────────────────
+           adUnit: 애드핏 승인 후 "DAN-xxxxxxxxxx" 형식의 단위 ID 로 교체
+           ─────────────────────────────────────────────────────────────────── */}
+      <section style={{ padding: "28px 36px 0", background: "var(--lib-bg)" }}>
+        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
+          <AdFitBanner
+            adUnit="DAN-PLACEHOLDER_HOME_HERO"
+            desktopSize="728x90"
+            mobileSize="320x50"
+          />
+        </div>
+      </section>
 
       {/* ── How It Works ── */}
       <section style={{ padding: "72px 36px", background: "var(--lib-bg-2)", borderBottom: "1px solid var(--lib-border)" }}>
@@ -233,10 +246,16 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── Ad — home page bottom ── */}
+      {/* ── Ad: 홈 페이지 하단 ─────────────────────────────────────────────────
+           adUnit: 애드핏 승인 후 "DAN-xxxxxxxxxx" 형식의 단위 ID 로 교체
+           ─────────────────────────────────────────────────────────────────── */}
       <section style={{ padding: "0 36px 48px", background: "var(--lib-bg)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
-          <AdBanner adSlot="1234567890" style={{ minHeight: 90 }} />
+          <AdFitBanner
+            adUnit="DAN-PLACEHOLDER_HOME_BOTTOM"
+            desktopSize="728x90"
+            mobileSize="320x50"
+          />
         </div>
       </section>
     </div>
