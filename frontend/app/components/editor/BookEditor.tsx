@@ -22,6 +22,7 @@ import PreviewPanel from "./PreviewPanel";
 import MetaPanel from "./MetaPanel";
 import { Divider, SpinIcon, CheckIcon } from "./EditorMicro";
 import { topBtnSt } from "./editorShared";
+import ConvertSideAd from "@/app/components/ads/ConvertSideAd";
 
 type RightPanel = "preview" | "meta";
 
@@ -274,6 +275,9 @@ export default function BookEditor({
       {/* ── Main 3-panel area ── */}
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
 
+        {/* 좌측 세로 광고 — 1400px 이상에서만 노출 (CSS 제어) */}
+        <ConvertSideAd />
+
         <ChapterSidebar
           chapters={book.chapters}
           activeId={activeChapterId}
@@ -322,6 +326,26 @@ export default function BookEditor({
         @keyframes be-fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
         @media (max-width: 900px) { .be-right-panel { display: none !important; } }
         @media (max-width: 660px) { .be-chapter-sidebar { display: none !important; } }
+
+        /* 좌측 세로 광고: 1400px 미만에서 완전히 숨김 (레이아웃 변화 없음) */
+        .convert-side-ad {
+          display: none;
+        }
+        @media (min-width: 1400px) {
+          .convert-side-ad {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 180px;
+            min-width: 180px;
+            flex-shrink: 0;
+            border-right: 1px solid var(--lib-border);
+            background: var(--lib-bg-2);
+            padding: 20px 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
+          }
+        }
       `}</style>
     </div>
   );

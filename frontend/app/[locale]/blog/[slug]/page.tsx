@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import { getPost, getAllPostSlugs } from "@/app/lib/content";
 import ArticleLayout from "@/app/components/content/ArticleLayout";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/app/components/content/JsonLd";
-import AdBanner from "@/app/components/ads/AdBanner";
+import AdFit from "@/app/components/ads/AdFit";
 
 const BASE_URL = "https://epubmaker.org";
 
@@ -101,9 +101,13 @@ export default async function BlogPostPage({ params }: Props) {
           tableOfContentsLabel={t("tableOfContents")}
         />
 
-        {/* Ad below article */}
-        <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 36px 64px" }}>
-          <AdBanner adSlot="3344556677" style={{ minHeight: 90 }} />
+        {/* 글 하단 CTA 위 광고 */}
+        <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 36px 64px", display: "flex", justifyContent: "center" }}>
+          <AdFit
+            adUnit="DAN-wIRxEO1tx9SUVgKz"
+            width={300}
+            height={250}
+          />
         </div>
       </div>
     </>

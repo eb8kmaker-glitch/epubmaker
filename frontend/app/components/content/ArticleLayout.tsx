@@ -1,5 +1,15 @@
 import type { Post } from "@/app/lib/content";
 import { Link } from "@/i18n/navigation";
+import AdFit from "@/app/components/ads/AdFit";
+
+// 본문 30% 지점의 </p> 경계에서 HTML 분할
+function splitContentAt30(html: string): [string, string] {
+  const target = Math.floor(html.length * 0.3);
+  const idx = html.indexOf("</p>", target);
+  if (idx === -1 || idx > html.length * 0.8) return [html, ""];
+  const cut = idx + "</p>".length;
+  return [html.slice(0, cut), html.slice(cut)];
+}
 
 interface Props {
   post: Post;
@@ -113,11 +123,34 @@ export default function ArticleLayout({ post, backHref, backLabel, tableOfConten
           </span>
         </div>
 
-        {/* Content */}
-        <div
-          className="article-body"
-          dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-        />
+        {/* Content — 30% 지점에 인라인 광고 삽입 */}
+        {(() => {
+          const [before, after] = splitContentAt30(post.contentHtml);
+          return (
+            <>
+              <div
+                className="article-body"
+                dangerouslySetInnerHTML={{ __html: before }}
+              />
+              {after && (
+                <>
+                  {/* 본문 30% 지점 광고 */}
+                  <div style={{ margin: "32px 0", display: "flex", justifyContent: "center" }}>
+                    <AdFit
+                      adUnit="DAN-wIRxEO1tx9SUVgKz"
+                      width={300}
+                      height={250}
+                    />
+                  </div>
+                  <div
+                    className="article-body"
+                    dangerouslySetInnerHTML={{ __html: after }}
+                  />
+                </>
+              )}
+            </>
+          );
+        })()}
       </article>
 
       {/* ── Sidebar TOC ── */}
