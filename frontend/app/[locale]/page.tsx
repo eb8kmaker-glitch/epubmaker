@@ -37,7 +37,7 @@ export default async function HomePage({ params }: Props) {
       <section style={{ padding: "28px 36px 0", background: "var(--lib-bg)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <AdFitBanner
-            adUnit="DAN-PLACEHOLDER_HOME_HERO"
+            adUnit="DAN-mQe45jKz1SS2Zpe7"
             desktopSize="728x90"
             mobileSize="320x50"
           />
@@ -252,7 +252,7 @@ export default async function HomePage({ params }: Props) {
       <section style={{ padding: "0 36px 48px", background: "var(--lib-bg)" }}>
         <div style={{ maxWidth: 1060, margin: "0 auto" }}>
           <AdFitBanner
-            adUnit="DAN-PLACEHOLDER_HOME_BOTTOM"
+            adUnit="DAN-mQe45jKz1SS2Zpe7"
             desktopSize="728x90"
             mobileSize="320x50"
           />

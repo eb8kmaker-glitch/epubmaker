@@ -147,7 +147,7 @@ export default async function FAQPage({ params }: Props) {
              */}
             <div style={{ margin: "8px 0 36px" }}>
               <AdFitBanner
-                adUnit="DAN-PLACEHOLDER_FAQ_MID"
+                adUnit="DAN-mQe45jKz1SS2Zpe7"
                 desktopSize="728x90"
                 mobileSize="300x250"
               />
@@ -195,7 +195,7 @@ export default async function FAQPage({ params }: Props) {
             {/* Ad: FAQ 하단 */}
             <div style={{ marginTop: 48 }}>
               <AdFitBanner
-                adUnit="DAN-PLACEHOLDER_FAQ_BOTTOM"
+                adUnit="DAN-mQe45jKz1SS2Zpe7"
                 desktopSize="728x90"
                 mobileSize="320x50"
               />
