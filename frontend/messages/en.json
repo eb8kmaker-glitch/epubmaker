@@ -19,9 +19,9 @@
     "featureLearnMore": "Learn more",
     "navFeatures": "Features",
     "hero": {
-      "titlePlain": "Write beautifully.",
-      "titleEm": "Create EPUBs instantly.",
-      "subtitle": "A calm place for digital writing. Convert your manuscripts to beautiful EPUBs — no account required.",
+      "titlePlain": "Create and Convert EPUB Files Online.",
+      "titleEm": "The free Sigil alternative.",
+      "subtitle": "An easier web-based alternative to Sigil for professional ebook creation. No installation, no account required — free forever.",
       "cta": "Start Converting — It's Free",
       "ctaSecondary": "See how it works",
       "freeBadge": "Free forever · No account required · No limits"
@@ -257,6 +257,19 @@
     "comingSoon": "More guides coming soon.",
     "readGuide": "Read guide",
     "backToGuides": "Back to guides"
+  },
+  "HomeFAQ": {
+    "title": "Frequently Asked Questions",
+    "q1": "How do I create an EPUB file?",
+    "a1": "With EPUBMaker, you can create EPUB files directly in your browser — no software installation required. Upload a DOCX or TXT file, set your title, author, and style preferences, then click Convert. This free online epub maker delivers a professional ebook ready to publish.",
+    "q2": "Can I make EPUBs without Sigil?",
+    "a2": "Yes. EPUBMaker is a web-based alternative to Sigil. Without any complex installation or configuration, you can create professional EPUBs right in your browser. TOC editing, metadata, and CSS styling are all included — making it a capable sigil alternative for most ebook creation needs.",
+    "q3": "Can I convert PDF to EPUB?",
+    "a3": "EPUBMaker currently supports DOCX (Word) and TXT files for epub conversion. Direct PDF conversion is not supported, but you can convert a PDF to Word first, then upload it here. For the cleanest epub creation results, DOCX files are recommended.",
+    "q4": "Can beginners create EPUBs easily?",
+    "a4": "Absolutely. EPUBMaker is designed as an accessible web-based epub creator for beginners. Upload your file, configure a few settings, and your professional EPUB is ready. No coding knowledge or understanding of EPUB structure required — just your manuscript.",
+    "q5": "Who is EPUBMaker best suited for?",
+    "a5": "EPUBMaker is ideal for self-publishing authors, bloggers, educators, and digital content creators looking for a simple online epub maker. Whether you need a sigil alternative, want to convert documents to EPUB without installation, or need a free ebook creator — EPUBMaker is the right tool. Completely free with no usage limits."
   },
   "LanguageSwitcher": {
     "ariaLabel": "Select language"

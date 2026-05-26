@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Hero from "@/app/components/home/Hero";
@@ -15,10 +16,91 @@ export function generateStaticParams() {
 
 type Props = { params: Promise<{ locale: string }> };
 
+const BASE_URL = "https://www.epubmaker.org";
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const isKo = locale === "ko";
+
+  const title = isKo
+    ? "EPUBMaker — 웹 기반 EPUB 전자책 제작 및 변환 도구"
+    : "EPUBMaker — Web-based EPUB Creator & Converter";
+  const description = isKo
+    ? "설치 없이 브라우저에서 바로 EPUB 전자책을 제작·변환하세요. Sigil보다 쉬운 무료 온라인 EPUB 제작 도구. 계정 불필요."
+    : "Create professional EPUB ebooks online. A simple web-based EPUB maker and converter — an easier alternative to Sigil. Free forever, no account required.";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${BASE_URL}/${locale}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
+
 export default async function HomePage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "Home" });
+  const tf = await getTranslations({ locale, namespace: "HomeFAQ" });
+
+  const faqItems = [
+    { q: tf("q1"), a: tf("a1") },
+    { q: tf("q2"), a: tf("a2") },
+    { q: tf("q3"), a: tf("a3") },
+    { q: tf("q4"), a: tf("a4") },
+    { q: tf("q5"), a: tf("a5") },
+  ];
+
+  const softwareAppJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "EPUBMaker",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: "https://www.epubmaker.org",
+    description:
+      "Web-based EPUB creation and conversion platform for creating professional electronic books online.",
+    keywords: [
+      "epub maker",
+      "epub converter",
+      "ebook creator",
+      "online epub editor",
+      "sigil alternative",
+      "전자책 제작",
+    ],
+    featureList: [
+      "Create EPUB online",
+      "Convert files to EPUB",
+      "Merge chapters",
+      "Split chapters",
+      "Edit EPUB structure",
+      "Web-based ebook creation",
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  };
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map(({ q, a }) => ({
+      "@type": "Question",
+      name: q,
+      acceptedAnswer: { "@type": "Answer", text: a },
+    })),
+  };
 
   const steps = [
     { num: "01", titleKey: "step1Title", descKey: "step1Desc" },
@@ -28,6 +110,15 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--lib-bg)" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* ── Hero ── */}
       <Hero locale={locale} />
 
@@ -243,6 +334,81 @@ export default async function HomePage({ params }: Props) {
           >
             {t("freeForever.cta")}
           </Link>
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section
+        style={{
+          padding: "72px 36px",
+          background: "var(--lib-bg-2)",
+          borderTop: "1px solid var(--lib-border)",
+          borderBottom: "1px solid var(--lib-border)",
+        }}
+      >
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--lib-dust)",
+                marginBottom: 10,
+                fontFamily: "var(--font-sans), system-ui, sans-serif",
+              }}
+            >
+              FAQ
+            </div>
+            <h2
+              style={{
+                fontFamily: "var(--font-serif), Georgia, serif",
+                fontSize: 30,
+                fontWeight: 500,
+                color: "var(--lib-ink)",
+                margin: 0,
+              }}
+            >
+              {tf("title")}
+            </h2>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+            {faqItems.map(({ q, a }, i) => (
+              <div
+                key={i}
+                style={{
+                  padding: "28px 0",
+                  borderBottom: i < faqItems.length - 1 ? "1px solid var(--lib-border)" : undefined,
+                }}
+              >
+                <h3
+                  style={{
+                    fontFamily: "var(--font-serif), Georgia, serif",
+                    fontSize: 17,
+                    fontWeight: 500,
+                    color: "var(--lib-ink)",
+                    margin: "0 0 10px",
+                    lineHeight: 1.35,
+                  }}
+                >
+                  {q}
+                </h3>
+                <p
+                  style={{
+                    fontFamily: "var(--font-sans), system-ui, sans-serif",
+                    fontSize: 14,
+                    fontWeight: 300,
+                    color: "var(--lib-dusk)",
+                    lineHeight: 1.75,
+                    margin: 0,
+                  }}
+                >
+                  {a}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

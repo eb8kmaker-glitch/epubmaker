@@ -29,8 +29,25 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EPUBMaker — Free Document to EPUB Converter",
-  description: "Convert DOCX and TXT to beautiful EPUBs instantly, in your browser. Free forever.",
+  metadataBase: new URL("https://www.epubmaker.org"),
+  title: {
+    default: "EPUBMaker — Web-based EPUB Creator & Converter",
+    template: "%s | EPUBMaker",
+  },
+  description:
+    "Create professional EPUB ebooks online. A simple web-based EPUB maker and converter, designed as an easier alternative to Sigil for ebook creation.",
+  keywords: [
+    "epub maker",
+    "epub converter",
+    "ebook creator",
+    "online epub editor",
+    "sigil alternative",
+    "전자책 제작",
+    "epub 제작",
+    "ebook 변환",
+    "free epub creator",
+    "web based epub",
+  ],
 };
 
 export default function RootLayout({

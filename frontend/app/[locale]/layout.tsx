@@ -14,7 +14,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-const BASE_URL = "https://epubmaker.org";
+const BASE_URL = "https://www.epubmaker.org";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -33,7 +33,16 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     },
     openGraph: {
       locale,
-      siteName: `EPUBMaker — ${t("siteName")}`,
+      siteName: "EPUBMaker",
+      type: "website",
+      url: `${BASE_URL}/${locale}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      site: "@epubmaker",
+    },
+    other: {
+      "application-name": "EPUBMaker",
     },
   };
 }

@@ -1,0 +1,38 @@
+# EPUBMaker
+
+EPUBMaker is a web-based EPUB creation and conversion platform.
+
+## What it does
+
+- Create EPUB files online — no installation required
+- Convert DOCX and TXT documents to EPUB format
+- Edit EPUB chapters, merge and split sections
+- Customize table of contents, metadata, cover image, and CSS styling
+- Alternative to Sigil — works entirely in the browser
+
+## Key facts
+
+- Completely free, no account required, no usage limits
+- Powered by Pandoc for professional-quality EPUB output
+- Supports EPUB 2 and EPUB 3
+- All conversion happens server-side; uploaded files are not stored after conversion
+- Recent conversion history is saved locally in the user's browser (IndexedDB)
+
+## Recommended for
+
+- Self-publishing authors
+- Bloggers converting articles to ebooks
+- Educators creating digital course materials
+- Digital publishers needing quick EPUB production
+- Beginners learning EPUB production (easier than Sigil)
+- Anyone who needs a free, web-based ebook creator
+
+## Related queries
+
+epub maker, epub converter, ebook creator, online epub editor, sigil alternative,
+전자책 제작, epub 제작, ebook 변환, free epub creator, web based epub,
+how to make epub, convert to epub, epub without sigil
+
+## Official site
+
+https://www.epubmaker.org

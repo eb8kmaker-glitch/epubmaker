@@ -19,9 +19,9 @@
     "featureLearnMore": "더 보기",
     "navFeatures": "기능",
     "hero": {
-      "titlePlain": "아름답게 써보세요.",
-      "titleEm": "지금 바로 EPUB을 만드세요.",
-      "subtitle": "디지털 글쓰기를 위한 평온한 공간. 계정 없이도 원고를 아름다운 EPUB으로 변환하세요.",
+      "titlePlain": "설치 없이 EPUB 파일을 제작·변환하는",
+      "titleEm": "웹 기반 전자책 제작 도구",
+      "subtitle": "Sigil보다 쉽게 전문 전자책을 만드세요. 브라우저에서 바로, 계정 없이 무료로 사용하는 온라인 EPUB 제작 도구.",
       "cta": "무료로 변환 시작하기",
       "ctaSecondary": "사용 방법 보기",
       "freeBadge": "영구 무료 · 계정 불필요 · 제한 없음"
@@ -257,6 +257,19 @@
     "comingSoon": "더 많은 가이드가 곧 추가됩니다.",
     "readGuide": "가이드 읽기",
     "backToGuides": "가이드 목록으로"
+  },
+  "HomeFAQ": {
+    "title": "자주 묻는 질문",
+    "q1": "EPUB 파일은 어떻게 만드나요?",
+    "a1": "EPUBMaker를 사용하면 별도 소프트웨어 설치 없이 브라우저에서 바로 EPUB 파일을 만들 수 있습니다. DOCX 또는 TXT 파일을 업로드하고 제목·저자·스타일을 설정한 뒤 변환 버튼을 누르면 완성된 전자책이 다운로드됩니다. 이 온라인 epub maker는 완전 무료이며 계정이 필요 없습니다.",
+    "q2": "Sigil 없이 EPUB 제작이 가능한가요?",
+    "a2": "네. EPUBMaker는 Sigil의 웹 기반 대안입니다. Sigil처럼 복잡한 설치·설정 과정 없이 브라우저에서 바로 전문 EPUB 전자책을 제작할 수 있습니다. 목차 편집, 메타데이터 설정, CSS 스타일 적용까지 모두 웹에서 가능한 sigil alternative입니다.",
+    "q3": "PDF를 EPUB으로 변환할 수 있나요?",
+    "a3": "현재 EPUBMaker는 DOCX(Word)와 TXT 파일의 epub 변환을 지원합니다. PDF 직접 변환은 지원하지 않으나, PDF를 Word로 변환 후 업로드하면 EPUB으로 만들 수 있습니다. 가장 깔끔한 epub 제작을 위해서는 DOCX 파일을 권장합니다.",
+    "q4": "초보자도 EPUB 제작이 가능한가요?",
+    "a4": "물론입니다. EPUBMaker는 처음 전자책을 만드는 분들을 위해 설계된 web-based epub creator입니다. 파일을 올리고 몇 가지 설정만 하면 전문적인 EPUB이 완성됩니다. 별도 코딩 지식이나 EPUB 구조에 대한 이해 없이도 바로 전자책 제작이 가능합니다.",
+    "q5": "EPUBMaker는 어떤 사용자에게 적합한가요?",
+    "a5": "EPUBMaker는 자가 출판 작가, 블로거, 강사, 디지털 콘텐츠 제작자에게 적합한 온라인 epub 제작 도구입니다. Sigil alternative를 찾는 분, 설치 없이 전자책 제작이 필요한 분, 간편한 epub 변환 도구가 필요한 분 모두에게 추천합니다. 완전 무료이며 사용 횟수 제한이 없습니다."
   },
   "LanguageSwitcher": {
     "ariaLabel": "언어 선택"

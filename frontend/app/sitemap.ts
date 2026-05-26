@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { getAllPosts } from "@/app/lib/content";
 
-const BASE_URL = "https://epubmaker.org";
+const BASE_URL = "https://www.epubmaker.org";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
@@ -21,6 +21,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
           languages: Object.fromEntries(
             routing.locales.map((loc) => [loc, `${BASE_URL}/${loc}${path}`])
           ),
+        },
+      });
+    }
+  }
+
+  // SEO landing pages (ko + en only)
+  const seoLandingPaths = [
+    "/sigil-alternative",
+    "/how-to-make-epub",
+    "/pdf-to-epub",
+    "/free-ebook-creator",
+  ];
+
+  for (const locale of ["ko", "en"]) {
+    for (const path of seoLandingPaths) {
+      entries.push({
+        url: `${BASE_URL}/${locale}${path}`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.8,
+        alternates: {
+          languages: {
+            ko: `${BASE_URL}/ko${path}`,
+            en: `${BASE_URL}/en${path}`,
+          },
         },
       });
     }
