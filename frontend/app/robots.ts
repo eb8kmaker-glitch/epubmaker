@@ -9,7 +9,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/admin/", "/account/", "/dashboard/"],
       },
     ],
-    sitemap: "https://epubmaker.org/sitemap.xml",
-    host: "https://epubmaker.org",
+    sitemap: "https://www.epubmaker.org/sitemap.xml",
+    host: "https://www.epubmaker.org",
   };
 }

@@ -28,9 +28,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // SEO landing pages (ko + en only)
   const seoLandingPaths = [
+    "/word-to-epub",
+    "/pdf-to-epub",
     "/sigil-alternative",
     "/how-to-make-epub",
-    "/pdf-to-epub",
     "/free-ebook-creator",
   ];
 
