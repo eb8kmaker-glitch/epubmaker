@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import BookEditor from "@/app/components/editor/BookEditor";
 import { emptyBook, type BookModel } from "@/app/lib/bookModel";
 import { epubBlobToBook } from "@/app/lib/epubToBook";
@@ -61,12 +61,13 @@ type Phase = "landing" | "configure" | "parsing" | "editing";
 
 export default function ConvertFlow() {
   const t = useTranslations("FileUpload");
+  const locale = useLocale();
 
   const [phase, setPhase] = useState<Phase>("landing");
   const [book, setBook] = useState<BookModel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [parseProgress, setParseProgress] = useState<string>("파일 분석 중…");
+  const [parseProgress, setParseProgress] = useState<string>("");
   const [recent, setRecent] = useState<RecentProject[]>([]);
 
   // Configure phase state
@@ -88,6 +89,7 @@ export default function ConvertFlow() {
   const processFile = useCallback(async (file: File, extraOpts?: Partial<ConversionOptions>) => {
     const opts = { ...conversionOptions, ...extraOpts };
     setError(null);
+    setParseProgress(t("progressAnalyzing"));
     setPhase("parsing");
     setSourceFile(file);
 
@@ -98,14 +100,14 @@ export default function ConvertFlow() {
 
       // TXT length check
       if (getExtension(file.name) === ".txt") {
-        setParseProgress("텍스트 파일 읽는 중…");
+        setParseProgress(t("progressReadingTxt"));
         const text = await file.text();
         if (text.length > MAX_TEXT_CHARS)
           throw new Error(t("errorTextLength", { max: MAX_TEXT_CHARS.toLocaleString(), current: text.length.toLocaleString() }));
       }
 
       // Convert via API
-      setParseProgress("서버에서 변환 중…");
+      setParseProgress(t("progressConverting"));
       const formData = new FormData();
       formData.append("file", file);
       formData.append("options", JSON.stringify(opts));
@@ -113,7 +115,7 @@ export default function ConvertFlow() {
       const res = await fetch("/api/convert", { method: "POST", body: formData });
       if (!res.ok) {
         const data = await res.json().catch(() => ({})) as { error?: string };
-        throw new Error(data.error || `변환 실패 (${res.status})`);
+        throw new Error(data.error || t("errorConversionStatus", { status: res.status }));
       }
 
       const epubBlob = await res.blob();
@@ -130,7 +132,7 @@ export default function ConvertFlow() {
       setTimeout(() => URL.revokeObjectURL(dlUrl), 1000);
 
       // Parse EPUB → BookModel
-      setParseProgress("챕터 구조 분석 중…");
+      setParseProgress(t("progressParsing"));
       const parsed = await epubBlobToBook(epubBlob, {
         title: opts.title || file.name.replace(/\.[^.]+$/, ""),
         author: opts.author,
@@ -209,12 +211,12 @@ export default function ConvertFlow() {
       };
       formData.append("options", JSON.stringify(updatedOpts));
       const res = await fetch("/api/convert", { method: "POST", body: formData });
-      if (!res.ok) throw new Error("재변환 실패");
+      if (!res.ok) throw new Error(t("errorReconversionFailed"));
       const blob = await res.blob();
       const parsed = await epubBlobToBook(blob, book.meta);
       setBook(parsed);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "재변환 중 오류가 발생했습니다");
+      setError(e instanceof Error ? e.message : t("errorReconversionError"));
     } finally {
       setReconverting(false);
     }
@@ -273,7 +275,7 @@ export default function ConvertFlow() {
         </div>
         <div style={{ textAlign: "center" }}>
           <p style={{ fontSize: 16, fontWeight: 500, color: "var(--lib-ink)", marginBottom: 6, fontFamily: "var(--font-serif), Georgia, serif" }}>
-            전자책으로 변환하는 중
+            {t("parsingTitle")}
           </p>
           <p style={{ fontSize: 13, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
             {parseProgress}
@@ -318,12 +320,12 @@ export default function ConvertFlow() {
               fontSize: 26, fontWeight: 500, color: "var(--lib-ink)",
               letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 8,
             }}>
-              {isBatch ? "Batch conversion" : "변환 설정"}
+              {isBatch ? t("batchTitle") : t("configureTitle")}
             </h1>
             <p style={{ fontSize: 14, color: "var(--lib-dusk)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
               {isBatch
-                ? `${pendingFiles.length}개 파일을 EPUB으로 변환합니다`
-                : "제목을 확인하고 변환을 시작하세요"}
+                ? t("batchSubtitle", { count: pendingFiles.length })
+                : t("configureSubtitle")}
             </p>
           </div>
 
@@ -359,14 +361,14 @@ export default function ConvertFlow() {
           {!isBatch && (
             <div style={{ marginBottom: 24 }}>
               <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "var(--lib-dust)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8, fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-                제목
+                {t("titleLabel")}
               </label>
               <input
                 data-testid="title-input"
                 type="text"
                 value={configTitle}
                 onChange={(e) => setConfigTitle(e.target.value)}
-                placeholder="제목을 입력하세요"
+                placeholder={t("titleInputPlaceholder")}
                 style={{
                   width: "100%", padding: "11px 14px", borderRadius: 10,
                   border: "1px solid var(--lib-border-2)",
@@ -399,7 +401,7 @@ export default function ConvertFlow() {
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--lib-dust)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--lib-border)"; }}
             >
-              취소
+              {t("cancel")}
             </button>
 
             {isBatch ? (
@@ -418,7 +420,7 @@ export default function ConvertFlow() {
                 onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
               >
-                일괄 변환 ({pendingFiles.length}개)
+                {t("batchConvertCount", { count: pendingFiles.length })}
               </button>
             ) : (
               <button
@@ -436,7 +438,7 @@ export default function ConvertFlow() {
                 onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-1px)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; }}
               >
-                EPUB으로 변환
+                {t("convertButton")}
               </button>
             )}
           </div>
@@ -470,7 +472,7 @@ export default function ConvertFlow() {
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
             </svg>
             <span style={{ fontSize: 11, fontWeight: 600, color: "var(--lib-wood)", letterSpacing: "0.05em", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-              전자책 에디터
+              {t("editorBadge")}
             </span>
           </div>
           <h1 style={{
@@ -478,14 +480,13 @@ export default function ConvertFlow() {
             fontSize: 32, fontWeight: 500, color: "var(--lib-ink)",
             letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 12,
           }}>
-            직접 편집하고<br />바로 EPUB으로
+            {t("heroTitle")}
           </h1>
           <p style={{
             fontSize: 15, color: "var(--lib-dusk)", lineHeight: 1.65,
             fontFamily: "var(--font-sans), system-ui, sans-serif",
           }}>
-            파일을 업로드하면 챕터로 분리해 드립니다.<br />
-            텍스트 편집, 챕터 관리, 실시간 미리보기까지 — 브라우저에서 바로.
+            {t("heroSubtitle")}
           </p>
         </div>
 
@@ -563,20 +564,20 @@ export default function ConvertFlow() {
               color: isDragging ? "var(--lib-wood)" : "var(--lib-ink)",
               marginBottom: 8, transition: "color 0.2s ease",
             }}>
-              {isDragging ? "여기에 놓으세요" : "파일을 드래그하거나 클릭하세요"}
+              {isDragging ? t("dropHere") : t("dropText")}
             </p>
             <p style={{
               fontSize: 13, color: "var(--lib-dust)", marginBottom: 28,
               lineHeight: 1.6, fontFamily: "var(--font-sans), system-ui, sans-serif",
             }}>
-              DOCX 또는 TXT → 챕터 분리 → 에디터에서 바로 편집
+              {t("dropHint")}
             </p>
 
             {/* Format badges */}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
               {[
-                { ext: "DOCX", color: "#2563eb", bg: "rgba(37,99,235,0.08)", label: "Word 문서" },
-                { ext: "TXT",  color: "#16a34a", bg: "rgba(22,163,74,0.08)",  label: "텍스트 파일" },
+                { ext: "DOCX", color: "#2563eb", bg: "rgba(37,99,235,0.08)", label: t("labelDocx") },
+                { ext: "TXT",  color: "#16a34a", bg: "rgba(22,163,74,0.08)",  label: t("labelTxt") },
               ].map(({ ext, color, bg, label }) => (
                 <div key={ext} style={{
                   display: "flex", alignItems: "center", gap: 7,
@@ -595,7 +596,7 @@ export default function ConvertFlow() {
         {/* Divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "20px 0" }}>
           <div style={{ flex: 1, height: 1, background: "var(--lib-border)" }} />
-          <span style={{ fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>또는</span>
+          <span style={{ fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>{t("or")}</span>
           <div style={{ flex: 1, height: 1, background: "var(--lib-border)" }} />
         </div>
 
@@ -621,16 +622,16 @@ export default function ConvertFlow() {
             <polyline points="14 2 14 8 20 8" />
             <line x1="12" y1="18" x2="12" y2="12" /><line x1="9" y1="15" x2="15" y2="15" />
           </svg>
-          빈 문서로 시작하기
+          {t("startBlank")}
         </button>
 
         {/* Feature highlights */}
         <div style={{ marginTop: 48, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {[
-            { icon: "✏️", title: "블록 기반 편집", desc: "단락·소제목·인용·이미지 블록으로 자유롭게 구성" },
-            { icon: "📚", title: "챕터 관리", desc: "드래그로 순서 변경, 분할·병합 지원" },
-            { icon: "👁", title: "실시간 미리보기", desc: "Kindle 스타일 프레임으로 즉시 확인" },
-            { icon: "⬇️", title: "EPUB 다운로드", desc: "브라우저에서 바로 생성, 서버 불필요" },
+            { icon: "✏️", title: t("featureEditTitle"), desc: t("featureEditDesc") },
+            { icon: "📚", title: t("featureChapterTitle"), desc: t("featureChapterDesc") },
+            { icon: "👁", title: t("featurePreviewTitle"), desc: t("featurePreviewDesc") },
+            { icon: "⬇️", title: t("featureDownloadTitle"), desc: t("featureDownloadDesc") },
           ].map(({ icon, title, desc }) => (
             <div key={title} style={{
               padding: "16px 18px", borderRadius: 12,
@@ -662,7 +663,7 @@ export default function ConvertFlow() {
                     {r.title || r.filename}
                   </span>
                   <span style={{ fontSize: 11, color: "var(--lib-dust)", flexShrink: 0, marginLeft: 16 }}>
-                    {new Date(r.date).toLocaleDateString("ko-KR", { month: "short", day: "numeric" })}
+                    {new Date(r.date).toLocaleDateString(locale, { month: "short", day: "numeric" })}
                   </span>
                 </div>
               ))}
