@@ -1,11 +1,12 @@
 "use client";
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type React from "react";
 import {
   type Block, type TextBlock, type ImageBlock, type BlockType, type Chapter, uid,
 } from "@/app/lib/bookModel";
 import ContentEditable from "./ContentEditable";
-import { BLOCK_TYPES, BLOCK_TYPE_ICONS, BLOCK_TAG, BLOCK_PLACEHOLDER, BLOCK_STYLES } from "./editorShared";
+import { BLOCK_TYPE_ICONS, BLOCK_TAG, BLOCK_STYLES } from "./editorShared";
 
 interface CanvasProps {
   chapter: Chapter;
@@ -15,6 +16,20 @@ interface CanvasProps {
 }
 
 export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleChange, onSplit }: CanvasProps) {
+  const t = useTranslations("Editor");
+  const BLOCK_TYPES = [
+    { type: "paragraph" as const, label: t("blockTypeParagraph"), hint: t("blockHintParagraph") },
+    { type: "h2"        as const, label: t("blockTypeH2"),        hint: t("blockHintH2") },
+    { type: "h3"        as const, label: t("blockTypeH3"),        hint: t("blockHintH3") },
+    { type: "quote"     as const, label: t("blockTypeQuote"),     hint: t("blockHintQuote") },
+    { type: "image"     as const, label: t("blockTypeImage"),     hint: t("blockHintImage") },
+  ];
+  const BLOCK_PLACEHOLDER: Record<string, string> = {
+    paragraph: t("blockPlaceholderParagraph"),
+    h2: t("blockPlaceholderH2"),
+    h3: t("blockPlaceholderH3"),
+    quote: t("blockPlaceholderQuote"),
+  };
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [cmdMenuId, setCmdMenuId] = useState<string | null>(null);
   const [hoverBetween, setHoverBetween] = useState<number | null>(null);
@@ -88,7 +103,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
             value={chapter.title}
             onChange={(html) => onChapterTitleChange(html.replace(/<[^>]+>/g, ""))}
             tag="h1"
-            placeholder="챕터 제목을 입력하세요..."
+            placeholder={t("chapterTitlePlaceholder")}
             style={{
               fontSize: 30,
               fontWeight: 700,
@@ -130,7 +145,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
                       <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
-                    블록 추가
+                    {t("addBlock")}
                   </button>
                   <div style={{ flex: 1, height: 1, background: "var(--lib-wood-dim)", opacity: 0.4 }} />
                 </div>
@@ -168,7 +183,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
                 {/* Type button */}
                 <button
                   type="button"
-                  title="블록 타입 변경"
+                  title={t("changeBlockType")}
                   onClick={() => setCmdMenuId(cmdMenuId === block.id ? null : block.id)}
                   style={{
                     width: 22, height: 22, borderRadius: 5,
@@ -184,7 +199,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
                 {/* Delete */}
                 <button
                   type="button"
-                  title="블록 삭제"
+                  title={t("deleteBlock")}
                   onClick={() => deleteBlock(block.id)}
                   style={{
                     width: 22, height: 22, borderRadius: 5, border: "none",
@@ -252,8 +267,8 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
                   >
                     <span style={{ fontSize: 12 }}>✂️</span>
                     <div>
-                      <p style={{ fontSize: 12, fontWeight: 600, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif", margin: 0 }}>여기서 챕터 분할</p>
-                      <p style={{ fontSize: 10, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif", margin: 0 }}>새 챕터로 분리</p>
+                      <p style={{ fontSize: 12, fontWeight: 600, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif", margin: 0 }}>{t("splitChapterHere")}</p>
+                      <p style={{ fontSize: 10, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif", margin: 0 }}>{t("splitChapterHint")}</p>
                     </div>
                   </button>
                 </div>
@@ -310,7 +325,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden>
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            블록 추가 (또는 / 명령어)
+            {t("addBlockHint")}
           </button>
         </div>
       </div>
@@ -370,6 +385,7 @@ interface ImageBlockViewProps {
 }
 
 function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBlockViewProps) {
+  const t = useTranslations("Editor");
   const inputRef = useRef<HTMLInputElement>(null);
 
   if (!block.src) {
@@ -402,7 +418,7 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
           <polyline points="21 15 16 10 5 21" />
         </svg>
         <p style={{ fontSize: 13, color: "var(--lib-dusk)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-          이미지 클릭하여 추가 또는 드래그
+          {t("addImageHint")}
         </p>
         <p style={{ fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
           JPEG · PNG · WebP
@@ -429,7 +445,7 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
         <input
           value={block.alt}
           onChange={(e) => onChange({ alt: e.target.value })}
-          placeholder="이미지 설명 (접근성을 위해 입력하세요)..."
+          placeholder={t("imageAltPlaceholder")}
           style={{
             marginTop: 6, width: "100%", fontSize: 11,
             color: "var(--lib-dust)", background: "transparent",
@@ -442,7 +458,7 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
         <input
           value={block.caption}
           onChange={(e) => onChange({ caption: e.target.value })}
-          placeholder="캡션 (선택)..."
+          placeholder={t("imageCaptionPlaceholder")}
           style={{
             marginTop: 4, width: "100%", fontSize: 12,
             color: "var(--lib-dusk)", background: "transparent",

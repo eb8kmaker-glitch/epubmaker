@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { Chapter } from "@/app/lib/bookModel";
 import { ChipBtn } from "./EditorMicro";
 import { iconBtnSt } from "./editorShared";
@@ -19,6 +20,7 @@ interface SidebarProps {
 export default function ChapterSidebar({
   chapters, activeId, onSelect, onAdd, onDelete, onRename, onToggleCollapse, onMerge, onReorder,
 }: SidebarProps) {
+  const t = useTranslations("Editor");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
@@ -55,12 +57,12 @@ export default function ChapterSidebar({
         display: "flex", alignItems: "center", justifyContent: "space-between",
       }}>
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--lib-dust)" }}>
-          챕터 ({chapters.length})
+          {t("chaptersLabel", { count: chapters.length })}
         </span>
         <button
           type="button"
           onClick={onAdd}
-          title="새 챕터 추가"
+          title={t("addChapterTitle")}
           style={{
             width: 24, height: 24, borderRadius: 6, border: "none",
             background: "var(--lib-bg-3)", color: "var(--lib-wood)",
@@ -142,7 +144,7 @@ export default function ChapterSidebar({
                     fontFamily: "var(--font-sans), system-ui, sans-serif",
                   }}
                 >
-                  {ch.title || "제목 없음"}
+                  {ch.title || t("untitled")}
                 </span>
               )}
 
@@ -150,7 +152,7 @@ export default function ChapterSidebar({
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); onToggleCollapse(ch.id); }}
-                title={ch.collapsed ? "펼치기" : "접기"}
+                title={ch.collapsed ? t("expandChapter") : t("collapseChapter")}
                 style={iconBtnSt}
               >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
@@ -166,14 +168,14 @@ export default function ChapterSidebar({
                 display: "flex", gap: 4, padding: "0 10px 8px 28px",
                 animation: "be-fadeIn 0.15s ease",
               }}>
-                <ChipBtn onClick={() => startEdit(ch)}>이름 변경</ChipBtn>
-                {idx > 0 && <ChipBtn onClick={() => onMerge(ch.id)}>이전 병합</ChipBtn>}
+                <ChipBtn onClick={() => startEdit(ch)}>{t("renameChapter")}</ChipBtn>
+                {idx > 0 && <ChipBtn onClick={() => onMerge(ch.id)}>{t("mergePrevious")}</ChipBtn>}
                 {chapters.length > 1 && (
                   <ChipBtn
-                    onClick={() => { if (confirm(`"${ch.title}" 챕터를 삭제하시겠어요?`)) onDelete(ch.id); }}
+                    onClick={() => { if (confirm(t("confirmDeleteChapter", { title: ch.title }))) onDelete(ch.id); }}
                     danger
                   >
-                    삭제
+                    {t("deleteChapter")}
                   </ChipBtn>
                 )}
               </div>
@@ -185,7 +187,7 @@ export default function ChapterSidebar({
       {/* Footer hint */}
       <div style={{ padding: "8px 14px", borderTop: "1px solid var(--lib-border)" }}>
         <p style={{ fontSize: 10, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-          드래그로 챕터 순서 변경 · 더블클릭으로 이름 변경
+          {t("chapterSidebarHint")}
         </p>
       </div>
     </aside>

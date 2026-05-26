@@ -11,6 +11,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   type BookModel, type BookMeta, type Chapter, type Block,
   uid, newChapter, splitChapter, mergeChapters,
@@ -37,6 +38,7 @@ interface Props {
 export default function BookEditor({
   book, onBookChange, onBack, onReconvert, reconverting,
 }: Props) {
+  const t = useTranslations("Editor");
   const [activeChapterId, setActiveChapterId] = useState<string>(
     book.chapters[0]?.id ?? "",
   );
@@ -82,7 +84,7 @@ export default function BookEditor({
   );
 
   const addChapter = () => {
-    const ch = newChapter();
+    const ch = newChapter(t("newChapterTitle"));
     updateBook((b) => ({ ...b, chapters: [...b.chapters, ch] }));
     setActiveChapterId(ch.id);
   };
@@ -177,7 +179,7 @@ export default function BookEditor({
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
             <polyline points="15 18 9 12 15 6" />
           </svg>
-          나가기
+          {t("back")}
         </button>
 
         <Divider />
@@ -188,7 +190,7 @@ export default function BookEditor({
           onChange={(e) =>
             updateBook((b) => ({ ...b, meta: { ...b.meta, title: e.target.value } }))
           }
-          placeholder="제목 없음"
+          placeholder={t("untitled")}
           style={{
             flex: 1, minWidth: 0, maxWidth: 320,
             background: "transparent", border: "none", outline: "none",
@@ -206,9 +208,9 @@ export default function BookEditor({
             display: "flex", alignItems: "center", gap: 4,
           }}>
             {saveStatus === "saving" ? (
-              <><SpinIcon size={10} />저장 중</>
+              <><SpinIcon size={10} />{t("saving")}</>
             ) : (
-              <><CheckIcon size={10} />저장됨</>
+              <><CheckIcon size={10} />{t("saved")}</>
             )}
           </span>
         )}
@@ -219,7 +221,7 @@ export default function BookEditor({
               <path d="M23 4v6h-6" /><path d="M1 20v-6h6" />
               <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
             </svg>
-            {reconverting ? "재변환 중…" : "재변환"}
+            {reconverting ? t("reconverting") : t("reconvert")}
           </button>
         )}
 
@@ -238,7 +240,7 @@ export default function BookEditor({
                 fontFamily: "var(--font-sans), system-ui, sans-serif",
               }}
             >
-              {p === "preview" ? "미리보기" : "설정"}
+              {p === "preview" ? t("preview") : t("settings")}
             </button>
           ))}
         </div>
@@ -268,7 +270,7 @@ export default function BookEditor({
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
           )}
-          {exporting ? "생성 중…" : "EPUB 다운로드"}
+          {exporting ? t("generating") : t("downloadEpub")}
         </button>
       </div>
 

@@ -1,5 +1,6 @@
 "use client";
 import type React from "react";
+import { useTranslations } from "next-intl";
 import type { BookMeta } from "@/app/lib/bookModel";
 
 interface MetaPanelProps {
@@ -8,6 +9,7 @@ interface MetaPanelProps {
 }
 
 export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
+  const t = useTranslations("Editor");
   const set = <K extends keyof BookMeta>(key: K, val: BookMeta[K]) =>
     onChange({ ...meta, [key]: val });
 
@@ -27,38 +29,38 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
   return (
     <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 32px" }}>
       <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "var(--lib-dust)", marginBottom: 16, fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
-        책 설정
+        {t("bookSettings")}
       </p>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        <div><label style={labelSt}>제목</label><input style={{ ...inputSt, fontFamily: "var(--font-serif), Georgia, serif", fontSize: 14 }} value={meta.title} onChange={(e) => set("title", e.target.value)} placeholder="책 제목" /></div>
-        <div><label style={labelSt}>저자</label><input style={inputSt} value={meta.author} onChange={(e) => set("author", e.target.value)} placeholder="저자 이름" /></div>
-        <div><label style={labelSt}>언어</label>
+        <div><label style={labelSt}>{t("titleLabel")}</label><input style={{ ...inputSt, fontFamily: "var(--font-serif), Georgia, serif", fontSize: 14 }} value={meta.title} onChange={(e) => set("title", e.target.value)} placeholder={t("titlePlaceholder")} /></div>
+        <div><label style={labelSt}>{t("authorLabel")}</label><input style={inputSt} value={meta.author} onChange={(e) => set("author", e.target.value)} placeholder={t("authorPlaceholder")} /></div>
+        <div><label style={labelSt}>{t("languageLabel")}</label>
           <select style={inputSt} value={meta.language} onChange={(e) => set("language", e.target.value as BookMeta["language"])}>
             <option value="ko">한국어</option><option value="en">English</option>
             <option value="ja">日本語</option><option value="zh">中文</option>
           </select>
         </div>
-        <div><label style={labelSt}>출판사</label><input style={inputSt} value={meta.publisher} onChange={(e) => set("publisher", e.target.value)} placeholder="출판사" /></div>
-        <div><label style={labelSt}>날짜</label><input style={inputSt} value={meta.date} onChange={(e) => set("date", e.target.value)} placeholder="2024-01-01" /></div>
+        <div><label style={labelSt}>{t("publisherLabel")}</label><input style={inputSt} value={meta.publisher} onChange={(e) => set("publisher", e.target.value)} placeholder={t("publisherPlaceholder")} /></div>
+        <div><label style={labelSt}>{t("dateLabel")}</label><input style={inputSt} value={meta.date} onChange={(e) => set("date", e.target.value)} placeholder="2024-01-01" /></div>
 
         <div style={{ height: 1, background: "var(--lib-border)" }} />
 
-        <div><label style={labelSt}>EPUB 버전</label>
+        <div><label style={labelSt}>{t("epubVersionLabel")}</label>
           <select style={inputSt} value={meta.epubVersion} onChange={(e) => set("epubVersion", e.target.value as BookMeta["epubVersion"])}>
-            <option value="epub3">EPUB 3 (권장)</option><option value="epub2">EPUB 2</option>
+            <option value="epub3">{t("epub3Recommended")}</option><option value="epub2">{t("epub2")}</option>
           </select>
         </div>
 
         <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
           <input type="checkbox" checked={meta.toc} onChange={(e) => set("toc", e.target.checked)} style={{ width: 14, height: 14, accentColor: "var(--lib-wood-dim)" }} />
-          <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>목차(TOC) 포함</span>
+          <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>{t("includeToc")}</span>
         </label>
 
         <div style={{ height: 1, background: "var(--lib-border)" }} />
 
         <div>
-          <label style={labelSt}>스타일 프리셋</label>
+          <label style={labelSt}>{t("stylePresetLabel")}</label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
             {(["default", "book", "novel", "academic"] as const).map((s) => (
               <button key={s} type="button" onClick={() => set("style", s)} style={{
@@ -69,7 +71,7 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
                 cursor: "pointer", fontFamily: "var(--font-sans), system-ui, sans-serif",
                 fontWeight: meta.style === s ? 600 : 400, transition: "all 0.15s ease",
               }}>
-                {{ default: "기본", book: "도서", novel: "소설", academic: "학술" }[s]}
+                {{ default: t("styleDefault"), book: t("styleBook"), novel: t("styleNovel"), academic: t("styleAcademic") }[s]}
               </button>
             ))}
           </div>

@@ -61,6 +61,7 @@ type Phase = "landing" | "configure" | "parsing" | "editing";
 
 export default function ConvertFlow() {
   const t = useTranslations("FileUpload");
+  const tEditor = useTranslations("Editor");
   const locale = useLocale();
 
   const [phase, setPhase] = useState<Phase>("landing");
@@ -223,7 +224,7 @@ export default function ConvertFlow() {
   }, [sourceFile, book, conversionOptions]);
 
   const startBlank = () => {
-    setBook(emptyBook());
+    setBook(emptyBook(tEditor("firstChapterTitle")));
     setPhase("editing");
   };
 

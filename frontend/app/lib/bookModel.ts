@@ -66,7 +66,7 @@ export function defaultMeta(): BookMeta {
   };
 }
 
-export function newChapter(title = "새 챕터"): Chapter {
+export function newChapter(title = ""): Chapter {
   return {
     id: uid(),
     title,
@@ -75,10 +75,10 @@ export function newChapter(title = "새 챕터"): Chapter {
   };
 }
 
-export function emptyBook(): BookModel {
+export function emptyBook(firstChapterTitle = ""): BookModel {
   return {
     meta: defaultMeta(),
-    chapters: [newChapter("들어가며")],
+    chapters: [newChapter(firstChapterTitle)],
   };
 }
 
@@ -93,8 +93,8 @@ export function splitChapter(chapters: Chapter[], chapterId: string, blockIndex:
   const newCh: Chapter = {
     id: uid(),
     title: after[0]?.type === "h2" || after[0]?.type === "h3"
-      ? (after[0] as TextBlock).html.replace(/<[^>]+>/g, "").trim() || "새 챕터"
-      : "새 챕터",
+      ? (after[0] as TextBlock).html.replace(/<[^>]+>/g, "").trim()
+      : "",
     blocks: after.length > 0 ? after : [{ id: uid(), type: "paragraph", html: "" }],
     collapsed: false,
   };
