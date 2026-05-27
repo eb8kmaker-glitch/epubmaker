@@ -18,16 +18,52 @@ type Props = { params: Promise<{ locale: string }> };
 
 const BASE_URL = "https://www.epubmaker.org";
 
+const PAGE_META: Record<string, { title: string; description: string }> = {
+  ko: {
+    title: "EPUB 변환기 — 무료 DOCX/TXT to EPUB | EPUBMaker",
+    description:
+      "설치 없이 브라우저에서 EPUB 전자책을 무료로 만드세요. DOCX·TXT 변환, 목차 편집, 메타데이터 수정, 실시간 미리보기까지. 계정 불필요.",
+  },
+  en: {
+    title: "EPUBMaker — Free DOCX & TXT to EPUB Converter Online",
+    description:
+      "Create and convert EPUB ebooks free online. Edit the table of contents, update metadata, and preview your ebook — all in your browser. No account required.",
+  },
+  ja: {
+    title: "EPUB変換器 — 無料DOCX/TXTをEPUBに変換 | EPUBMaker",
+    description:
+      "DOCXとTXTを無料でEPUBに変換。目次編集・メタデータ修正・リアルタイムプレビューをブラウザで完結。アカウント不要。",
+  },
+  zh: {
+    title: "EPUB转换器 — 免费DOCX/TXT转EPUB在线工具 | EPUBMaker",
+    description:
+      "免费在线将DOCX和TXT转换为EPUB。支持目录编辑、元数据修改和实时预览，全在浏览器中完成。无需账户。",
+  },
+  pt: {
+    title: "Conversor EPUB — Converta DOCX/TXT para EPUB Grátis | EPUBMaker",
+    description:
+      "Converta DOCX e TXT para EPUB gratuitamente. Edite sumário, metadados e visualize no navegador. Sem necessidade de conta.",
+  },
+  de: {
+    title: "EPUB Konverter — DOCX/TXT kostenlos in EPUB umwandeln | EPUBMaker",
+    description:
+      "DOCX und TXT kostenlos in EPUB umwandeln. Inhaltsverzeichnis bearbeiten, Metadaten ändern und direkt im Browser vorschauen. Kein Konto nötig.",
+  },
+  fr: {
+    title: "Convertisseur EPUB — Convertir DOCX/TXT en EPUB Gratuit | EPUBMaker",
+    description:
+      "Convertissez DOCX et TXT en EPUB gratuitement. Éditez la table des matières, les métadonnées et prévisualisez dans le navigateur. Sans compte.",
+  },
+  es: {
+    title: "Conversor EPUB — Convierte DOCX/TXT a EPUB Gratis | EPUBMaker",
+    description:
+      "Convierte DOCX y TXT a EPUB gratis. Edita el índice, los metadatos y previsualiza en el navegador. Sin necesidad de cuenta.",
+  },
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const isKo = locale === "ko";
-
-  const title = isKo
-    ? "EPUBMaker — 웹 기반 EPUB 전자책 제작 및 변환 도구"
-    : "EPUBMaker — Web-based EPUB Creator & Converter";
-  const description = isKo
-    ? "설치 없이 브라우저에서 바로 EPUB 전자책을 제작·변환하세요. Sigil보다 쉬운 무료 온라인 EPUB 제작 도구. 계정 불필요."
-    : "Create professional EPUB ebooks online. A simple web-based EPUB maker and converter — an easier alternative to Sigil. Free forever, no account required.";
+  const { title, description } = PAGE_META[locale] ?? PAGE_META.en;
 
   return {
     title,
@@ -64,7 +100,7 @@ export default async function HomePage({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "EPUBMaker",
-    applicationCategory: "BusinessApplication",
+    applicationCategory: "UtilitiesApplication",
     operatingSystem: "Web",
     url: "https://www.epubmaker.org",
     description:
