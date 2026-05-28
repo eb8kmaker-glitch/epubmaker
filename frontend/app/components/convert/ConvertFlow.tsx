@@ -13,6 +13,7 @@ import BookEditor from "@/app/components/editor/BookEditor";
 import { emptyBook, type BookModel } from "@/app/lib/bookModel";
 import { epubBlobToBook } from "@/app/lib/epubToBook";
 import { DEFAULT_OPTIONS, type ConversionOptions } from "@/app/components/ConversionSettings";
+import AdBanner from "@/app/components/ads/AdBanner";
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
@@ -442,6 +443,12 @@ export default function ConvertFlow() {
                 {t("convertButton")}
               </button>
             )}
+          </div>
+
+          {/* Ad Unit A — Configuration 박스 아래, Convert 버튼 누르기 전 자연스럽게 시선이 머무는 위치 */}
+          <div className="ad-unit-wrapper" style={{ marginTop: 40 }}>
+            <span className="ad-label">advertisement</span>
+            <AdBanner adSlot="5346839792" />
           </div>
 
         </div>

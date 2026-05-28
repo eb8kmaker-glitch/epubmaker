@@ -249,4 +249,29 @@ h1, h2, h3 {
 .article-body th { background: var(--lib-bg-3); font-weight: 600; color: var(--lib-ink); }
 .article-body td { color: var(--lib-dusk); font-weight: 300; }
 .article-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 1em 0; }
+
+/* ─── AdSense 네이티브 통합 스타일 ──────────────────────────────────────────── */
+:root {
+  --text-muted: var(--lib-dust);
+}
+
+.ad-unit-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
+.ad-label {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted, #bbb);
+  text-align: center;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.adsbygoogle {
+  border: none !important;
+  outline: none !important;
+}
 .article-body hr { border: none; border-top: 1px solid var(--lib-border); margin: 2em 0; }
