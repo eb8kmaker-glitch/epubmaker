@@ -378,7 +378,7 @@ export default async function HomePage({ params }: Props) {
       <section style={{ background: "var(--lib-bg)", padding: "0 36px" }}>
         <div className="ad-unit-wrapper" style={{ maxWidth: 728, margin: "48px auto" }}>
           <span className="ad-label">advertisement</span>
-          <AdBanner adSlot="XXXXXXXXXX" />
+          <AdBanner adSlot="4110613892" />
         </div>
       </section>
 

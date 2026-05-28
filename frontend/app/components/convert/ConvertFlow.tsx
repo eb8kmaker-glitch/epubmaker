@@ -448,7 +448,7 @@ export default function ConvertFlow() {
           {/* Ad Unit A — Configuration 박스 아래, Convert 버튼 누르기 전 자연스럽게 시선이 머무는 위치 */}
           <div className="ad-unit-wrapper" style={{ marginTop: 40 }}>
             <span className="ad-label">advertisement</span>
-            <AdBanner adSlot="XXXXXXXXXX" />
+            <AdBanner adSlot="5346839792" />
           </div>
 
         </div>
