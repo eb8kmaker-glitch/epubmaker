@@ -9,7 +9,6 @@ import AdBanner from "@/app/components/ads/AdBanner";
 import { routing } from "@/i18n/routing";
 
 export const dynamic = "force-static";
-export const revalidate = 3600;
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
