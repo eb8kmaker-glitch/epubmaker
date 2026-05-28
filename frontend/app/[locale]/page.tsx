@@ -5,6 +5,7 @@ import Hero from "@/app/components/home/Hero";
 import FeatureCards from "@/app/components/home/FeatureCards";
 import GoldDivider from "@/app/components/ui/GoldDivider";
 import AdFitBanner from "@/app/components/ads/AdFitBanner";
+import AdBanner from "@/app/components/ads/AdBanner";
 import { routing } from "@/i18n/routing";
 
 export const dynamic = "force-static";
@@ -370,6 +371,14 @@ export default async function HomePage({ params }: Props) {
           >
             {t("freeForever.cta")}
           </Link>
+        </div>
+      </section>
+
+      {/* Ad Unit B — Features 섹션과 FAQ 섹션 사이 */}
+      <section style={{ background: "var(--lib-bg)", padding: "0 36px" }}>
+        <div className="ad-unit-wrapper" style={{ maxWidth: 728, margin: "48px auto" }}>
+          <span className="ad-label">advertisement</span>
+          <AdBanner adSlot="XXXXXXXXXX" />
         </div>
       </section>
 
