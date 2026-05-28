@@ -23,8 +23,6 @@ import PreviewPanel from "./PreviewPanel";
 import MetaPanel from "./MetaPanel";
 import { Divider, SpinIcon, CheckIcon } from "./EditorMicro";
 import { topBtnSt } from "./editorShared";
-import ConvertSideAd from "@/app/components/ads/ConvertSideAd";
-
 type RightPanel = "preview" | "meta";
 
 interface Props {
@@ -276,9 +274,6 @@ export default function BookEditor({
 
       {/* ── Main 3-panel area ── */}
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-
-        {/* 좌측 세로 광고 — 1400px 이상에서만 노출 (CSS 제어) */}
-        <ConvertSideAd />
 
         <ChapterSidebar
           chapters={book.chapters}

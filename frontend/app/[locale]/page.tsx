@@ -457,18 +457,6 @@ export default async function HomePage({ params }: Props) {
         </div>
       </section>
 
-      {/* ── Ad: 홈 페이지 하단 ─────────────────────────────────────────────────
-           adUnit: 애드핏 승인 후 "DAN-xxxxxxxxxx" 형식의 단위 ID 로 교체
-           ─────────────────────────────────────────────────────────────────── */}
-      <section style={{ padding: "0 36px 48px", background: "var(--lib-bg)" }}>
-        <div style={{ maxWidth: 1060, margin: "0 auto" }}>
-          <AdFitBanner
-            adUnit="DAN-mQe45jKz1SS2Zpe7"
-            desktopSize="728x90"
-            mobileSize="320x50"
-          />
-        </div>
-      </section>
     </div>
   );
 }
