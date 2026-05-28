@@ -361,7 +361,8 @@
     "privacy": "隐私政策",
     "refund": "退款政策",
     "announcement": "服务公告",
-    "copyright": "© {year} EPUBMaker. 永久免费。"
+    "copyright": "© {year} EPUBMaker. 永久免费。",
+    "contact": "联系我们"
   },
   "Terms": {
     "title": "服务条款",
@@ -519,7 +520,7 @@
     "renameChapter": "重命名",
     "mergePrevious": "与上一章合并",
     "deleteChapter": "删除",
-    "confirmDeleteChapter": "删除章节"{title}"？",
+    "confirmDeleteChapter": "删除章节\"{title}\"？",
     "chapterSidebarHint": "拖动以重新排序 · 双击以重命名",
     "chapterTitlePlaceholder": "输入章节标题…",
     "addBlock": "添加块",
@@ -593,5 +594,18 @@
       "a4": "没有。没有每日限制、每月限制或转换上限。您可以根据需要转换任意数量的文件。"
     },
     "cta": "免费开始转换"
+  },
+  "Contact": {
+    "title": "联系我们",
+    "description": "如有问题反馈、功能建议或其他疑问，请填写以下表格，我们会尽快回复您。",
+    "nameLabel": "姓名",
+    "namePlaceholder": "张三",
+    "emailLabel": "电子邮件",
+    "emailPlaceholder": "example@email.com",
+    "messageLabel": "留言",
+    "messagePlaceholder": "请输入您的留言内容...",
+    "submit": "发送",
+    "submitting": "发送中...",
+    "success": "您的消息已发送成功，感谢您的反馈！我们将尽快与您联系。"
   }
 }

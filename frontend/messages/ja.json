@@ -361,7 +361,8 @@
     "privacy": "プライバシーポリシー",
     "refund": "返金ポリシー",
     "announcement": "サービスのお知らせ",
-    "copyright": "© {year} EPUBMaker. 完全無料。"
+    "copyright": "© {year} EPUBMaker. 完全無料。",
+    "contact": "お問い合わせ"
   },
   "Terms": {
     "title": "利用規約",
@@ -593,5 +594,18 @@
       "a4": "いいえ。毎日の制限、月ごとの制限、または変換キャップはありません。必要なだけファイルを変換してください。"
     },
     "cta": "無料で変換を始める"
+  },
+  "Contact": {
+    "title": "お問い合わせ",
+    "description": "バグ報告、機能リクエスト、またはご質問がある場合は、以下のフォームからご連絡ください。できる限り早くご返答いたします。",
+    "nameLabel": "お名前",
+    "namePlaceholder": "山田太郎",
+    "emailLabel": "メールアドレス",
+    "emailPlaceholder": "example@email.com",
+    "messageLabel": "メッセージ",
+    "messagePlaceholder": "お問い合わせ内容をご記入ください...",
+    "submit": "送信する",
+    "submitting": "送信中...",
+    "success": "メッセージが送信されました。ありがとうございます！近日中にご連絡いたします。"
   }
 }

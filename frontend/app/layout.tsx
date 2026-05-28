@@ -3,7 +3,6 @@ import Script from "next/script";
 import { Lora, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import FeedbackButton from "@/app/components/FeedbackButton";
 import "./globals.css";
 
 const lora = Lora({
@@ -65,11 +64,6 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
-        <FeedbackButton />
-        <Script
-          src="https://tally.so/widgets/embed.js"
-          strategy="afterInteractive"
-        />
         <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8254204287118850"

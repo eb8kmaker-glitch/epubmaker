@@ -17,6 +17,7 @@
     "test:unit": "node --experimental-strip-types app/lib/__tests__/mergeChapters.test.ts"
   },
   "dependencies": {
+    "@formspree/react": "^3.0.0",
     "@likecoin/epubcheck-ts": "^0.3.7",
     "@sentry/nextjs": "^10.43.0",
     "@vercel/analytics": "^2.0.0",

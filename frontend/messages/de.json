@@ -361,7 +361,8 @@
     "privacy": "Datenschutz",
     "refund": "Rückerstattung",
     "announcement": "Serviceankündigung",
-    "copyright": "© {year} EPUBMaker. Für immer kostenlos."
+    "copyright": "© {year} EPUBMaker. Für immer kostenlos.",
+    "contact": "Kontakt"
   },
   "Terms": {
     "title": "Nutzungsbedingungen",
@@ -593,5 +594,18 @@
       "a4": "Nein. Es gibt keine täglichen Grenzen, monatlichen Grenzen oder Konvertierungsobergrenzen. Konvertiere so viele Dateien, wie du möchtest."
     },
     "cta": "Kostenlos konvertieren"
+  },
+  "Contact": {
+    "title": "Kontakt",
+    "description": "Haben Sie einen Fehler gefunden, einen Funktionswunsch oder eine Frage? Füllen Sie das Formular aus – wir melden uns so schnell wie möglich.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Max Mustermann",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "beispiel@email.com",
+    "messageLabel": "Nachricht",
+    "messagePlaceholder": "Wie können wir Ihnen helfen?",
+    "submit": "Senden",
+    "submitting": "Wird gesendet...",
+    "success": "Ihre Nachricht wurde gesendet. Vielen Dank! Wir werden uns bald bei Ihnen melden."
   }
 }

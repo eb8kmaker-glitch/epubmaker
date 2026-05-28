@@ -361,7 +361,8 @@
     "privacy": "Política de privacidade",
     "refund": "Política de reembolso",
     "announcement": "Aviso de serviço",
-    "copyright": "© {year} EPUBMaker. Grátis para sempre."
+    "copyright": "© {year} EPUBMaker. Grátis para sempre.",
+    "contact": "Contato"
   },
   "Terms": {
     "title": "Termos de uso",
@@ -593,5 +594,18 @@
       "a4": "Não. Não há limites diários, limites mensais ou limites de conversão. Converta quantos arquivos precisar."
     },
     "cta": "Converter gratuitamente"
+  },
+  "Contact": {
+    "title": "Fale Conosco",
+    "description": "Tem um relatório de bug, sugestão de recurso ou dúvida? Preencha o formulário abaixo e responderemos o mais rápido possível.",
+    "nameLabel": "Nome",
+    "namePlaceholder": "João Silva",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "exemplo@email.com",
+    "messageLabel": "Mensagem",
+    "messagePlaceholder": "Como podemos ajudá-lo?",
+    "submit": "Enviar",
+    "submitting": "Enviando...",
+    "success": "Sua mensagem foi enviada com sucesso. Obrigado! Entraremos em contato em breve."
   }
 }

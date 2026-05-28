@@ -183,7 +183,8 @@
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
     "announcement": "Service Update",
-    "copyright": "© {year} EPUBMaker. Free forever."
+    "copyright": "© {year} EPUBMaker. Free forever.",
+    "contact": "Contact"
   },
   "Terms": {
     "title": "Terms of Service",
@@ -395,5 +396,18 @@
       "a4": "No. There are no daily limits, monthly limits, or conversion caps. Convert as many files as you need."
     },
     "cta": "Start Converting — It's Free"
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "description": "Have a bug report, feature request, or question? Fill out the form below and we'll get back to you as soon as possible.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Jane Doe",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Tell us how we can help...",
+    "submit": "Send Message",
+    "submitting": "Sending...",
+    "success": "Your message has been sent. Thank you! We'll be in touch soon."
   }
 }

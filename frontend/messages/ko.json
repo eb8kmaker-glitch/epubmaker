@@ -183,7 +183,8 @@
     "terms": "이용약관",
     "privacy": "개인정보 처리방침",
     "announcement": "서비스 안내",
-    "copyright": "© {year} EPUBMaker. 영구 무료."
+    "copyright": "© {year} EPUBMaker. 영구 무료.",
+    "contact": "문의하기"
   },
   "Terms": {
     "title": "이용약관",
@@ -395,5 +396,18 @@
       "a4": "없습니다. 일일 제한, 월간 제한, 변환 횟수 제한이 모두 없습니다. 필요한 만큼 변환하세요."
     },
     "cta": "무료로 변환 시작하기"
+  },
+  "Contact": {
+    "title": "문의하기",
+    "description": "버그 신고, 기능 제안, 또는 궁금한 점이 있으시면 아래 양식으로 연락해 주세요. 최대한 빠르게 답변 드리겠습니다.",
+    "nameLabel": "이름",
+    "namePlaceholder": "홍길동",
+    "emailLabel": "이메일",
+    "emailPlaceholder": "example@email.com",
+    "messageLabel": "메시지",
+    "messagePlaceholder": "문의 내용을 입력해 주세요...",
+    "submit": "보내기",
+    "submitting": "보내는 중...",
+    "success": "메시지가 전송되었습니다. 감사합니다! 곧 답변 드리겠습니다."
   }
 }
