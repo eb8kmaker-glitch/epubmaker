@@ -288,6 +288,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
                   <TextBlockView
                     block={block as TextBlock}
                     focused={focusedId === block.id}
+                    placeholder={BLOCK_PLACEHOLDER[(block as TextBlock).type] ?? ""}
                     onChange={(html) => updateBlock(block.id, { html } as Partial<TextBlock>)}
                     onFocus={() => { setFocusedId(block.id); setCmdMenuId(null); }}
                     onBlur={() => setFocusedId(null)}
@@ -344,6 +345,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
 // ── TextBlockView ─────────────────────────────────────────────────────────────
 
 interface TextBlockViewProps {
+  placeholder: string;
   block: TextBlock;
   focused: boolean;
   onChange: (html: string) => void;
@@ -354,7 +356,7 @@ interface TextBlockViewProps {
   onSlashCommand: () => void;
 }
 
-function TextBlockView({ block, focused, onChange, onFocus, onBlur, onEnter, onDelete, onSlashCommand }: TextBlockViewProps) {
+function TextBlockView({ block, focused, placeholder, onChange, onFocus, onBlur, onEnter, onDelete, onSlashCommand }: TextBlockViewProps) {
   return (
     <ContentEditable
       value={block.html}
@@ -367,7 +369,7 @@ function TextBlockView({ block, focused, onChange, onFocus, onBlur, onEnter, onD
         if (e.key === "/" && !e.currentTarget.innerHTML) { onSlashCommand(); }
       }}
       tag={BLOCK_TAG[block.type]}
-      placeholder={BLOCK_PLACEHOLDER[block.type]}
+      placeholder={placeholder}
       style={BLOCK_STYLES[block.type]}
       focused={focused}
     />
