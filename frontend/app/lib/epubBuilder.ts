@@ -124,6 +124,12 @@ function chapterToXhtml(ch: Chapter, imageMap: Map<string, ImageEntry>): string 
   <meta charset="UTF-8"/>
   <title>${esc(ch.title)}</title>
   <link rel="stylesheet" type="text/css" href="styles/style.css"/>
+  <style type="text/css">
+    img { max-width: 100%; height: auto; display: block; }
+    figure { margin: 1.5em 0; padding: 0; max-width: 100%; }
+    figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+    figcaption { font-size: 0.85em; color: #666; text-align: center; margin-top: 0.4em; line-height: 1.4; }
+  </style>
 </head>
 <body>
   <h1>${esc(ch.title)}</h1>
@@ -146,9 +152,10 @@ function blockToXhtml(block: Block, imageMap: Map<string, ImageEntry>): string {
       const entry = imageMap.get(block.id);
       if (!entry && !block.src) return "";
       const imgSrc = entry ? `images/${entry.epubFilename}` : esc(block.src);
+      const imgStyle = 'style="max-width:100%;height:auto;display:block;margin:0 auto;"';
       const fig = block.caption
-        ? `<figure><img src="${imgSrc}" alt="${esc(block.alt)}"/><figcaption>${esc(block.caption)}</figcaption></figure>`
-        : `<figure><img src="${imgSrc}" alt="${esc(block.alt)}"/></figure>`;
+        ? `<figure style="margin:1.5em 0;padding:0;max-width:100%;"><img src="${imgSrc}" alt="${esc(block.alt)}" ${imgStyle}/><figcaption style="font-size:0.85em;color:#666;text-align:center;margin-top:0.4em;">${esc(block.caption)}</figcaption></figure>`
+        : `<figure style="margin:1.5em 0;padding:0;max-width:100%;"><img src="${imgSrc}" alt="${esc(block.alt)}" ${imgStyle}/></figure>`;
       return fig;
     }
     default:

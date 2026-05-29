@@ -155,9 +155,11 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
       </div>
 
       {/* Preview area */}
-      <div style={{ flex: 1, overflow: "auto", padding: "12px", display: "flex", justifyContent: "center", alignItems: "flex-start", background: "var(--lib-bg-3)" }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "12px", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "flex-start", background: "var(--lib-bg-3)" }}>
         <div style={{
-          width: presetWidth > 0 ? presetWidth : "100%",
+          flex: presetWidth > 0 ? "none" : 1,
+          width: presetWidth > 0 ? presetWidth : undefined,
+          minWidth: 0,
           maxWidth: "100%",
           borderRadius: 8,
           boxShadow: "0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.08)",
