@@ -80,7 +80,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
     const src = URL.createObjectURL(file);
-    updateBlock(id, { src } as Partial<ImageBlock>);
+    updateBlock(id, { src, fileBlob: file } as Partial<ImageBlock>);
   };
 
   return (
@@ -411,7 +411,7 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
       >
         <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) onChange({ src: URL.createObjectURL(f), alt: f.name });
+          if (f) onChange({ src: URL.createObjectURL(f), alt: f.name, fileBlob: f });
           e.target.value = "";
         }} />
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--lib-dust)" strokeWidth="1.5" aria-hidden>
