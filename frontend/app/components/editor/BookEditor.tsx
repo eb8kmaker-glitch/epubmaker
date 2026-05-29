@@ -43,6 +43,25 @@ export default function BookEditor({
   const [rightPanel, setRightPanel] = useState<RightPanel>("preview");
   const [exporting, setExporting] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const [rightPanelWidth, setRightPanelWidth] = useState(300);
+  const resizeDragRef = useRef<{ startX: number; startWidth: number } | null>(null);
+
+  const handleResizeMouseDown = useCallback((e: { clientX: number; preventDefault: () => void }) => {
+    e.preventDefault();
+    resizeDragRef.current = { startX: e.clientX, startWidth: rightPanelWidth };
+    const onMove = (ev: MouseEvent) => {
+      if (!resizeDragRef.current) return;
+      const delta = resizeDragRef.current.startX - ev.clientX;
+      setRightPanelWidth(Math.min(800, Math.max(280, resizeDragRef.current.startWidth + delta)));
+    };
+    const onUp = () => {
+      resizeDragRef.current = null;
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+    };
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  }, [rightPanelWidth]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Keep activeChapterId valid
@@ -301,15 +320,28 @@ export default function BookEditor({
         <div
           className="be-right-panel"
           style={{
-            width: 300,
+            width: rightPanelWidth,
             flexShrink: 0,
             borderLeft: "1px solid var(--lib-border)",
             display: "flex",
             flexDirection: "column",
             background: "var(--lib-bg-2)",
             overflow: "hidden",
+            position: "relative",
           }}
         >
+          {/* Resize handle on left edge */}
+          <div
+            onMouseDown={handleResizeMouseDown}
+            style={{
+              position: "absolute",
+              left: 0, top: 0,
+              width: 6, height: "100%",
+              cursor: "col-resize",
+              zIndex: 10,
+            }}
+            title="패널 너비 조절"
+          />
           {rightPanel === "preview" ? (
             <PreviewPanel chapter={activeChapter} style={book.meta.style} customCss={book.meta.customCss} />
           ) : (

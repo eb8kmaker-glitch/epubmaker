@@ -13,9 +13,10 @@ export interface TextBlock {
 export interface ImageBlock {
   id: string;
   type: "image";
-  src: string;      // object URL or data URL
+  src: string;      // object URL or data URL (for display)
   alt: string;
   caption: string;
+  fileBlob?: Blob;  // actual file data for EPUB embedding
 }
 
 export type Block = TextBlock | ImageBlock;

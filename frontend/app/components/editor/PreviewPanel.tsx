@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { Chapter, TextBlock, ImageBlock } from "@/app/lib/bookModel";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
 import { iconBtnSt } from "./editorShared";
@@ -10,10 +10,19 @@ interface PreviewPanelProps {
   customCss: string;
 }
 
+const WIDTH_PRESETS = [
+  { label: "📱", width: 320, title: "Mobile (320px)" },
+  { label: "📖", width: 480, title: "Kindle (480px)" },
+  { label: "💻", width: 600, title: "Tablet (600px)" },
+  { label: "⬜", width: 0, title: "Full width" },
+] as const;
+
 export default function PreviewPanel({ chapter, style, customCss }: PreviewPanelProps) {
   const css = style === "custom" && customCss ? customCss : (EPUB_STYLES[style] ?? EPUB_STYLES.default ?? "");
   const [fontSize, setFontSize] = useState(16);
   const [darkMode, setDarkMode] = useState(false);
+  const [presetWidth, setPresetWidth] = useState(0); // 0 = full width
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const html = `
     <!DOCTYPE html>
@@ -59,9 +68,22 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
     </html>
   `;
 
+  const openPopout = useCallback(() => {
+    const popout = window.open(
+      "",
+      "epub-preview",
+      "width=480,height=700,resizable=yes,scrollbars=yes,toolbar=no,menubar=no",
+    );
+    if (popout) {
+      popout.document.open();
+      popout.document.write(html);
+      popout.document.close();
+    }
+  }, [html]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* Preview controls */}
+      {/* Toolbar row 1: title + font + dark + popout */}
       <div style={{
         padding: "10px 14px",
         borderBottom: "1px solid var(--lib-border)",
@@ -86,22 +108,67 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         >
           {darkMode ? "☀" : "🌙"}
         </button>
+        <button
+          type="button"
+          onClick={openPopout}
+          title="새 창에서 열기"
+          style={{
+            ...iconBtnSt,
+            fontSize: 14,
+          }}
+        >
+          ⤢
+        </button>
       </div>
 
-      {/* Kindle-style device frame */}
+      {/* Toolbar row 2: width presets */}
+      <div style={{
+        padding: "6px 14px",
+        borderBottom: "1px solid var(--lib-border)",
+        display: "flex", alignItems: "center", gap: 4,
+        flexShrink: 0,
+      }}>
+        {WIDTH_PRESETS.map((preset) => (
+          <button
+            key={preset.label}
+            type="button"
+            title={preset.title}
+            onClick={() => setPresetWidth(preset.width)}
+            style={{
+              padding: "3px 8px",
+              borderRadius: 4,
+              border: "1px solid var(--lib-border)",
+              background: presetWidth === preset.width ? "var(--lib-bg-3)" : "transparent",
+              cursor: "pointer",
+              fontSize: 13,
+              color: presetWidth === preset.width ? "var(--lib-ink)" : "var(--lib-dust)",
+              fontWeight: presetWidth === preset.width ? 700 : 400,
+            }}
+          >
+            {preset.label}
+          </button>
+        ))}
+        {presetWidth > 0 && (
+          <span style={{ fontSize: 10, color: "var(--lib-dust)", marginLeft: 4 }}>{presetWidth}px</span>
+        )}
+      </div>
+
+      {/* Preview area */}
       <div style={{ flex: 1, overflow: "auto", padding: "16px 12px", display: "flex", justifyContent: "center", background: "var(--lib-bg-3)" }}>
         <div style={{
-          width: "100%",
-          maxWidth: 260,
-          borderRadius: 12,
+          width: presetWidth > 0 ? presetWidth : "100%",
+          maxWidth: presetWidth > 0 ? presetWidth : "100%",
+          borderRadius: 8,
           boxShadow: "0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.08)",
           overflow: "hidden",
-          border: "8px solid " + (darkMode ? "#111" : "#2c2c2c"),
+          border: "1px solid " + (darkMode ? "#333" : "#ddd"),
           background: darkMode ? "#1a1a1a" : "#fdfaf6",
+          transition: "width 0.2s ease",
         }}>
           <iframe
+            ref={iframeRef}
             srcDoc={html}
-            style={{ width: "100%", height: 400, border: "none", display: "block" }}
+            style={{ width: "100%", height: 500, border: "none", display: "block" }}
             title="EPUB 미리보기"
             sandbox="allow-same-origin"
           />

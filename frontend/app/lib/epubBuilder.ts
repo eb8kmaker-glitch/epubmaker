@@ -2,8 +2,27 @@
 // Builds an EPUB Blob from a BookModel — runs entirely in the browser.
 
 import JSZip from "jszip";
-import { BookModel, Chapter, Block, uid } from "./bookModel";
+import { BookModel, Chapter, Block, ImageBlock, uid } from "./bookModel";
 import { EPUB_STYLES } from "./epubStyles";
+
+// ── Image helpers ─────────────────────────────────────────────────────────────
+
+function sanitizeImageFilename(blob: Blob, chapterIndex: number, imageIndex: number): string {
+  const mimeToExt: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/gif": "gif",
+  };
+  const ext = mimeToExt[blob.type] ?? "jpg";
+  return `img_ch${String(chapterIndex).padStart(2, "0")}_${String(imageIndex).padStart(3, "0")}.${ext}`;
+}
+
+interface ImageEntry {
+  epubFilename: string;  // e.g. img_ch01_001.jpg
+  blob: Blob;
+  mimeType: string;
+}
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
@@ -14,10 +33,10 @@ export async function buildEpubFromBook(
   const bookId = uid();
   const isEpub3 = book.meta.epubVersion !== "epub2";
 
-  // mimetype must be first and uncompressed
+  // 1. mimetype — must be first and uncompressed (EPUB spec)
   zip.file("mimetype", "application/epub+zip", { compression: "STORE" });
 
-  // META-INF/container.xml
+  // 2. META-INF
   zip.file(
     "META-INF/container.xml",
     `<?xml version="1.0" encoding="UTF-8"?>
@@ -28,33 +47,54 @@ export async function buildEpubFromBook(
 </container>`,
   );
 
-  // CSS
+  // 3. CSS
   const css = book.meta.style === "custom" && book.meta.customCss
     ? book.meta.customCss
     : (EPUB_STYLES[book.meta.style] ?? EPUB_STYLES.default ?? "");
   zip.file("OEBPS/styles/style.css", css);
 
-  // Chapter XHTMLs
+  // 4. Collect images across all chapters, assign sanitized filenames
+  const imageMap = new Map<string, ImageEntry>(); // blockId → entry
+  for (let ci = 0; ci < book.chapters.length; ci++) {
+    let imgIdx = 0;
+    for (const block of book.chapters[ci].blocks) {
+      if (block.type === "image") {
+        const ib = block as ImageBlock;
+        if (ib.fileBlob) {
+          imgIdx++;
+          const filename = sanitizeImageFilename(ib.fileBlob, ci + 1, imgIdx);
+          imageMap.set(block.id, { epubFilename: filename, blob: ib.fileBlob, mimeType: ib.fileBlob.type });
+        }
+      }
+    }
+  }
+
+  // Add image files to zip
+  for (const entry of imageMap.values()) {
+    zip.file(`OEBPS/images/${entry.epubFilename}`, entry.blob);
+  }
+
+  // 5. Chapter XHTMLs
   const chapterFiles: string[] = [];
   for (let i = 0; i < book.chapters.length; i++) {
     const ch = book.chapters[i];
     const fn = `chapter${String(i + 1).padStart(3, "0")}.xhtml`;
     chapterFiles.push(fn);
-    zip.file(`OEBPS/${fn}`, chapterToXhtml(ch));
+    zip.file(`OEBPS/${fn}`, chapterToXhtml(ch, imageMap));
   }
 
-  // toc.ncx (EPUB2 & EPUB3 compat)
+  // 6. toc.ncx (EPUB2 & EPUB3 compat)
   if (book.meta.toc) {
     zip.file("OEBPS/toc.ncx", buildNcx(book, bookId, chapterFiles));
   }
 
-  // nav.xhtml (EPUB3 only)
+  // 7. nav.xhtml (EPUB3 only)
   if (isEpub3 && book.meta.toc) {
     zip.file("OEBPS/nav.xhtml", buildNav(book, chapterFiles));
   }
 
-  // content.opf
-  zip.file("OEBPS/content.opf", buildOpf(book, bookId, chapterFiles, isEpub3));
+  // 8. content.opf
+  zip.file("OEBPS/content.opf", buildOpf(book, bookId, chapterFiles, isEpub3, imageMap));
 
   const blob = await zip.generateAsync({
     type: "blob",
@@ -72,11 +112,13 @@ export async function buildEpubFromBook(
 
 // ── Chapter → XHTML ──────────────────────────────────────────────────────────
 
-function chapterToXhtml(ch: Chapter): string {
-  const bodyBlocks = ch.blocks.map(blockToXhtml).filter(Boolean).join("\n  ");
+function chapterToXhtml(ch: Chapter, imageMap: Map<string, ImageEntry>): string {
+  const bodyBlocks = ch.blocks.map((b) => blockToXhtml(b, imageMap)).filter(Boolean).join("\n  ");
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops"
+      xml:lang="ko" lang="ko">
 <head>
   <meta charset="UTF-8"/>
   <title>${esc(ch.title)}</title>
@@ -89,7 +131,7 @@ function chapterToXhtml(ch: Chapter): string {
 </html>`;
 }
 
-function blockToXhtml(block: Block): string {
+function blockToXhtml(block: Block, imageMap: Map<string, ImageEntry>): string {
   switch (block.type) {
     case "paragraph":
       return block.html ? `<p>${sanitize(block.html)}</p>` : "";
@@ -100,10 +142,12 @@ function blockToXhtml(block: Block): string {
     case "quote":
       return block.html ? `<blockquote><p>${sanitize(block.html)}</p></blockquote>` : "";
     case "image": {
-      if (!block.src) return "";
+      const entry = imageMap.get(block.id);
+      if (!entry && !block.src) return "";
+      const imgSrc = entry ? `images/${entry.epubFilename}` : esc(block.src);
       const fig = block.caption
-        ? `<figure><img src="${esc(block.src)}" alt="${esc(block.alt)}"/><figcaption>${esc(block.caption)}</figcaption></figure>`
-        : `<figure><img src="${esc(block.src)}" alt="${esc(block.alt)}"/></figure>`;
+        ? `<figure><img src="${imgSrc}" alt="${esc(block.alt)}"/><figcaption>${esc(block.caption)}</figcaption></figure>`
+        : `<figure><img src="${imgSrc}" alt="${esc(block.alt)}"/></figure>`;
       return fig;
     }
     default:
@@ -118,6 +162,7 @@ function buildOpf(
   bookId: string,
   chapterFiles: string[],
   isEpub3: boolean,
+  imageMap: Map<string, ImageEntry>,
 ): string {
   const { meta } = book;
   const version = isEpub3 ? "3.0" : "2.0";
@@ -135,6 +180,10 @@ function buildOpf(
     : "";
   const ncxAttr = meta.toc ? ` toc="ncx"` : "";
 
+  const imageItems = Array.from(imageMap.values())
+    .map((entry, i) => `    <item id="img${i + 1}" href="images/${entry.epubFilename}" media-type="${entry.mimeType}"/>`)
+    .join("\n");
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="${version}" unique-identifier="uid">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
@@ -148,7 +197,7 @@ function buildOpf(
   <manifest>
     <item id="css" href="styles/style.css" media-type="text/css"/>
 ${navItem}${ncxItem}${manifestItems}
-  </manifest>
+${imageItems ? imageItems + "\n" : ""}  </manifest>
   <spine${ncxAttr}>
 ${spineItems}
   </spine>
@@ -213,9 +262,10 @@ function esc(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-/** Allow basic inline HTML but strip potentially invalid XML */
+/** Strip tags that are invalid in XHTML while preserving inline formatting */
 function sanitize(html: string): string {
-  // For now, return as-is (contenteditable produces reasonable HTML)
-  // In production you'd want DOMPurify here
-  return html;
+  // Remove script/style tags entirely
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, "");
 }
