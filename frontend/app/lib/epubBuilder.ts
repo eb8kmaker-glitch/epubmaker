@@ -3,7 +3,7 @@
 
 import JSZip from "jszip";
 import { BookModel, Chapter, Block, ImageBlock, uid } from "./bookModel";
-import { EPUB_STYLES } from "./epubStyles";
+import { EPUB_STYLES, IMAGE_BASE_CSS } from "./epubStyles";
 
 // ── Image helpers ─────────────────────────────────────────────────────────────
 
@@ -47,10 +47,11 @@ export async function buildEpubFromBook(
 </container>`,
   );
 
-  // 3. CSS
-  const css = book.meta.style === "custom" && book.meta.customCss
+  // 3. CSS — always append IMAGE_BASE_CSS so images are bounded in all viewers
+  const baseStyle = book.meta.style === "custom" && book.meta.customCss
     ? book.meta.customCss
     : (EPUB_STYLES[book.meta.style] ?? EPUB_STYLES.default ?? "");
+  const css = baseStyle.includes("max-width: 100%") ? baseStyle : baseStyle + IMAGE_BASE_CSS;
   zip.file("OEBPS/styles/style.css", css);
 
   // 4. Collect images across all chapters, assign sanitized filenames

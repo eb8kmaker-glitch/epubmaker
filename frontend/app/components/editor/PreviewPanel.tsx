@@ -21,7 +21,7 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
   const css = style === "custom" && customCss ? customCss : (EPUB_STYLES[style] ?? EPUB_STYLES.default ?? "");
   const [fontSize, setFontSize] = useState(16);
   const [darkMode, setDarkMode] = useState(false);
-  const [presetWidth, setPresetWidth] = useState(0); // 0 = full width
+  const [presetWidth, setPresetWidth] = useState(0); // 0 = 100% (full)
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const html = `
@@ -45,9 +45,10 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         h3 { font-size: 1.08em; margin: 1.2em 0 0.5em; font-weight: 600; }
         p  { margin-bottom: 0.9em; }
         blockquote { border-left: 3px solid ${darkMode ? "#666" : "#c4a882"}; padding-left: 16px; margin: 1em 0; color: ${darkMode ? "#aaa" : "#6b5b3e"}; font-style: italic; }
-        img { max-width: 100%; border-radius: 6px; margin: 0.8em 0; }
-        figure { margin: 1em 0; }
-        figcaption { font-size: 0.85em; color: ${darkMode ? "#888" : "#9a8672"}; text-align: center; margin-top: 4px; }
+        img { max-width: 100%; height: auto; display: block; border-radius: 6px; margin: 0.8em auto; }
+        figure { margin: 1.5em 0; padding: 0; max-width: 100%; }
+        figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 6px; }
+        figcaption { font-size: 0.85em; color: ${darkMode ? "#888" : "#9a8672"}; text-align: center; margin-top: 4px; line-height: 1.4; }
         ${css}
       </style>
     </head>
@@ -154,16 +155,17 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
       </div>
 
       {/* Preview area */}
-      <div style={{ flex: 1, overflow: "auto", padding: "16px 12px", display: "flex", justifyContent: "center", background: "var(--lib-bg-3)" }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "12px", display: "flex", justifyContent: "center", alignItems: "flex-start", background: "var(--lib-bg-3)" }}>
         <div style={{
           width: presetWidth > 0 ? presetWidth : "100%",
-          maxWidth: presetWidth > 0 ? presetWidth : "100%",
+          maxWidth: "100%",
           borderRadius: 8,
           boxShadow: "0 4px 24px rgba(0,0,0,0.18), 0 1px 4px rgba(0,0,0,0.08)",
           overflow: "hidden",
           border: "1px solid " + (darkMode ? "#333" : "#ddd"),
           background: darkMode ? "#1a1a1a" : "#fdfaf6",
           transition: "width 0.2s ease",
+          boxSizing: "border-box" as const,
         }}>
           <iframe
             ref={iframeRef}
