@@ -152,10 +152,28 @@ function blockToXhtml(block: Block, imageMap: Map<string, ImageEntry>): string {
       const entry = imageMap.get(block.id);
       if (!entry && !block.src) return "";
       const imgSrc = entry ? `images/${entry.epubFilename}` : esc(block.src);
-      const imgStyle = 'style="max-width:100%;height:auto;display:block;margin:0 auto;"';
+      const align = block.align ?? "full";
+
+      let imgStyle: string;
+      let figStyle: string;
+      let clearfix = "";
+
+      if (align === "left") {
+        imgStyle = 'class="img-left" style="float:left;max-width:40%;height:auto;margin:0.25em 1em 0.5em 0;"';
+        figStyle = 'style="margin:1.5em 0;padding:0;max-width:100%;"';
+        clearfix = '<div style="clear:both;"></div>';
+      } else if (align === "right") {
+        imgStyle = 'class="img-right" style="float:right;max-width:40%;height:auto;margin:0.25em 0 0.5em 1em;"';
+        figStyle = 'style="margin:1.5em 0;padding:0;max-width:100%;"';
+        clearfix = '<div style="clear:both;"></div>';
+      } else {
+        imgStyle = 'class="img-full" style="max-width:100%;height:auto;display:block;margin:0 auto;"';
+        figStyle = 'style="margin:1.5em 0;padding:0;max-width:100%;"';
+      }
+
       const fig = block.caption
-        ? `<figure style="margin:1.5em 0;padding:0;max-width:100%;"><img src="${imgSrc}" alt="${esc(block.alt)}" ${imgStyle}/><figcaption style="font-size:0.85em;color:#666;text-align:center;margin-top:0.4em;">${esc(block.caption)}</figcaption></figure>`
-        : `<figure style="margin:1.5em 0;padding:0;max-width:100%;"><img src="${imgSrc}" alt="${esc(block.alt)}" ${imgStyle}/></figure>`;
+        ? `<figure ${figStyle}><img src="${imgSrc}" alt="${esc(block.alt)}" ${imgStyle}/><figcaption style="font-size:0.85em;color:#666;text-align:center;margin-top:0.4em;line-height:1.4;">${esc(block.caption)}</figcaption></figure>${clearfix}`
+        : `<figure ${figStyle}><img src="${imgSrc}" alt="${esc(block.alt)}" ${imgStyle}/></figure>${clearfix}`;
       return fig;
     }
     default:

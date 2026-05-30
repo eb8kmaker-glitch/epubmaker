@@ -19,7 +19,8 @@ const WIDTH_PRESETS = [
 
 export default function PreviewPanel({ chapter, style, customCss }: PreviewPanelProps) {
   const css = style === "custom" && customCss ? customCss : (EPUB_STYLES[style] ?? EPUB_STYLES.default ?? "");
-  const [fontSize, setFontSize] = useState(16);
+  // previewZoom controls only the preview display — never written into EPUB CSS
+  const [previewZoom, setPreviewZoom] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
   const [presetWidth, setPresetWidth] = useState(0); // 0 = 100% (full)
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -33,7 +34,7 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
           font-family: Georgia, 'Times New Roman', serif;
-          font-size: ${fontSize}px;
+          font-size: ${previewZoom}%;
           line-height: 1.8;
           padding: 32px 28px;
           background: ${darkMode ? "#1a1a1a" : "#fdfaf6"};
@@ -46,6 +47,8 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         p  { margin-bottom: 0.9em; }
         blockquote { border-left: 3px solid ${darkMode ? "#666" : "#c4a882"}; padding-left: 16px; margin: 1em 0; color: ${darkMode ? "#aaa" : "#6b5b3e"}; font-style: italic; }
         img { max-width: 100%; height: auto; display: block; border-radius: 6px; margin: 0.8em auto; }
+        .img-left { float: left; max-width: 40%; height: auto; margin: 0.25em 1em 0.5em 0; border-radius: 6px; }
+        .img-right { float: right; max-width: 40%; height: auto; margin: 0.25em 0 0.5em 1em; border-radius: 6px; }
         figure { margin: 1.5em 0; padding: 0; max-width: 100%; }
         figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 6px; }
         figcaption { font-size: 0.85em; color: ${darkMode ? "#888" : "#9a8672"}; text-align: center; margin-top: 4px; line-height: 1.4; }
@@ -94,9 +97,9 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "var(--lib-dust)", flex: 1 }}>
           미리보기
         </span>
-        <button type="button" style={iconBtnSt} onClick={() => setFontSize((s) => Math.max(12, s - 1))} title="글자 줄이기">A-</button>
-        <span style={{ fontSize: 10, color: "var(--lib-dust)", minWidth: 20, textAlign: "center" }}>{fontSize}</span>
-        <button type="button" style={iconBtnSt} onClick={() => setFontSize((s) => Math.min(24, s + 1))} title="글자 키우기">A+</button>
+        <button type="button" style={iconBtnSt} onClick={() => setPreviewZoom((z) => Math.max(70, z - 10))} title="미리보기 글자 줄이기 (EPUB 파일에는 영향 없음)">A-</button>
+        <span style={{ fontSize: 10, color: "var(--lib-dust)", minWidth: 28, textAlign: "center" }}>{previewZoom}%</span>
+        <button type="button" style={iconBtnSt} onClick={() => setPreviewZoom((z) => Math.min(150, z + 10))} title="미리보기 글자 키우기 (EPUB 파일에는 영향 없음)">A+</button>
         <button
           type="button"
           onClick={() => setDarkMode((d) => !d)}

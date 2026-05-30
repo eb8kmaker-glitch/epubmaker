@@ -17,6 +17,7 @@ export interface ImageBlock {
   alt: string;
   caption: string;
   fileBlob?: Blob;  // actual file data for EPUB embedding
+  align?: "full" | "left" | "right"; // image placement (default: full)
 }
 
 export type Block = TextBlock | ImageBlock;

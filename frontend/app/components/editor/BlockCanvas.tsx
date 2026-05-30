@@ -8,6 +8,50 @@ import {
 import ContentEditable from "./ContentEditable";
 import { BLOCK_TYPE_ICONS, BLOCK_TAG, BLOCK_STYLES } from "./editorShared";
 
+// ── Image Canvas optimization ─────────────────────────────────────────────────
+
+async function optimizeImageForEpub(file: File): Promise<{ blob: Blob; objectUrl: string }> {
+  const MAX_WIDTH = 1080;
+  const MAX_SIZE_BYTES = 300 * 1024;
+  const QUALITY = 0.80;
+
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    img.onload = () => {
+      if (img.width <= MAX_WIDTH && file.size <= MAX_SIZE_BYTES) {
+        // Already small enough — use as-is but still create a fresh object URL
+        resolve({ blob: file, objectUrl: URL.createObjectURL(file) });
+        URL.revokeObjectURL(objectUrl);
+        return;
+      }
+
+      const ratio = Math.min(1, MAX_WIDTH / img.width);
+      const canvas = document.createElement("canvas");
+      canvas.width  = Math.round(img.width  * ratio);
+      canvas.height = Math.round(img.height * ratio);
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("Canvas context unavailable")); return; }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(objectUrl);
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { reject(new Error("Canvas toBlob failed")); return; }
+          resolve({ blob, objectUrl: URL.createObjectURL(blob) });
+        },
+        "image/jpeg",
+        QUALITY,
+      );
+    };
+
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error("Image load failed")); };
+    img.src = objectUrl;
+  });
+}
+
 interface CanvasProps {
   chapter: Chapter;
   onBlocksChange: (blocks: Block[]) => void;
@@ -79,8 +123,9 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
     e.preventDefault();
     const file = e.dataTransfer.files?.[0];
     if (!file || !file.type.startsWith("image/")) return;
-    const src = URL.createObjectURL(file);
-    updateBlock(id, { src, fileBlob: file } as Partial<ImageBlock>);
+    optimizeImageForEpub(file).then(({ blob, objectUrl }) => {
+      updateBlock(id, { src: objectUrl, fileBlob: blob } as Partial<ImageBlock>);
+    });
   };
 
   return (
@@ -411,7 +456,11 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
       >
         <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) onChange({ src: URL.createObjectURL(f), alt: f.name, fileBlob: f });
+          if (f) {
+            optimizeImageForEpub(f).then(({ blob, objectUrl }) => {
+              onChange({ src: objectUrl, alt: f.name, fileBlob: blob });
+            });
+          }
           e.target.value = "";
         }} />
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--lib-dust)" strokeWidth="1.5" aria-hidden>
@@ -429,15 +478,47 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
     );
   }
 
+  const ALIGN_OPTIONS: Array<{ value: "full" | "left" | "right"; label: string; title: string }> = [
+    { value: "full",  label: "⬜", title: "전체 폭" },
+    { value: "left",  label: "◧", title: "좌측 배치" },
+    { value: "right", label: "◨", title: "우측 배치" },
+  ];
+  const currentAlign = block.align ?? "full";
+
   return (
     <div style={{ position: "relative" }}>
+      {/* Align controls */}
+      <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
+        {ALIGN_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            title={opt.title}
+            onClick={() => onChange({ align: opt.value })}
+            style={{
+              padding: "2px 7px", borderRadius: 4, fontSize: 11,
+              border: "1px solid var(--lib-border)",
+              background: currentAlign === opt.value ? "var(--lib-bg-3)" : "transparent",
+              color: currentAlign === opt.value ? "var(--lib-ink)" : "var(--lib-dust)",
+              fontWeight: currentAlign === opt.value ? 700 : 400,
+              cursor: "pointer",
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
       <figure style={{ margin: 0 }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={block.src}
           alt={block.alt}
           style={{
-            width: "100%", borderRadius: 10,
+            width: currentAlign === "full" ? "100%" : "40%",
+            float: currentAlign === "left" ? "left" : currentAlign === "right" ? "right" : "none",
+            marginRight: currentAlign === "left" ? 12 : 0,
+            marginLeft: currentAlign === "right" ? 12 : 0,
+            borderRadius: 10,
             display: "block",
             border: focused ? "2px solid var(--lib-wood-dim)" : "2px solid transparent",
             transition: "border-color 0.15s ease",
@@ -455,6 +536,7 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
             outline: "none", padding: "2px 0",
             fontFamily: "var(--font-sans), system-ui, sans-serif",
             boxSizing: "border-box",
+            clear: currentAlign !== "full" ? "both" : "none",
           }}
         />
         <input
@@ -473,7 +555,7 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
       {/* Remove button */}
       <button
         type="button"
-        onClick={() => onChange({ src: "", alt: "", caption: "" })}
+        onClick={() => onChange({ src: "", alt: "", caption: "", align: "full" })}
         style={{
           position: "absolute", top: 8, right: 8,
           width: 28, height: 28, borderRadius: 8,
