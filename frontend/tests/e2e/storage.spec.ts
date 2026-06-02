@@ -69,10 +69,13 @@ test.describe("Browser local storage (localStorage + IndexedDB)", () => {
     await fileInput.setInputFiles(FIXTURE_TXT);
     await expect(page.locator("text=sample.txt")).toBeVisible({ timeout: 5_000 });
 
-    const downloadPromise = page.waitForEvent("download", { timeout: 60_000 });
     const convertBtn = page.locator("button").filter({ hasText: /Convert to EPUB|EPUB로 변환/i });
     await convertBtn.click();
-    await downloadPromise;
+
+    // Wait for editor to open (conversion complete, no auto-download)
+    await expect(page.getByTestId("open-toc-editor-btn").or(
+      page.locator("button").filter({ hasText: /TOC|목차/i })
+    ).first()).toBeVisible({ timeout: 90_000 });
 
     // localStorage should have recent entry
     const recentRaw = await page.evaluate(() =>
@@ -124,12 +127,13 @@ test.describe("Browser local storage (localStorage + IndexedDB)", () => {
     await fileInput.setInputFiles(FIXTURE_TXT);
     await expect(page.locator("text=sample.txt")).toBeVisible({ timeout: 5_000 });
 
-    const downloadPromise = page.waitForEvent("download", { timeout: 90_000 });
     const convertBtn = page.locator("button").filter({ hasText: /Convert to EPUB|EPUB로 변환/i });
     await convertBtn.click();
 
-    // Use test.slow() equivalent: extend timeout by awaiting download with longer timeout
-    await downloadPromise;
+    // Wait for editor to open (conversion complete, no auto-download)
+    await expect(page.getByTestId("open-toc-editor-btn").or(
+      page.locator("button").filter({ hasText: /TOC|목차/i })
+    ).first()).toBeVisible({ timeout: 90_000 });
 
     expect(requests.length).toBeGreaterThan(0);
     void requestChecks; // consumed via page.on listener
