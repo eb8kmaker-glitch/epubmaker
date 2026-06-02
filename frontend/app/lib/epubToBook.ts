@@ -47,10 +47,11 @@ export async function epubBlobToBook(
 
     // Chapter title = first h1 text, or filename
     const firstH1 = blocks.find((b) => b.type === "h2" || (b as TextBlock).html?.startsWith("<h"));
+    const bareHref = (href.split("/").pop() ?? href).replace(/\.[^.]+$/, "");
     const title =
       blocks[0]?.type === "paragraph" && blocks.length === 1 && !(blocks[0] as TextBlock).html
-        ? href.replace(/\.[^.]+$/, "")
-        : extractFirstHeading(html) || href.replace(/\.[^.]+$/, "");
+        ? bareHref
+        : extractFirstHeading(html) || bareHref;
 
     chapters.push({
       id: uid(),
@@ -117,8 +118,16 @@ function parseHtmlToBlocks(html: string): Block[] {
         blocks.push({ id: uid(), type: "h3", html: el.innerHTML.trim() });
         break;
       case "p": {
-        const inner = el.innerHTML.trim();
-        if (inner) blocks.push({ id: uid(), type: "paragraph", html: inner });
+        // If <p> wraps a single img (pandoc inline-image pattern), treat as image block
+        const imgs = el.querySelectorAll("img");
+        const nonImgText = el.textContent?.trim().replace(/\s/g, "");
+        if (imgs.length === 1 && (!nonImgText || nonImgText === "")) {
+          const img = imgs[0];
+          blocks.push({ id: uid(), type: "image", src: img.getAttribute("src") ?? "", alt: img.getAttribute("alt") ?? "", caption: "" });
+        } else {
+          const inner = el.innerHTML.trim();
+          if (inner) blocks.push({ id: uid(), type: "paragraph", html: inner });
+        }
         break;
       }
       case "blockquote":

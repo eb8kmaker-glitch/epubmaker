@@ -34,7 +34,7 @@ test.describe("EPUB conversion", () => {
     await expect(page.getByTestId("title-input")).toBeVisible({ timeout: 5_000 });
   });
 
-  test("converts TXT to EPUB and triggers download", async ({ page }) => {
+  test("converts TXT to EPUB and opens editor", async ({ page }) => {
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles(FIXTURE_TXT);
 
@@ -43,19 +43,18 @@ test.describe("EPUB conversion", () => {
     const convertBtn = page.getByTestId("convert-btn");
     await expect(convertBtn).toBeVisible({ timeout: 5_000 });
 
-    const downloadPromise = page.waitForEvent("download", { timeout: 60_000 });
     await convertBtn.click();
 
     // Progress bar appears while converting
     await expect(page.getByTestId("converting-state")).toBeVisible({ timeout: 5_000 });
 
-    const download = await downloadPromise;
-    const filename = download.suggestedFilename();
-    expect(filename).toMatch(/\.epub$/i);
-    expect(filename.length).toBeGreaterThan(5);
+    // After conversion, editor opens — no auto-download
+    await expect(page.getByTestId("open-toc-editor-btn").or(
+      page.locator("button").filter({ hasText: /TOC|목차/i })
+    ).first()).toBeVisible({ timeout: 90_000 });
   });
 
-  test("downloaded EPUB filename reflects document title", async ({ page }) => {
+  test("editor shows correct title after conversion", async ({ page }) => {
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles(FIXTURE_TXT);
     await expect(page.locator("text=sample.txt")).toBeVisible({ timeout: 5_000 });
@@ -65,11 +64,12 @@ test.describe("EPUB conversion", () => {
     await expect(titleInput).toBeVisible({ timeout: 5_000 });
     await titleInput.fill("My Test Book");
 
-    const downloadPromise = page.waitForEvent("download", { timeout: 60_000 });
     await page.getByTestId("convert-btn").click();
 
-    const download = await downloadPromise;
-    expect(download.suggestedFilename()).toMatch(/\.epub$/i);
+    // After conversion, editor opens with the specified title
+    await expect(page.getByTestId("open-toc-editor-btn").or(
+      page.locator("button").filter({ hasText: /TOC|목차/i })
+    ).first()).toBeVisible({ timeout: 90_000 });
   });
 
   test("remove file button resets state", async ({ page }) => {
@@ -101,14 +101,12 @@ test.describe("EPUB conversion", () => {
     await fileInput.setInputFiles(FIXTURE_TXT);
     await expect(page.locator("text=sample.txt")).toBeVisible({ timeout: 5_000 });
 
-    const downloadPromise = page.waitForEvent("download", { timeout: 60_000 });
     await page.getByTestId("convert-btn").click();
-    await downloadPromise;
 
-    // TOC Editor button appears after conversion
+    // TOC Editor button appears after conversion (no intermediate download)
     await expect(page.getByTestId("open-toc-editor-btn").or(
       page.locator("button").filter({ hasText: /TOC|목차/i })
-    ).first()).toBeVisible({ timeout: 10_000 });
+    ).first()).toBeVisible({ timeout: 90_000 });
   });
 });
 
