@@ -66,7 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { title, description } = PAGE_META[locale] ?? PAGE_META.en;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     openGraph: {
       title,

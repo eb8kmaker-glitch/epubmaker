@@ -121,17 +121,6 @@ export default function ConvertFlow() {
       }
 
       const epubBlob = await res.blob();
-      const disposition = res.headers.get("Content-Disposition");
-      const fnMatch = disposition?.match(/filename="?([^";\n]+)"?/);
-      const filename = fnMatch?.[1]?.trim() ?? `${opts.title || file.name.replace(/\.[^.]+$/, "")}.epub`;
-
-      // Trigger EPUB download
-      const dlUrl = URL.createObjectURL(epubBlob);
-      const a = document.createElement("a");
-      a.href = dlUrl;
-      a.download = filename;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(dlUrl), 1000);
 
       // Parse EPUB → BookModel
       setParseProgress(t("progressParsing"));
