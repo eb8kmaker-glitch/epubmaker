@@ -478,17 +478,39 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
     );
   }
 
-  const ALIGN_OPTIONS: Array<{ value: "full" | "left" | "right"; label: string; title: string }> = [
-    { value: "full",  label: "⬜", title: "전체 폭" },
-    { value: "left",  label: "◧", title: "좌측 배치" },
-    { value: "right", label: "◨", title: "우측 배치" },
+  const ALIGN_OPTIONS: Array<{ value: "full" | "left" | "right" | "inline-left" | "inline-right"; label: string; title: string }> = [
+    { value: "full",         label: "⬜", title: t("alignFull") },
+    { value: "left",         label: "◧",  title: t("alignLeft") },
+    { value: "right",        label: "◨",  title: t("alignRight") },
+    { value: "inline-left",  label: "▦←", title: t("alignInlineLeft") },
+    { value: "inline-right", label: "→▦", title: t("alignInlineRight") },
   ];
   const currentAlign = block.align ?? "full";
+  const isInline = currentAlign === "inline-left" || currentAlign === "inline-right";
+
+  const imgEl = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={block.src}
+      alt={block.alt}
+      style={{
+        width: isInline ? "100%" : currentAlign === "full" ? "100%" : "40%",
+        float: !isInline && currentAlign === "left" ? "left" : !isInline && currentAlign === "right" ? "right" : "none",
+        marginRight: currentAlign === "left" ? 12 : 0,
+        marginLeft: currentAlign === "right" ? 12 : 0,
+        borderRadius: 10,
+        display: "block",
+        border: focused ? "2px solid var(--lib-wood-dim)" : "2px solid transparent",
+        transition: "border-color 0.15s ease",
+      }}
+      onClick={onFocus}
+    />
+  );
 
   return (
     <div style={{ position: "relative" }}>
       {/* Align controls */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
+      <div style={{ display: "flex", gap: 4, marginBottom: 6, flexWrap: "wrap" }}>
         {ALIGN_OPTIONS.map((opt) => (
           <button
             key={opt.value}
@@ -508,54 +530,93 @@ function ImageBlockView({ block, focused, onChange, onFocus, onDrop }: ImageBloc
           </button>
         ))}
       </div>
-      <figure style={{ margin: 0 }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={block.src}
-          alt={block.alt}
-          style={{
-            width: currentAlign === "full" ? "100%" : "40%",
-            float: currentAlign === "left" ? "left" : currentAlign === "right" ? "right" : "none",
-            marginRight: currentAlign === "left" ? 12 : 0,
-            marginLeft: currentAlign === "right" ? 12 : 0,
-            borderRadius: 10,
-            display: "block",
-            border: focused ? "2px solid var(--lib-wood-dim)" : "2px solid transparent",
-            transition: "border-color 0.15s ease",
-          }}
-          onClick={onFocus}
-        />
-        <input
-          value={block.alt}
-          onChange={(e) => onChange({ alt: e.target.value })}
-          placeholder={t("imageAltPlaceholder")}
-          style={{
-            marginTop: 6, width: "100%", fontSize: 11,
-            color: "var(--lib-dust)", background: "transparent",
-            border: "none", borderBottom: "1px solid var(--lib-border)",
-            outline: "none", padding: "2px 0",
-            fontFamily: "var(--font-sans), system-ui, sans-serif",
-            boxSizing: "border-box",
-            clear: currentAlign !== "full" ? "both" : "none",
-          }}
-        />
-        <input
-          value={block.caption}
-          onChange={(e) => onChange({ caption: e.target.value })}
-          placeholder={t("imageCaptionPlaceholder")}
-          style={{
-            marginTop: 4, width: "100%", fontSize: 12,
-            color: "var(--lib-dusk)", background: "transparent",
-            border: "none", outline: "none", padding: "2px 0",
-            fontFamily: "var(--font-sans), system-ui, sans-serif",
-            boxSizing: "border-box",
-          }}
-        />
-      </figure>
+
+      {isInline ? (
+        /* Inline layout: two-column table preview */
+        <div style={{
+          display: "table", width: "100%", borderCollapse: "collapse", margin: "4px 0",
+        }}>
+          {currentAlign === "inline-left" ? (
+            <>
+              <div style={{ display: "table-cell", width: "40%", verticalAlign: "top", paddingRight: 12 }}>
+                <figure style={{ margin: 0 }}>{imgEl}</figure>
+              </div>
+              <div style={{ display: "table-cell", width: "60%", verticalAlign: "top" }}>
+                <textarea
+                  value={block.sideText ?? ""}
+                  onChange={(e) => onChange({ sideText: e.target.value })}
+                  placeholder={t("imageSideTextPlaceholder")}
+                  rows={4}
+                  style={{
+                    width: "100%", fontSize: 13, resize: "vertical",
+                    color: "var(--lib-ink)", background: "var(--lib-bg-2)",
+                    border: "1px solid var(--lib-border)", borderRadius: 6,
+                    outline: "none", padding: "6px 8px",
+                    fontFamily: "var(--font-sans), system-ui, sans-serif",
+                    boxSizing: "border-box", lineHeight: 1.5,
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ display: "table-cell", width: "60%", verticalAlign: "top", paddingRight: 12 }}>
+                <textarea
+                  value={block.sideText ?? ""}
+                  onChange={(e) => onChange({ sideText: e.target.value })}
+                  placeholder={t("imageSideTextPlaceholder")}
+                  rows={4}
+                  style={{
+                    width: "100%", fontSize: 13, resize: "vertical",
+                    color: "var(--lib-ink)", background: "var(--lib-bg-2)",
+                    border: "1px solid var(--lib-border)", borderRadius: 6,
+                    outline: "none", padding: "6px 8px",
+                    fontFamily: "var(--font-sans), system-ui, sans-serif",
+                    boxSizing: "border-box", lineHeight: 1.5,
+                  }}
+                />
+              </div>
+              <div style={{ display: "table-cell", width: "40%", verticalAlign: "top" }}>
+                <figure style={{ margin: 0 }}>{imgEl}</figure>
+              </div>
+            </>
+          )}
+        </div>
+      ) : (
+        <figure style={{ margin: 0 }}>{imgEl}</figure>
+      )}
+
+      <input
+        value={block.alt}
+        onChange={(e) => onChange({ alt: e.target.value })}
+        placeholder={t("imageAltPlaceholder")}
+        style={{
+          marginTop: 6, width: "100%", fontSize: 11,
+          color: "var(--lib-dust)", background: "transparent",
+          border: "none", borderBottom: "1px solid var(--lib-border)",
+          outline: "none", padding: "2px 0",
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
+          boxSizing: "border-box",
+          clear: !isInline && currentAlign !== "full" ? "both" : "none",
+        }}
+      />
+      <input
+        value={block.caption}
+        onChange={(e) => onChange({ caption: e.target.value })}
+        placeholder={t("imageCaptionPlaceholder")}
+        style={{
+          marginTop: 4, width: "100%", fontSize: 12,
+          color: "var(--lib-dusk)", background: "transparent",
+          border: "none", outline: "none", padding: "2px 0",
+          fontFamily: "var(--font-sans), system-ui, sans-serif",
+          boxSizing: "border-box",
+        }}
+      />
+
       {/* Remove button */}
       <button
         type="button"
-        onClick={() => onChange({ src: "", alt: "", caption: "", align: "full" })}
+        onClick={() => onChange({ src: "", alt: "", caption: "", align: "full", sideText: "" })}
         style={{
           position: "absolute", top: 8, right: 8,
           width: 28, height: 28, borderRadius: 8,
