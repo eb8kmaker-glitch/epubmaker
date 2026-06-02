@@ -154,6 +154,19 @@ function blockToXhtml(block: Block, imageMap: Map<string, ImageEntry>): string {
       const imgSrc = entry ? `images/${entry.epubFilename}` : esc(block.src);
       const align = block.align ?? "full";
 
+      if (align === "inline-left" || align === "inline-right") {
+        const figureHtml = `<figure style="margin:0;padding:0;">\n          <img src="${imgSrc}" alt="${esc(block.alt)}" style="max-width:100%;height:auto;display:block;"/>${block.caption ? `\n          <figcaption style="font-size:0.85em;color:#666;text-align:center;margin-top:0.4em;line-height:1.4;">${esc(block.caption)}</figcaption>` : ""}\n        </figure>`;
+        const textHtml = `<p style="margin:0;">${esc(block.sideText ?? "")}</p>`;
+        const imgTd = align === "inline-left"
+          ? `<td class="img-col" style="width:40%;vertical-align:top;padding-right:1em;border:none;">\n        ${figureHtml}\n      </td>`
+          : `<td class="img-col-right" style="width:40%;vertical-align:top;border:none;">\n        ${figureHtml}\n      </td>`;
+        const textTd = align === "inline-left"
+          ? `<td class="text-col" style="width:60%;vertical-align:top;border:none;">\n        ${textHtml}\n      </td>`
+          : `<td class="text-col-left" style="width:60%;vertical-align:top;padding-right:1em;border:none;">\n        ${textHtml}\n      </td>`;
+        const [firstTd, secondTd] = align === "inline-left" ? [imgTd, textTd] : [textTd, imgTd];
+        return `<table class="img-inline" style="width:100%;border:none;border-collapse:collapse;margin:1.5em 0;">\n  <tbody>\n    <tr>\n      ${firstTd}\n      ${secondTd}\n    </tr>\n  </tbody>\n</table>`;
+      }
+
       let imgStyle: string;
       let figStyle: string;
       let clearfix = "";

@@ -54,6 +54,31 @@ figcaption {
   margin-bottom: 0.5em;
   margin-top: 0.25em;
 }
+
+table.img-inline {
+  width: 100%;
+  border: none;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+table.img-inline td {
+  border: none;
+  vertical-align: top;
+}
+table.img-inline td.img-col {
+  width: 40%;
+  padding-right: 1em;
+}
+table.img-inline td.img-col-right {
+  width: 40%;
+}
+table.img-inline td.text-col {
+  width: 60%;
+}
+table.img-inline td.text-col-left {
+  width: 60%;
+  padding-right: 1em;
+}
 `;
 
 export const EPUB_STYLES: Record<string, string> = {

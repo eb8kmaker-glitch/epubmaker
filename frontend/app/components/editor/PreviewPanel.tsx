@@ -52,6 +52,12 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         figure { margin: 1.5em 0; padding: 0; max-width: 100%; }
         figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 6px; }
         figcaption { font-size: 0.85em; color: ${darkMode ? "#888" : "#9a8672"}; text-align: center; margin-top: 4px; line-height: 1.4; }
+        table.img-inline { width: 100%; border-collapse: collapse; margin: 1.5em 0; }
+        table.img-inline td { border: none; vertical-align: top; }
+        table.img-inline td.img-col { width: 40%; padding-right: 1em; }
+        table.img-inline td.img-col-right { width: 40%; }
+        table.img-inline td.text-col { width: 60%; }
+        table.img-inline td.text-col-left { width: 60%; padding-right: 1em; }
         ${css}
       </style>
     </head>
@@ -64,7 +70,14 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         if (b.type === "quote") return `<blockquote><p>${(b as TextBlock).html || "&nbsp;"}</p></blockquote>`;
         if (b.type === "image" && (b as ImageBlock).src) {
           const ib = b as ImageBlock;
-          return `<figure><img src="${ib.src}" alt="${ib.alt}"/>${ib.caption ? `<figcaption>${ib.caption}</figcaption>` : ""}</figure>`;
+          const figHtml = `<figure style="margin:0;padding:0;"><img src="${ib.src}" alt="${ib.alt}" style="max-width:100%;height:auto;display:block;border-radius:6px;"/>${ib.caption ? `<figcaption>${ib.caption}</figcaption>` : ""}</figure>`;
+          if (ib.align === "inline-left") {
+            return `<table class="img-inline"><tbody><tr><td class="img-col">${figHtml}</td><td class="text-col"><p style="margin:0;">${ib.sideText ?? ""}</p></td></tr></tbody></table>`;
+          }
+          if (ib.align === "inline-right") {
+            return `<table class="img-inline"><tbody><tr><td class="text-col-left"><p style="margin:0;">${ib.sideText ?? ""}</p></td><td class="img-col-right">${figHtml}</td></tr></tbody></table>`;
+          }
+          return `<figure>${figHtml.replace(/^<figure[^>]*>/, "").replace(/<\/figure>$/, "")}</figure>`;
         }
         return "";
       }).join("\n")}
