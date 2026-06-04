@@ -1,5 +1,27 @@
+import type { Metadata } from "next";
+import { routing } from "@/i18n/routing";
 import ConvertFlow from "@/app/components/convert/ConvertFlow";
 import AdBanner from "@/app/components/ads/AdBanner";
+
+const BASE_URL = "https://www.epubmaker.org";
+
+type Props = { params: Promise<{ locale: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    alternates: {
+      canonical: `${BASE_URL}/${locale}/convert`,
+      languages: Object.fromEntries(
+        routing.locales.map((loc) => [loc, `${BASE_URL}/${loc}/convert`])
+      ),
+    },
+  };
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export default function ConvertPage() {
   return (

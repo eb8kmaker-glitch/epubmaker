@@ -6,7 +6,7 @@ import { routing } from "@/i18n/routing";
 import { FAQJsonLd, BreadcrumbJsonLd } from "@/app/components/content/JsonLd";
 import AdFitBanner from "@/app/components/ads/AdFitBanner";
 
-const BASE_URL = "https://epubmaker.org";
+const BASE_URL = "https://www.epubmaker.org";
 const FAQ_COUNT = 8;
 
 type Props = { params: Promise<{ locale: string }> };
@@ -19,6 +19,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: t("subtitle"),
     alternates: {
       canonical: `${BASE_URL}/${locale}/faq`,
+      languages: Object.fromEntries(
+        routing.locales.map((loc) => [loc, `${BASE_URL}/${loc}/faq`])
+      ),
     },
   };
 }

@@ -34,7 +34,7 @@ export function ArticleJsonLd({
     publisher: {
       "@type": "Organization",
       name: "EPUBMaker",
-      url: "https://epubmaker.org",
+      url: "https://www.epubmaker.org",
     },
     ...(imageUrl && { image: imageUrl }),
   };

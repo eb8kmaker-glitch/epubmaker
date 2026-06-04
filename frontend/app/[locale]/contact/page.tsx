@@ -4,12 +4,19 @@ import { hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import ContactForm from "@/app/components/ContactForm";
 
+const BASE_URL = "https://www.epubmaker.org";
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "Contact" });
-  return { title: t("title") };
+  return {
+    title: t("title"),
+    alternates: {
+      canonical: `${BASE_URL}/${locale}/contact`,
+      languages: Object.fromEntries(routing.locales.map((l) => [l, `${BASE_URL}/${l}/contact`])),
+    },
+  };
 }
 
 export default async function ContactPage({ params }: Props) {

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${t("title")} — EPUBMaker`,
     description: t("subtitle"),
     alternates: {
-      canonical: `https://epubmaker.org/${locale}/blog`,
+      canonical: `https://www.epubmaker.org/${locale}/blog`,
     },
   };
 }

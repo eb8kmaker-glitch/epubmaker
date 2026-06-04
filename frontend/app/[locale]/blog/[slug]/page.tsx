@@ -8,7 +8,7 @@ import ArticleLayout from "@/app/components/content/ArticleLayout";
 import { ArticleJsonLd, BreadcrumbJsonLd } from "@/app/components/content/JsonLd";
 import AdFit from "@/app/components/ads/AdFit";
 
-const BASE_URL = "https://epubmaker.org";
+const BASE_URL = "https://www.epubmaker.org";
 
 type Props = { params: Promise<{ locale: string; slug: string }> };
 
