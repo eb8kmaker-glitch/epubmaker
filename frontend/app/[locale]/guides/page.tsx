@@ -8,7 +8,7 @@ import { getAllPosts } from "@/app/lib/content";
 import { BreadcrumbJsonLd } from "@/app/components/content/JsonLd";
 import AdBanner from "@/app/components/ads/AdBanner";
 
-const BASE_URL = "https://epubmaker.org";
+const BASE_URL = "https://www.epubmaker.org";
 
 type Props = { params: Promise<{ locale: string }> };
 

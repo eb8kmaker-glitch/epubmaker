@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
 
   // Static pages per locale
-  const staticPaths = ["", "/convert", "/blog", "/faq", "/guides", "/announcement"];
+  const staticPaths = ["", "/convert", "/blog", "/faq", "/guides", "/announcement", "/terms", "/privacy", "/contact"];
 
   for (const locale of routing.locales) {
     for (const path of staticPaths) {

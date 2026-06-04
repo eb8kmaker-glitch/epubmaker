@@ -68,6 +68,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: { absolute: title },
     description,
+    alternates: {
+      canonical: `${BASE_URL}/${locale}`,
+      languages: Object.fromEntries(
+        routing.locales.map((loc) => [loc, `${BASE_URL}/${loc}`])
+      ),
+    },
     openGraph: {
       title,
       description,
