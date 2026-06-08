@@ -62,7 +62,7 @@ test.describe("Browser local storage (localStorage + IndexedDB)", () => {
     }
   });
 
-  test("recent projects appear after successful conversion", async ({ page }) => {
+  test("recent projects are saved to IndexedDB after successful conversion", async ({ page }) => {
     await page.goto("/en/convert");
 
     const fileInput = page.locator('input[type="file"]');
@@ -77,32 +77,59 @@ test.describe("Browser local storage (localStorage + IndexedDB)", () => {
       page.locator("button").filter({ hasText: /TOC|목차/i })
     ).first()).toBeVisible({ timeout: 90_000 });
 
-    // localStorage should have recent entry
-    const recentRaw = await page.evaluate(() =>
-      localStorage.getItem("epubmaker_recent_v1")
-    );
-    expect(recentRaw).toBeTruthy();
-    const recent = JSON.parse(recentRaw!) as Array<{ filename: string; date: string }>;
-    expect(recent.length).toBeGreaterThan(0);
-    expect(recent[0].filename).toBe("sample.txt");
-    expect(recent[0].date).toBeTruthy();
+    // The project is persisted to the IndexedDB "epubmaker_projects" store.
+    const projectCount = () => page.evaluate(() => new Promise<number>((resolve) => {
+      const req = indexedDB.open("epubmaker_projects");
+      req.onsuccess = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("projects")) { db.close(); resolve(0); return; }
+        const countReq = db.transaction("projects", "readonly").objectStore("projects").count();
+        countReq.onsuccess = () => { resolve(countReq.result); db.close(); };
+        countReq.onerror = () => { resolve(0); db.close(); };
+      };
+      req.onerror = () => resolve(0);
+    }));
+    await expect.poll(projectCount, { timeout: 5_000 }).toBeGreaterThan(0);
   });
 
   test("recent projects panel shows on next visit", async ({ page }) => {
-    // Seed localStorage with a fake recent entry
+    // Seed the IndexedDB project store with one record.
     await page.goto("/en/convert");
-    await page.evaluate(() => {
-      const entry = [{ filename: "my-book.txt", title: "My Book", date: new Date().toISOString() }];
-      localStorage.setItem("epubmaker_recent_v1", JSON.stringify(entry));
-    });
+    await page.evaluate(() => new Promise<void>((resolve, reject) => {
+      const req = indexedDB.open("epubmaker_projects", 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains("projects")) {
+          db.createObjectStore("projects", { keyPath: "id" }).createIndex("updatedAt", "updatedAt");
+        }
+      };
+      req.onsuccess = () => {
+        const db = req.result;
+        const tx = db.transaction("projects", "readwrite");
+        tx.objectStore("projects").put({
+          version: 1, id: "seed-1", title: "My Book", updatedAt: Date.now(),
+          book: {
+            meta: {
+              title: "My Book", author: "", language: "ko", publisher: "", isbn: "",
+              date: "2024-01-01", epubVersion: "epub3", toc: true, tocDepth: 2,
+              style: "default", customCss: "", coverImage: null,
+            },
+            chapters: [],
+          },
+        });
+        tx.oncomplete = () => { db.close(); resolve(); };
+        tx.onerror = () => { db.close(); reject(tx.error); };
+      };
+      req.onerror = () => reject(req.error);
+    }));
 
     // Reload the page
     await page.reload();
     await page.waitForURL(/\/en\/convert/);
 
-    // Recent projects panel should be visible
+    // Recent projects panel should be visible with the seeded project.
     await expect(page.locator("text=/Recent projects|최근 프로젝트/i")).toBeVisible({ timeout: 5_000 });
-    await expect(page.locator("text=My Book").or(page.locator("text=my-book.txt"))).toBeVisible({ timeout: 3_000 });
+    await expect(page.locator("text=My Book")).toBeVisible({ timeout: 3_000 });
   });
 
   test("localStorage is scoped to browser — no server transmission", async ({ page }) => {
