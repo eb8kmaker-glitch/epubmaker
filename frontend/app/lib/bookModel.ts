@@ -41,6 +41,7 @@ export interface BookMeta {
   author: string;
   language: "ko" | "en" | "ja" | "zh";
   publisher: string;
+  isbn: string;
   date: string;
   epubVersion: "epub2" | "epub3";
   toc: boolean;
@@ -67,6 +68,7 @@ export function defaultMeta(): BookMeta {
     author: "",
     language: "ko",
     publisher: "",
+    isbn: "",
     date: new Date().toISOString().slice(0, 10),
     epubVersion: "epub3",
     toc: true,

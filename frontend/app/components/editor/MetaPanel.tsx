@@ -42,6 +42,14 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
     set("coverImage", { blob: file, mimeType: file.type, name: file.name });
   };
 
+  // ISBN: soft validation only — 10 or 13 digits after stripping hyphens/spaces
+  // (a trailing "X" is allowed as the ISBN-10 check digit). Never blocks saving.
+  const isbnNormalized = (meta.isbn ?? "").replace(/[\s-]/g, "").toUpperCase();
+  const isbnInvalid =
+    isbnNormalized.length > 0 &&
+    !/^\d{13}$/.test(isbnNormalized) &&
+    !/^\d{9}[\dX]$/.test(isbnNormalized);
+
   const inputSt: React.CSSProperties = {
     width: "100%", padding: "8px 10px", borderRadius: 7,
     border: "1px solid var(--lib-border)", background: "var(--lib-bg)",
@@ -71,6 +79,22 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
           </select>
         </div>
         <div><label style={labelSt}>{t("publisherLabel")}</label><input style={inputSt} value={meta.publisher} onChange={(e) => set("publisher", e.target.value)} placeholder={t("publisherPlaceholder")} /></div>
+        <div>
+          <label style={labelSt}>{t("isbnLabel")}</label>
+          <input
+            style={isbnInvalid ? { ...inputSt, borderColor: "#dca0a0" } : inputSt}
+            value={meta.isbn}
+            onChange={(e) => set("isbn", e.target.value)}
+            placeholder={t("isbnPlaceholder")}
+            inputMode="numeric"
+            aria-invalid={isbnInvalid}
+          />
+          {isbnInvalid && (
+            <p style={{ marginTop: 5, fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+              {t("isbnHint")}
+            </p>
+          )}
+        </div>
         <div><label style={labelSt}>{t("dateLabel")}</label><input style={inputSt} value={meta.date} onChange={(e) => set("date", e.target.value)} placeholder="2024-01-01" /></div>
 
         {/* Cover image */}

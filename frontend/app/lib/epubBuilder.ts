@@ -249,6 +249,13 @@ function buildOpf(
 ): string {
   const { meta } = book;
   const version = isEpub3 ? "3.0" : "2.0";
+
+  // Identifier: a user-supplied ISBN takes precedence as an ISBN URN; otherwise
+  // fall back to the generated book id.
+  const isbn = normalizeIsbn(meta.isbn);
+  const idAttr = isbn ? "book-id" : "uid";
+  const idValue = isbn ? `urn:isbn:${isbn}` : bookId;
+
   const manifestItems = chapterFiles
     .map((fn, i) => `    <item id="ch${i + 1}" href="${fn}" media-type="application/xhtml+xml"/>`)
     .join("\n");
@@ -278,9 +285,9 @@ function buildOpf(
     .join("\n");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="${version}" unique-identifier="uid">
+<package xmlns="http://www.idpf.org/2007/opf" version="${version}" unique-identifier="${idAttr}">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
-    <dc:identifier id="uid">${bookId}</dc:identifier>
+    <dc:identifier id="${idAttr}">${esc(idValue)}</dc:identifier>
     <dc:title>${esc(meta.title || "Untitled")}</dc:title>
     <dc:creator>${esc(meta.author || "Unknown")}</dc:creator>
     <dc:language>${esc(meta.language)}</dc:language>
@@ -345,6 +352,11 @@ ${items}
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+/** Strip hyphens/whitespace from an ISBN; uppercase the optional ISBN-10 check digit. */
+function normalizeIsbn(isbn: string | undefined): string {
+  return (isbn ?? "").replace(/[\s-]/g, "").toUpperCase();
+}
 
 /** XML-escape a string */
 function esc(s: string): string {
