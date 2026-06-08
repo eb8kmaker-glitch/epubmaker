@@ -3,6 +3,7 @@ import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { BookMeta } from "@/app/lib/bookModel";
+import { defaultCopyright } from "@/app/lib/frontMatter";
 
 interface MetaPanelProps {
   meta: BookMeta;
@@ -71,6 +72,7 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div><label style={labelSt}>{t("titleLabel")}</label><input style={{ ...inputSt, fontFamily: "var(--font-serif), Georgia, serif", fontSize: 14 }} value={meta.title} onChange={(e) => set("title", e.target.value)} placeholder={t("titlePlaceholder")} /></div>
+        <div><label style={labelSt}>{t("subtitleLabel")}</label><input style={inputSt} value={meta.subtitle} onChange={(e) => set("subtitle", e.target.value)} placeholder={t("subtitlePlaceholder")} /></div>
         <div><label style={labelSt}>{t("authorLabel")}</label><input style={inputSt} value={meta.author} onChange={(e) => set("author", e.target.value)} placeholder={t("authorPlaceholder")} /></div>
         <div><label style={labelSt}>{t("languageLabel")}</label>
           <select style={inputSt} value={meta.language} onChange={(e) => set("language", e.target.value as BookMeta["language"])}>
@@ -183,6 +185,35 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
               </button>
             ))}
           </div>
+        </div>
+
+        <div style={{ height: 1, background: "var(--lib-border)" }} />
+
+        {/* Book structure: title page + colophon */}
+        <div>
+          <p style={{ ...labelSt, marginBottom: 10 }}>{t("bookStructure")}</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <input type="checkbox" checked={meta.titlePage !== false} onChange={(e) => set("titlePage", e.target.checked)} style={{ width: 14, height: 14, accentColor: "var(--lib-wood-dim)" }} />
+              <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>{t("includeTitlePage")}</span>
+            </label>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <input type="checkbox" checked={meta.colophon !== false} onChange={(e) => set("colophon", e.target.checked)} style={{ width: 14, height: 14, accentColor: "var(--lib-wood-dim)" }} />
+              <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>{t("includeColophon")}</span>
+            </label>
+          </div>
+          {meta.colophon !== false && (
+            <div style={{ marginTop: 12 }}>
+              <label style={labelSt}>{t("copyrightLabel")}</label>
+              <textarea
+                value={meta.copyright}
+                onChange={(e) => set("copyright", e.target.value)}
+                placeholder={defaultCopyright(meta)}
+                rows={2}
+                style={{ ...inputSt, resize: "vertical", lineHeight: 1.5 }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

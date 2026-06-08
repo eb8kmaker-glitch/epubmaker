@@ -38,6 +38,7 @@ export interface Chapter {
 
 export interface BookMeta {
   title: string;
+  subtitle: string;
   author: string;
   language: "ko" | "en" | "ja" | "zh";
   publisher: string;
@@ -49,6 +50,9 @@ export interface BookMeta {
   style: "default" | "book" | "novel" | "academic" | "custom";
   customCss: string;
   coverImage?: CoverImage | null; // uploaded cover, embedded as cover.xhtml + OPF cover-image
+  titlePage: boolean;  // generate a title page (epub:type="titlepage")
+  colophon: boolean;   // generate a colophon / copyright page at the end
+  copyright: string;   // editable copyright line; falls back to a localized default
 }
 
 export interface BookModel {
@@ -65,6 +69,7 @@ export function uid(): string {
 export function defaultMeta(): BookMeta {
   return {
     title: "",
+    subtitle: "",
     author: "",
     language: "ko",
     publisher: "",
@@ -76,6 +81,9 @@ export function defaultMeta(): BookMeta {
     style: "default",
     customCss: "",
     coverImage: null,
+    titlePage: true,
+    colophon: true,
+    copyright: "",
   };
 }
 

@@ -1,13 +1,17 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import type { Chapter, TextBlock, ImageBlock } from "@/app/lib/bookModel";
+import type { Chapter, BookMeta, TextBlock, ImageBlock } from "@/app/lib/bookModel";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
+import { FRONT_MATTER_CSS, titlePageInnerHtml, colophonInnerHtml } from "@/app/lib/frontMatter";
 import { iconBtnSt } from "./editorShared";
 
 interface PreviewPanelProps {
   chapter: Chapter;
   style: string;
   customCss: string;
+  meta: BookMeta;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 const WIDTH_PRESETS = [
@@ -17,8 +21,11 @@ const WIDTH_PRESETS = [
   { label: "⬜", width: 0, title: "Full width" },
 ] as const;
 
-export default function PreviewPanel({ chapter, style, customCss }: PreviewPanelProps) {
+export default function PreviewPanel({ chapter, style, customCss, meta, isFirst, isLast }: PreviewPanelProps) {
   const css = style === "custom" && customCss ? customCss : (EPUB_STYLES[style] ?? EPUB_STYLES.default ?? "");
+  // Front/back matter appears at the book boundaries, mirroring the EPUB spine.
+  const showTitlePage = isFirst && meta.titlePage !== false;
+  const showColophon = isLast && meta.colophon !== false;
   // previewZoom controls only the preview display — never written into EPUB CSS
   const [previewZoom, setPreviewZoom] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
@@ -58,10 +65,13 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         table.img-inline td.img-col-right { width: 40%; }
         table.img-inline td.text-col { width: 60%; }
         table.img-inline td.text-col-left { width: 60%; padding-right: 1em; }
+        .preview-fm-divider { border: none; border-top: 1px dashed ${darkMode ? "#444" : "#ddd"}; margin: 2.5em 0; }
+        ${FRONT_MATTER_CSS}
         ${css}
       </style>
     </head>
     <body>
+      ${showTitlePage ? titlePageInnerHtml(meta) + '<hr class="preview-fm-divider"/>' : ""}
       <h1>${chapter.title}</h1>
       ${chapter.blocks.map((b) => {
         if (b.type === "paragraph") return `<p>${(b as TextBlock).html || "&nbsp;"}</p>`;
@@ -81,6 +91,7 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         }
         return "";
       }).join("\n")}
+      ${showColophon ? '<hr class="preview-fm-divider"/>' + colophonInnerHtml(meta) : ""}
     </body>
     </html>
   `;

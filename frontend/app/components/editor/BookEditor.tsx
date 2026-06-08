@@ -468,7 +468,14 @@ export default function BookEditor({
             title="패널 너비 조절"
           />
           {rightPanel === "preview" ? (
-            <PreviewPanel chapter={activeChapter} style={book.meta.style} customCss={book.meta.customCss} />
+            <PreviewPanel
+              chapter={activeChapter}
+              style={book.meta.style}
+              customCss={book.meta.customCss}
+              meta={book.meta}
+              isFirst={book.chapters[0]?.id === activeChapter?.id}
+              isLast={book.chapters[book.chapters.length - 1]?.id === activeChapter?.id}
+            />
           ) : (
             <MetaPanel meta={book.meta} onChange={(meta) => updateBook((b) => ({ ...b, meta }))} />
           )}

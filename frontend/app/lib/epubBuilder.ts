@@ -4,6 +4,7 @@
 import JSZip from "jszip";
 import { BookModel, Chapter, Block, ImageBlock, uid } from "./bookModel";
 import { EPUB_STYLES, IMAGE_BASE_CSS } from "./epubStyles";
+import { buildTitlePageXhtml, buildColophonXhtml } from "./frontMatter";
 
 // ── Image helpers ─────────────────────────────────────────────────────────────
 
@@ -91,6 +92,12 @@ export async function buildEpubFromBook(
     zip.file("OEBPS/cover.xhtml", buildCoverXhtml(cover.epubFilename, book.meta.language));
   }
 
+  // 4c. Front/back matter — title page (front) and colophon (back), excluded from TOC
+  const includeTitlePage = book.meta.titlePage !== false;
+  const includeColophon = book.meta.colophon !== false;
+  if (includeTitlePage) zip.file("OEBPS/titlepage.xhtml", buildTitlePageXhtml(book.meta));
+  if (includeColophon) zip.file("OEBPS/colophon.xhtml", buildColophonXhtml(book.meta));
+
   // 5. Chapter XHTMLs
   const chapterFiles: string[] = [];
   for (let i = 0; i < book.chapters.length; i++) {
@@ -111,7 +118,7 @@ export async function buildEpubFromBook(
   }
 
   // 8. content.opf
-  zip.file("OEBPS/content.opf", buildOpf(book, bookId, chapterFiles, isEpub3, imageMap, cover));
+  zip.file("OEBPS/content.opf", buildOpf(book, bookId, chapterFiles, isEpub3, imageMap, cover, includeTitlePage, includeColophon));
 
   const blob = await zip.generateAsync({
     type: "blob",
@@ -246,6 +253,8 @@ function buildOpf(
   isEpub3: boolean,
   imageMap: Map<string, ImageEntry>,
   cover: CoverEntry | null,
+  includeTitlePage: boolean,
+  includeColophon: boolean,
 ): string {
   const { meta } = book;
   const version = isEpub3 ? "3.0" : "2.0";
@@ -272,6 +281,14 @@ function buildOpf(
       `    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>\n`
     : "";
   const coverSpine = cover ? `    <itemref idref="cover" linear="no"/>\n` : "";
+
+  // Title page (front, after cover) and colophon (back). Not added to the TOC.
+  const titlePageManifest = includeTitlePage
+    ? `    <item id="titlepage" href="titlepage.xhtml" media-type="application/xhtml+xml"/>\n` : "";
+  const colophonManifest = includeColophon
+    ? `    <item id="colophon" href="colophon.xhtml" media-type="application/xhtml+xml"/>\n` : "";
+  const titlePageSpine = includeTitlePage ? `    <itemref idref="titlepage"/>\n` : "";
+  const colophonSpine = includeColophon ? `    <itemref idref="colophon"/>\n` : "";
   const navItem = isEpub3 && meta.toc
     ? `    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>\n`
     : "";
@@ -296,11 +313,11 @@ function buildOpf(
 ${coverMeta}  </metadata>
   <manifest>
     <item id="css" href="styles/style.css" media-type="text/css"/>
-${coverManifest}${navItem}${ncxItem}${manifestItems}
+${coverManifest}${titlePageManifest}${colophonManifest}${navItem}${ncxItem}${manifestItems}
 ${imageItems ? imageItems + "\n" : ""}  </manifest>
   <spine${ncxAttr}>
-${coverSpine}${spineItems}
-  </spine>
+${coverSpine}${titlePageSpine}${spineItems}
+${colophonSpine}  </spine>
 </package>`;
 }
 
