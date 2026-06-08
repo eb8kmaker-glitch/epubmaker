@@ -7,20 +7,26 @@ import { EPUB_STYLES, IMAGE_BASE_CSS } from "./epubStyles";
 
 // ── Image helpers ─────────────────────────────────────────────────────────────
 
+const MIME_TO_EXT: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+
 function sanitizeImageFilename(blob: Blob, chapterIndex: number, imageIndex: number): string {
-  const mimeToExt: Record<string, string> = {
-    "image/jpeg": "jpg",
-    "image/png": "png",
-    "image/webp": "webp",
-    "image/gif": "gif",
-  };
-  const ext = mimeToExt[blob.type] ?? "jpg";
+  const ext = MIME_TO_EXT[blob.type] ?? "jpg";
   return `img_ch${String(chapterIndex).padStart(2, "0")}_${String(imageIndex).padStart(3, "0")}.${ext}`;
 }
 
 interface ImageEntry {
   epubFilename: string;  // e.g. img_ch01_001.jpg
   blob: Blob;
+  mimeType: string;
+}
+
+interface CoverEntry {
+  epubFilename: string;  // e.g. cover.jpg (under OEBPS/images/)
   mimeType: string;
 }
 
@@ -75,6 +81,16 @@ export async function buildEpubFromBook(
     zip.file(`OEBPS/images/${entry.epubFilename}`, entry.blob);
   }
 
+  // 4b. Cover image → images/cover.* + cover.xhtml
+  let cover: CoverEntry | null = null;
+  if (book.meta.coverImage?.blob) {
+    const { blob, mimeType } = book.meta.coverImage;
+    const ext = MIME_TO_EXT[mimeType] ?? "jpg";
+    cover = { epubFilename: `cover.${ext}`, mimeType };
+    zip.file(`OEBPS/images/${cover.epubFilename}`, blob);
+    zip.file("OEBPS/cover.xhtml", buildCoverXhtml(cover.epubFilename, book.meta.language));
+  }
+
   // 5. Chapter XHTMLs
   const chapterFiles: string[] = [];
   for (let i = 0; i < book.chapters.length; i++) {
@@ -95,7 +111,7 @@ export async function buildEpubFromBook(
   }
 
   // 8. content.opf
-  zip.file("OEBPS/content.opf", buildOpf(book, bookId, chapterFiles, isEpub3, imageMap));
+  zip.file("OEBPS/content.opf", buildOpf(book, bookId, chapterFiles, isEpub3, imageMap, cover));
 
   const blob = await zip.generateAsync({
     type: "blob",
@@ -194,6 +210,33 @@ function blockToXhtml(block: Block, imageMap: Map<string, ImageEntry>): string {
   }
 }
 
+// ── Cover → XHTML ──────────────────────────────────────────────────────────────
+
+function buildCoverXhtml(coverFilename: string, language: string): string {
+  const lang = esc(language || "en");
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:epub="http://www.idpf.org/2007/ops"
+      xml:lang="${lang}" lang="${lang}">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Cover</title>
+  <style type="text/css">
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body { text-align: center; }
+    .cover-wrap { margin: 0; padding: 0; height: 100%; }
+    img { max-width: 100%; max-height: 100%; height: auto; }
+  </style>
+</head>
+<body epub:type="cover">
+  <div class="cover-wrap">
+    <img src="images/${esc(coverFilename)}" alt="Cover" role="doc-cover"/>
+  </div>
+</body>
+</html>`;
+}
+
 // ── OPF ──────────────────────────────────────────────────────────────────────
 
 function buildOpf(
@@ -202,6 +245,7 @@ function buildOpf(
   chapterFiles: string[],
   isEpub3: boolean,
   imageMap: Map<string, ImageEntry>,
+  cover: CoverEntry | null,
 ): string {
   const { meta } = book;
   const version = isEpub3 ? "3.0" : "2.0";
@@ -211,6 +255,16 @@ function buildOpf(
   const spineItems = chapterFiles
     .map((_, i) => `    <itemref idref="ch${i + 1}"/>`)
     .join("\n");
+
+  // Cover: image carries the EPUB3 cover-image property; cover.xhtml is the rendered
+  // cover page (first in spine). The legacy <meta name="cover"> keeps EPUB2 readers
+  // and Calibre/Apple Books recognising the thumbnail.
+  const coverMeta = cover ? `    <meta name="cover" content="cover-image"/>\n` : "";
+  const coverManifest = cover
+    ? `    <item id="cover-image" href="images/${cover.epubFilename}" media-type="${cover.mimeType}"${isEpub3 ? ` properties="cover-image"` : ""}/>\n` +
+      `    <item id="cover" href="cover.xhtml" media-type="application/xhtml+xml"/>\n`
+    : "";
+  const coverSpine = cover ? `    <itemref idref="cover" linear="no"/>\n` : "";
   const navItem = isEpub3 && meta.toc
     ? `    <item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>\n`
     : "";
@@ -232,13 +286,13 @@ function buildOpf(
     <dc:language>${esc(meta.language)}</dc:language>
     ${meta.publisher ? `<dc:publisher>${esc(meta.publisher)}</dc:publisher>` : ""}
     ${meta.date ? `<dc:date>${esc(meta.date)}</dc:date>` : ""}
-  </metadata>
+${coverMeta}  </metadata>
   <manifest>
     <item id="css" href="styles/style.css" media-type="text/css"/>
-${navItem}${ncxItem}${manifestItems}
+${coverManifest}${navItem}${ncxItem}${manifestItems}
 ${imageItems ? imageItems + "\n" : ""}  </manifest>
   <spine${ncxAttr}>
-${spineItems}
+${coverSpine}${spineItems}
   </spine>
 </package>`;
 }

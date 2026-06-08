@@ -23,6 +23,12 @@ export interface ImageBlock {
 
 export type Block = TextBlock | ImageBlock;
 
+export interface CoverImage {
+  blob: Blob;       // actual image file data for EPUB embedding
+  mimeType: string; // image/jpeg | image/png
+  name: string;     // original filename (display only)
+}
+
 export interface Chapter {
   id: string;
   title: string;      // displayed as H1 in the EPUB chapter
@@ -41,6 +47,7 @@ export interface BookMeta {
   tocDepth: 1 | 2 | 3;
   style: "default" | "book" | "novel" | "academic" | "custom";
   customCss: string;
+  coverImage?: CoverImage | null; // uploaded cover, embedded as cover.xhtml + OPF cover-image
 }
 
 export interface BookModel {
@@ -66,6 +73,7 @@ export function defaultMeta(): BookMeta {
     tocDepth: 2,
     style: "default",
     customCss: "",
+    coverImage: null,
   };
 }
 
