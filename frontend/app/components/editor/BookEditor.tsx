@@ -66,10 +66,11 @@ interface Props {
   onBack: () => void;
   onReconvert?: () => void;
   reconverting?: boolean;
+  onPersist?: (book: BookModel) => Promise<void>;
 }
 
 export default function BookEditor({
-  book, onBookChange, onBack, onReconvert, reconverting,
+  book, onBookChange, onBack, onReconvert, reconverting, onPersist,
 }: Props) {
   const t = useTranslations("Editor");
   const [activeChapterId, setActiveChapterId] = useState<string>(
@@ -100,6 +101,7 @@ export default function BookEditor({
     document.addEventListener("mouseup", onUp);
   }, [rightPanelWidth]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipFirstSave = useRef(true);
 
   // Keep activeChapterId valid
   useEffect(() => {
@@ -140,21 +142,28 @@ export default function BookEditor({
     requestAnimationFrame(() => requestAnimationFrame(() => highlightMatch(match)));
   }, []);
 
-  const triggerSave = useCallback(() => {
+  // Autosave to IndexedDB, 2s after the last change. Status shows in the topbar.
+  useEffect(() => {
+    if (!onPersist) return;
+    if (skipFirstSave.current) { skipFirstSave.current = false; return; }
     setSaveStatus("saving");
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
-      setSaveStatus("saved");
-      setTimeout(() => setSaveStatus("idle"), 2000);
-    }, 800);
-  }, []);
+      onPersist(book)
+        .then(() => {
+          setSaveStatus("saved");
+          setTimeout(() => setSaveStatus("idle"), 2000);
+        })
+        .catch(() => setSaveStatus("idle"));
+    }, 2000);
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
+  }, [book, onPersist]);
 
   const updateBook = useCallback(
     (updater: (b: BookModel) => BookModel) => {
       onBookChange(updater(book));
-      triggerSave();
     },
-    [book, onBookChange, triggerSave],
+    [book, onBookChange],
   );
 
   const activeChapter = book.chapters.find((c) => c.id === activeChapterId) ?? book.chapters[0];

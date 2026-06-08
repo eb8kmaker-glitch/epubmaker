@@ -137,6 +137,8 @@
     "downloadFile": "Baixar",
     "uploadFile": "Enviar arquivo",
     "recentLabel": "Projetos recentes",
+    "deleteProject": "Excluir",
+    "confirmDeleteProject": "Excluir este projeto? Não pode ser desfeito.",
     "importGoogleDocs": "Importar do Google Docs",
     "importNotion": "Importar do Notion",
     "notionUrlPlaceholder": "Cole a URL da página do Notion…",

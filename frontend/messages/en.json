@@ -83,6 +83,8 @@
     "downloadFile": "Download",
     "uploadFile": "Upload File",
     "recentLabel": "Recent projects",
+    "deleteProject": "Delete",
+    "confirmDeleteProject": "Delete this project? This cannot be undone.",
     "importGoogleDocs": "Import from Google Docs",
     "importNotion": "Import from Notion",
     "notionUrlPlaceholder": "Paste Notion page URL…",

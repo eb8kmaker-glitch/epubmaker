@@ -137,6 +137,8 @@
     "downloadFile": "ダウンロード",
     "uploadFile": "ファイルをアップロード",
     "recentLabel": "最近のプロジェクト",
+    "deleteProject": "削除",
+    "confirmDeleteProject": "このプロジェクトを削除しますか？元に戻せません。",
     "importGoogleDocs": "Google Docsから取り込む",
     "importNotion": "Notionから取り込む",
     "notionUrlPlaceholder": "Notionページ URL…",

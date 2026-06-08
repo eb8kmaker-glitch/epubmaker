@@ -137,6 +137,8 @@
     "downloadFile": "下载",
     "uploadFile": "上传文件",
     "recentLabel": "最近项目",
+    "deleteProject": "删除",
+    "confirmDeleteProject": "删除此项目？此操作无法撤销。",
     "importGoogleDocs": "从Google Docs导入",
     "importNotion": "从Notion导入",
     "notionUrlPlaceholder": "粘贴Notion页面URL…",

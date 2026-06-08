@@ -137,6 +137,8 @@
     "downloadFile": "Herunterladen",
     "uploadFile": "Datei hochladen",
     "recentLabel": "Letzte Projekte",
+    "deleteProject": "Löschen",
+    "confirmDeleteProject": "Dieses Projekt löschen? Kann nicht rückgängig gemacht werden.",
     "importGoogleDocs": "Aus Google Docs importieren",
     "importNotion": "Aus Notion importieren",
     "notionUrlPlaceholder": "Notion-Seiten-URL einfügen…",

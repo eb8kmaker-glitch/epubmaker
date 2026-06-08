@@ -83,6 +83,8 @@
     "downloadFile": "다운로드",
     "uploadFile": "파일 업로드",
     "recentLabel": "최근 프로젝트",
+    "deleteProject": "삭제",
+    "confirmDeleteProject": "이 프로젝트를 삭제할까요? 되돌릴 수 없습니다.",
     "importGoogleDocs": "Google Docs에서 가져오기",
     "importNotion": "Notion에서 가져오기",
     "notionUrlPlaceholder": "Notion 페이지 URL 붙여넣기…",
