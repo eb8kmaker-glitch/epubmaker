@@ -23,24 +23,37 @@ export interface ImageBlock {
 
 export type Block = TextBlock | ImageBlock;
 
+export interface CoverImage {
+  blob: Blob;       // actual image file data for EPUB embedding
+  mimeType: string; // image/jpeg | image/png
+  name: string;     // original filename (display only)
+}
+
 export interface Chapter {
   id: string;
   title: string;      // displayed as H1 in the EPUB chapter
   blocks: Block[];
   collapsed: boolean;
+  footnotes?: Record<string, string>; // footnote id -> plain text (referenced inline in block HTML)
 }
 
 export interface BookMeta {
   title: string;
+  subtitle: string;
   author: string;
   language: "ko" | "en" | "ja" | "zh";
   publisher: string;
+  isbn: string;
   date: string;
   epubVersion: "epub2" | "epub3";
   toc: boolean;
   tocDepth: 1 | 2 | 3;
   style: "default" | "book" | "novel" | "academic" | "custom";
   customCss: string;
+  coverImage?: CoverImage | null; // uploaded cover, embedded as cover.xhtml + OPF cover-image
+  titlePage: boolean;  // generate a title page (epub:type="titlepage")
+  colophon: boolean;   // generate a colophon / copyright page at the end
+  copyright: string;   // editable copyright line; falls back to a localized default
 }
 
 export interface BookModel {
@@ -57,15 +70,21 @@ export function uid(): string {
 export function defaultMeta(): BookMeta {
   return {
     title: "",
+    subtitle: "",
     author: "",
     language: "ko",
     publisher: "",
+    isbn: "",
     date: new Date().toISOString().slice(0, 10),
     epubVersion: "epub3",
     toc: true,
     tocDepth: 2,
     style: "default",
     customCss: "",
+    coverImage: null,
+    titlePage: true,
+    colophon: true,
+    copyright: "",
   };
 }
 
@@ -75,6 +94,7 @@ export function newChapter(title = ""): Chapter {
     title,
     blocks: [{ id: uid(), type: "paragraph", html: "" }],
     collapsed: false,
+    footnotes: {},
   };
 }
 
@@ -83,6 +103,28 @@ export function emptyBook(firstChapterTitle = ""): BookModel {
     meta: defaultMeta(),
     chapters: [newChapter(firstChapterTitle)],
   };
+}
+
+// ── Statistics ───────────────────────────────────────────────────────────────
+
+const PAGE_CHARS_CJK = 600;    // ko/ja: ~600 characters per page
+const PAGE_CHARS_LATIN = 1500; // en etc.: ~1,500 characters (~250 words) per page
+
+/** Character count of a chapter's text blocks — spaces included, HTML stripped. */
+export function chapterCharCount(ch: Chapter): number {
+  let n = 0;
+  for (const b of ch.blocks) {
+    if (b.type === "image") continue;
+    n += b.html.replace(/<[^>]+>/g, "").length;
+  }
+  return n;
+}
+
+/** Estimated page count from a character total — branches on language. */
+export function estimatePages(chars: number, language: BookMeta["language"]): number {
+  if (chars <= 0) return 0;
+  const perPage = language === "ko" || language === "ja" ? PAGE_CHARS_CJK : PAGE_CHARS_LATIN;
+  return Math.max(1, Math.round(chars / perPage));
 }
 
 // ── Chapter operations ───────────────────────────────────────────────────────
@@ -100,6 +142,8 @@ export function splitChapter(chapters: Chapter[], chapterId: string, blockIndex:
       : "",
     blocks: after.length > 0 ? after : [{ id: uid(), type: "paragraph", html: "" }],
     collapsed: false,
+    // Copy footnotes to both halves; the EPUB build only emits ids actually referenced.
+    footnotes: { ...(ch.footnotes ?? {}) },
   };
   const updated = [...chapters];
   updated[idx] = { ...ch, blocks: before.length > 0 ? before : [{ id: uid(), type: "paragraph", html: "" }] };
@@ -148,6 +192,7 @@ export function mergeChapters(chapters: Chapter[], chapterId: string): Chapter[]
     blocks: mergedBlocks.length > 0
       ? mergedBlocks
       : [{ id: uid(), type: "paragraph", html: "" }],
+    footnotes: { ...(prev.footnotes ?? {}), ...(curr.footnotes ?? {}) },
   };
   const updated = [...chapters];
   updated.splice(idx - 1, 2, merged);

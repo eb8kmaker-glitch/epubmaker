@@ -15,15 +15,51 @@ import { useTranslations } from "next-intl";
 import {
   type BookModel, type BookMeta, type Chapter, type Block,
   uid, newChapter, splitChapter, mergeChapters,
+  chapterCharCount, estimatePages,
 } from "@/app/lib/bookModel";
 import { buildEpubFromBook } from "@/app/lib/epubBuilder";
+import { exportProjectFile } from "@/app/lib/projectFile";
 import ChapterSidebar from "./ChapterSidebar";
 import BlockCanvas from "./BlockCanvas";
 import PreviewPanel from "./PreviewPanel";
 import MetaPanel from "./MetaPanel";
+import FindReplacePanel from "./FindReplacePanel";
+import type { SearchMatch } from "@/app/lib/findReplace";
 import { Divider, SpinIcon, CheckIcon } from "./EditorMicro";
 import { topBtnSt } from "./editorShared";
 type RightPanel = "preview" | "meta";
+
+// Switch to the match's chapter, then scroll + highlight the occurrence in the DOM.
+function highlightMatch(match: SearchMatch) {
+  const wrap = document.querySelector(`[data-block-id="${match.blockId}"]`) as HTMLElement | null;
+  if (!wrap) return;
+  const el = (wrap.querySelector(".be-editable") as HTMLElement | null) ?? wrap;
+  el.scrollIntoView({ block: "center", behavior: "smooth" });
+  try {
+    const range = document.createRange();
+    const start = match.start;
+    const end = match.start + match.length;
+    let cum = 0, started = false, ended = false;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode() as Text | null;
+    while (node) {
+      const len = (node.nodeValue ?? "").length;
+      if (!started && start >= cum && start <= cum + len) { range.setStart(node, start - cum); started = true; }
+      if (started && end <= cum + len) { range.setEnd(node, end - cum); ended = true; break; }
+      cum += len;
+      node = walker.nextNode() as Text | null;
+    }
+    if (started && ended) {
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+  } catch { /* selection is best-effort; the flash below is the reliable cue */ }
+  wrap.style.transition = "box-shadow 0.2s ease";
+  wrap.style.borderRadius = "8px";
+  wrap.style.boxShadow = "0 0 0 2px var(--lib-wood)";
+  window.setTimeout(() => { wrap.style.boxShadow = ""; }, 1400);
+}
 
 interface Props {
   book: BookModel;
@@ -31,10 +67,11 @@ interface Props {
   onBack: () => void;
   onReconvert?: () => void;
   reconverting?: boolean;
+  onPersist?: (book: BookModel) => Promise<void>;
 }
 
 export default function BookEditor({
-  book, onBookChange, onBack, onReconvert, reconverting,
+  book, onBookChange, onBack, onReconvert, reconverting, onPersist,
 }: Props) {
   const t = useTranslations("Editor");
   const [activeChapterId, setActiveChapterId] = useState<string>(
@@ -42,8 +79,11 @@ export default function BookEditor({
   );
   const [rightPanel, setRightPanel] = useState<RightPanel>("preview");
   const [exporting, setExporting] = useState(false);
+  const [exportingProject, setExportingProject] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
+  const [stats, setStats] = useState({ total: 0, current: 0, pages: 0 });
+  const [findOpen, setFindOpen] = useState(false);
   const resizeDragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   const handleResizeMouseDown = useCallback((e: { clientX: number; preventDefault: () => void }) => {
@@ -63,6 +103,7 @@ export default function BookEditor({
     document.addEventListener("mouseup", onUp);
   }, [rightPanelWidth]);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipFirstSave = useRef(true);
 
   // Keep activeChapterId valid
   useEffect(() => {
@@ -71,21 +112,60 @@ export default function BookEditor({
     }
   }, [book.chapters, activeChapterId]);
 
-  const triggerSave = useCallback(() => {
+  // Character/page stats — debounced so typing doesn't recompute on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const total = book.chapters.reduce((sum, c) => sum + chapterCharCount(c), 0);
+      const cur = book.chapters.find((c) => c.id === activeChapterId);
+      setStats({
+        total,
+        current: cur ? chapterCharCount(cur) : 0,
+        pages: estimatePages(total, book.meta.language),
+      });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [book, activeChapterId]);
+
+  // Ctrl/Cmd+F opens the find/replace bar.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === "f" || e.key === "F")) {
+        e.preventDefault();
+        setFindOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const handleFindNavigate = useCallback((match: SearchMatch) => {
+    setActiveChapterId(match.chapterId);
+    // Wait for the chapter switch to render, then highlight.
+    requestAnimationFrame(() => requestAnimationFrame(() => highlightMatch(match)));
+  }, []);
+
+  // Autosave to IndexedDB, 2s after the last change. Status shows in the topbar.
+  useEffect(() => {
+    if (!onPersist) return;
+    if (skipFirstSave.current) { skipFirstSave.current = false; return; }
     setSaveStatus("saving");
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
-      setSaveStatus("saved");
-      setTimeout(() => setSaveStatus("idle"), 2000);
-    }, 800);
-  }, []);
+      onPersist(book)
+        .then(() => {
+          setSaveStatus("saved");
+          setTimeout(() => setSaveStatus("idle"), 2000);
+        })
+        .catch(() => setSaveStatus("idle"));
+    }, 2000);
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
+  }, [book, onPersist]);
 
   const updateBook = useCallback(
     (updater: (b: BookModel) => BookModel) => {
       onBookChange(updater(book));
-      triggerSave();
     },
-    [book, onBookChange, triggerSave],
+    [book, onBookChange],
   );
 
   const activeChapter = book.chapters.find((c) => c.id === activeChapterId) ?? book.chapters[0];
@@ -146,20 +226,36 @@ export default function BookEditor({
     [activeChapterId, updateChapter],
   );
 
+  const triggerDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
       const { blob, filename } = await buildEpubFromBook(book);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
+      triggerDownload(blob, filename);
     } catch (e) {
       console.error("Export failed", e);
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleExportProject = async () => {
+    setExportingProject(true);
+    try {
+      const { blob, filename } = await exportProjectFile(book);
+      triggerDownload(blob, filename);
+    } catch (e) {
+      console.error("Project export failed", e);
+    } finally {
+      setExportingProject(false);
     }
   };
 
@@ -264,6 +360,24 @@ export default function BookEditor({
 
         <button
           type="button"
+          data-testid="editor-save-project-btn"
+          onClick={handleExportProject}
+          disabled={exportingProject}
+          title={t("saveProjectFile")}
+          style={{ ...topBtnSt, opacity: exportingProject ? 0.6 : 1 }}
+        >
+          {exportingProject ? <SpinIcon size={13} /> : (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+          )}
+          {t("saveProjectFile")}
+        </button>
+
+        <button
+          type="button"
           data-testid="editor-download-btn"
           onClick={handleExport}
           disabled={exporting}
@@ -291,6 +405,16 @@ export default function BookEditor({
         </button>
       </div>
 
+      {/* ── Find / Replace bar (pinned below topbar) ── */}
+      {findOpen && (
+        <FindReplacePanel
+          book={book}
+          onBookChange={(b) => updateBook(() => b)}
+          onNavigate={handleFindNavigate}
+          onClose={() => setFindOpen(false)}
+        />
+      )}
+
       {/* ── Main 3-panel area ── */}
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
 
@@ -306,6 +430,7 @@ export default function BookEditor({
           }
           onMerge={handleMerge}
           onReorder={reorderChapters}
+          stats={stats}
         />
 
         <BlockCanvas
@@ -315,6 +440,30 @@ export default function BookEditor({
             updateChapter(activeChapterId, (c) => ({ ...c, title }))
           }
           onSplit={handleSplit}
+          onInsertFootnote={(blockId, html, fnId) =>
+            updateChapter(activeChapterId, (c) => ({
+              ...c,
+              blocks: c.blocks.map((b) => (b.id === blockId ? ({ ...b, html } as Block) : b)),
+              footnotes: { ...(c.footnotes ?? {}), [fnId]: "" },
+            }))
+          }
+          onUpdateFootnoteText={(fnId, text) =>
+            updateChapter(activeChapterId, (c) => ({
+              ...c,
+              footnotes: { ...(c.footnotes ?? {}), [fnId]: text },
+            }))
+          }
+          onDeleteFootnote={(blockId, html, fnId) =>
+            updateChapter(activeChapterId, (c) => {
+              const fn = { ...(c.footnotes ?? {}) };
+              delete fn[fnId];
+              return {
+                ...c,
+                blocks: c.blocks.map((b) => (b.id === blockId ? ({ ...b, html } as Block) : b)),
+                footnotes: fn,
+              };
+            })
+          }
         />
 
         <div
@@ -343,7 +492,14 @@ export default function BookEditor({
             title="패널 너비 조절"
           />
           {rightPanel === "preview" ? (
-            <PreviewPanel chapter={activeChapter} style={book.meta.style} customCss={book.meta.customCss} />
+            <PreviewPanel
+              chapter={activeChapter}
+              style={book.meta.style}
+              customCss={book.meta.customCss}
+              meta={book.meta}
+              isFirst={book.chapters[0]?.id === activeChapter?.id}
+              isLast={book.chapters[book.chapters.length - 1]?.id === activeChapter?.id}
+            />
           ) : (
             <MetaPanel meta={book.meta} onChange={(meta) => updateBook((b) => ({ ...b, meta }))} />
           )}

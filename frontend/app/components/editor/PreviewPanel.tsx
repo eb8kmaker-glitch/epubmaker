@@ -1,13 +1,20 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
-import type { Chapter, TextBlock, ImageBlock } from "@/app/lib/bookModel";
+import type { Chapter, BookMeta, TextBlock, ImageBlock } from "@/app/lib/bookModel";
 import { EPUB_STYLES } from "@/app/lib/epubStyles";
+import { FRONT_MATTER_CSS, titlePageInnerHtml, colophonInnerHtml } from "@/app/lib/frontMatter";
+import {
+  chapterFootnoteIds, footnoteNumberMap, renderFootnoteRefs, footnoteSectionHtml, FOOTNOTE_CSS,
+} from "@/app/lib/footnotes";
 import { iconBtnSt } from "./editorShared";
 
 interface PreviewPanelProps {
   chapter: Chapter;
   style: string;
   customCss: string;
+  meta: BookMeta;
+  isFirst: boolean;
+  isLast: boolean;
 }
 
 const WIDTH_PRESETS = [
@@ -17,8 +24,15 @@ const WIDTH_PRESETS = [
   { label: "⬜", width: 0, title: "Full width" },
 ] as const;
 
-export default function PreviewPanel({ chapter, style, customCss }: PreviewPanelProps) {
+export default function PreviewPanel({ chapter, style, customCss, meta, isFirst, isLast }: PreviewPanelProps) {
   const css = style === "custom" && customCss ? customCss : (EPUB_STYLES[style] ?? EPUB_STYLES.default ?? "");
+  // Front/back matter appears at the book boundaries, mirroring the EPUB spine.
+  const showTitlePage = isFirst && meta.titlePage !== false;
+  const showColophon = isLast && meta.colophon !== false;
+  const fnIds = chapterFootnoteIds(chapter);
+  const fnNumbers = footnoteNumberMap(fnIds);
+  const fnRefs = (h: string) => renderFootnoteRefs(h, fnNumbers, "preview");
+  const fnSection = footnoteSectionHtml(chapter, fnIds, fnNumbers, "preview");
   // previewZoom controls only the preview display — never written into EPUB CSS
   const [previewZoom, setPreviewZoom] = useState(100);
   const [darkMode, setDarkMode] = useState(false);
@@ -58,16 +72,20 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         table.img-inline td.img-col-right { width: 40%; }
         table.img-inline td.text-col { width: 60%; }
         table.img-inline td.text-col-left { width: 60%; padding-right: 1em; }
+        .preview-fm-divider { border: none; border-top: 1px dashed ${darkMode ? "#444" : "#ddd"}; margin: 2.5em 0; }
+        ${FRONT_MATTER_CSS}
+        ${FOOTNOTE_CSS}
         ${css}
       </style>
     </head>
     <body>
+      ${showTitlePage ? titlePageInnerHtml(meta) + '<hr class="preview-fm-divider"/>' : ""}
       <h1>${chapter.title}</h1>
       ${chapter.blocks.map((b) => {
-        if (b.type === "paragraph") return `<p>${(b as TextBlock).html || "&nbsp;"}</p>`;
-        if (b.type === "h2") return `<h2>${(b as TextBlock).html || "&nbsp;"}</h2>`;
-        if (b.type === "h3") return `<h3>${(b as TextBlock).html || "&nbsp;"}</h3>`;
-        if (b.type === "quote") return `<blockquote><p>${(b as TextBlock).html || "&nbsp;"}</p></blockquote>`;
+        if (b.type === "paragraph") return `<p>${fnRefs((b as TextBlock).html) || "&nbsp;"}</p>`;
+        if (b.type === "h2") return `<h2>${fnRefs((b as TextBlock).html) || "&nbsp;"}</h2>`;
+        if (b.type === "h3") return `<h3>${fnRefs((b as TextBlock).html) || "&nbsp;"}</h3>`;
+        if (b.type === "quote") return `<blockquote><p>${fnRefs((b as TextBlock).html) || "&nbsp;"}</p></blockquote>`;
         if (b.type === "image" && (b as ImageBlock).src) {
           const ib = b as ImageBlock;
           const figHtml = `<figure style="margin:0;padding:0;"><img src="${ib.src}" alt="${ib.alt}" style="max-width:100%;height:auto;display:block;border-radius:6px;"/>${ib.caption ? `<figcaption>${ib.caption}</figcaption>` : ""}</figure>`;
@@ -81,6 +99,8 @@ export default function PreviewPanel({ chapter, style, customCss }: PreviewPanel
         }
         return "";
       }).join("\n")}
+      ${fnSection}
+      ${showColophon ? '<hr class="preview-fm-divider"/>' + colophonInnerHtml(meta) : ""}
     </body>
     </html>
   `;

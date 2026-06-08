@@ -15,10 +15,11 @@ interface SidebarProps {
   onToggleCollapse: (id: string) => void;
   onMerge: (id: string) => void;
   onReorder: (from: number, to: number) => void;
+  stats?: { total: number; current: number; pages: number };
 }
 
 export default function ChapterSidebar({
-  chapters, activeId, onSelect, onAdd, onDelete, onRename, onToggleCollapse, onMerge, onReorder,
+  chapters, activeId, onSelect, onAdd, onDelete, onRename, onToggleCollapse, onMerge, onReorder, stats,
 }: SidebarProps) {
   const t = useTranslations("Editor");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -184,8 +185,18 @@ export default function ChapterSidebar({
         ))}
       </ul>
 
-      {/* Footer hint */}
+      {/* Footer: stats + hint */}
       <div style={{ padding: "8px 14px", borderTop: "1px solid var(--lib-border)" }}>
+        {stats && (
+          <div style={{ marginBottom: 6 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: "var(--lib-dusk)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+              {t("statsTotal", { chars: stats.total, pages: stats.pages })}
+            </p>
+            <p style={{ fontSize: 10, color: "var(--lib-dust)", marginTop: 2, fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+              {t("statsCurrent", { chars: stats.current })}
+            </p>
+          </div>
+        )}
         <p style={{ fontSize: 10, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
           {t("chapterSidebarHint")}
         </p>

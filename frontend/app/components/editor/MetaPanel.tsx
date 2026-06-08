@@ -1,17 +1,55 @@
 "use client";
 import type React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { BookMeta } from "@/app/lib/bookModel";
+import { defaultCopyright } from "@/app/lib/frontMatter";
 
 interface MetaPanelProps {
   meta: BookMeta;
   onChange: (m: BookMeta) => void;
 }
 
+const COVER_ACCEPT = "image/jpeg,image/png";
+const MAX_COVER_BYTES = 10 * 1024 * 1024;
+
 export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
   const t = useTranslations("Editor");
   const set = <K extends keyof BookMeta>(key: K, val: BookMeta[K]) =>
     onChange({ ...meta, [key]: val });
+
+  // Object URL for the cover thumbnail — derived from the blob, revoked on change/unmount.
+  const [coverError, setCoverError] = useState<string | null>(null);
+  const coverBlob = meta.coverImage?.blob ?? null;
+  const coverUrl = useMemo(
+    () => (coverBlob ? URL.createObjectURL(coverBlob) : null),
+    [coverBlob],
+  );
+  useEffect(() => {
+    return () => { if (coverUrl) URL.revokeObjectURL(coverUrl); };
+  }, [coverUrl]);
+
+  const handleCoverSelect = (file: File | undefined) => {
+    if (!file) return;
+    if (!COVER_ACCEPT.split(",").includes(file.type)) {
+      setCoverError(t("coverTypeError"));
+      return;
+    }
+    if (file.size > MAX_COVER_BYTES) {
+      setCoverError(t("coverSizeError"));
+      return;
+    }
+    setCoverError(null);
+    set("coverImage", { blob: file, mimeType: file.type, name: file.name });
+  };
+
+  // ISBN: soft validation only — 10 or 13 digits after stripping hyphens/spaces
+  // (a trailing "X" is allowed as the ISBN-10 check digit). Never blocks saving.
+  const isbnNormalized = (meta.isbn ?? "").replace(/[\s-]/g, "").toUpperCase();
+  const isbnInvalid =
+    isbnNormalized.length > 0 &&
+    !/^\d{13}$/.test(isbnNormalized) &&
+    !/^\d{9}[\dX]$/.test(isbnNormalized);
 
   const inputSt: React.CSSProperties = {
     width: "100%", padding: "8px 10px", borderRadius: 7,
@@ -34,6 +72,7 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         <div><label style={labelSt}>{t("titleLabel")}</label><input style={{ ...inputSt, fontFamily: "var(--font-serif), Georgia, serif", fontSize: 14 }} value={meta.title} onChange={(e) => set("title", e.target.value)} placeholder={t("titlePlaceholder")} /></div>
+        <div><label style={labelSt}>{t("subtitleLabel")}</label><input style={inputSt} value={meta.subtitle} onChange={(e) => set("subtitle", e.target.value)} placeholder={t("subtitlePlaceholder")} /></div>
         <div><label style={labelSt}>{t("authorLabel")}</label><input style={inputSt} value={meta.author} onChange={(e) => set("author", e.target.value)} placeholder={t("authorPlaceholder")} /></div>
         <div><label style={labelSt}>{t("languageLabel")}</label>
           <select style={inputSt} value={meta.language} onChange={(e) => set("language", e.target.value as BookMeta["language"])}>
@@ -42,7 +81,78 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
           </select>
         </div>
         <div><label style={labelSt}>{t("publisherLabel")}</label><input style={inputSt} value={meta.publisher} onChange={(e) => set("publisher", e.target.value)} placeholder={t("publisherPlaceholder")} /></div>
+        <div>
+          <label style={labelSt}>{t("isbnLabel")}</label>
+          <input
+            style={isbnInvalid ? { ...inputSt, borderColor: "#dca0a0" } : inputSt}
+            value={meta.isbn}
+            onChange={(e) => set("isbn", e.target.value)}
+            placeholder={t("isbnPlaceholder")}
+            inputMode="numeric"
+            aria-invalid={isbnInvalid}
+          />
+          {isbnInvalid && (
+            <p style={{ marginTop: 5, fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+              {t("isbnHint")}
+            </p>
+          )}
+        </div>
         <div><label style={labelSt}>{t("dateLabel")}</label><input style={inputSt} value={meta.date} onChange={(e) => set("date", e.target.value)} placeholder="2024-01-01" /></div>
+
+        {/* Cover image */}
+        <div>
+          <label style={labelSt}>{t("coverLabel")}</label>
+          {meta.coverImage ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {coverUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={coverUrl}
+                  alt={t("coverLabel")}
+                  style={{ width: 48, height: 64, objectFit: "cover", borderRadius: 5, border: "1px solid var(--lib-border)", flexShrink: 0 }}
+                />
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 12, color: "var(--lib-ink)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                  {meta.coverImage.name}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => { setCoverError(null); set("coverImage", null); }}
+                  style={{ marginTop: 2, fontSize: 11, color: "var(--lib-dust)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2, padding: 0, fontFamily: "var(--font-sans), system-ui, sans-serif" }}
+                >
+                  {t("coverRemove")}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <label style={{ display: "block", cursor: "pointer" }}>
+              <div style={{
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4,
+                padding: "16px 12px", borderRadius: 7, border: "1.5px dashed var(--lib-border-2)",
+                background: "var(--lib-bg)", textAlign: "center",
+              }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--lib-dusk)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                  {t("coverButton")}
+                </span>
+                <span style={{ fontSize: 11, color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                  {t("coverHint")}
+                </span>
+              </div>
+              <input
+                type="file"
+                accept={COVER_ACCEPT}
+                onChange={(e) => { handleCoverSelect(e.target.files?.[0]); e.target.value = ""; }}
+                style={{ display: "none" }}
+              />
+            </label>
+          )}
+          {coverError && (
+            <p role="alert" style={{ marginTop: 6, fontSize: 11, color: "#b91c1c", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+              {coverError}
+            </p>
+          )}
+        </div>
 
         <div style={{ height: 1, background: "var(--lib-border)" }} />
 
@@ -75,6 +185,35 @@ export default function MetaPanel({ meta, onChange }: MetaPanelProps) {
               </button>
             ))}
           </div>
+        </div>
+
+        <div style={{ height: 1, background: "var(--lib-border)" }} />
+
+        {/* Book structure: title page + colophon */}
+        <div>
+          <p style={{ ...labelSt, marginBottom: 10 }}>{t("bookStructure")}</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <input type="checkbox" checked={meta.titlePage !== false} onChange={(e) => set("titlePage", e.target.checked)} style={{ width: 14, height: 14, accentColor: "var(--lib-wood-dim)" }} />
+              <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>{t("includeTitlePage")}</span>
+            </label>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
+              <input type="checkbox" checked={meta.colophon !== false} onChange={(e) => set("colophon", e.target.checked)} style={{ width: 14, height: 14, accentColor: "var(--lib-wood-dim)" }} />
+              <span style={{ fontSize: 13, color: "var(--lib-ink)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>{t("includeColophon")}</span>
+            </label>
+          </div>
+          {meta.colophon !== false && (
+            <div style={{ marginTop: 12 }}>
+              <label style={labelSt}>{t("copyrightLabel")}</label>
+              <textarea
+                value={meta.copyright}
+                onChange={(e) => set("copyright", e.target.value)}
+                placeholder={defaultCopyright(meta)}
+                rows={2}
+                style={{ ...inputSt, resize: "vertical", lineHeight: 1.5 }}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

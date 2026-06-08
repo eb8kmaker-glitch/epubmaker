@@ -10,9 +10,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import BookEditor from "@/app/components/editor/BookEditor";
-import { emptyBook, type BookModel } from "@/app/lib/bookModel";
+import { emptyBook, uid, type BookModel } from "@/app/lib/bookModel";
 import { epubBlobToBook } from "@/app/lib/epubToBook";
 import { DEFAULT_OPTIONS, type ConversionOptions } from "@/app/components/ConversionSettings";
+import { toProjectRecord, readProjectBook } from "@/app/lib/projectSchema";
+import {
+  saveProject, listProjects, loadProject, deleteProject, type ProjectSummary,
+} from "@/app/lib/projectStore";
+import {
+  importProjectFile, isProjectFileName, ProjectFileError, PROJECT_FILE_EXTENSION,
+} from "@/app/lib/projectFile";
 import AdBanner from "@/app/components/ads/AdBanner";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -22,12 +29,10 @@ const ACCEPTED_TYPES: Record<string, string> = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
   "text/plain": ".txt",
 };
-const ACCEPTED_STRING = ".docx, .txt";
+const ACCEPTED_STRING = `.docx, .txt, ${PROJECT_FILE_EXTENSION}`;
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 const MAX_TEXT_CHARS = 30_000;
 const SETTINGS_KEY = "epubmaker_settings_v2";
-
-interface RecentProject { filename: string; title?: string; date: string; }
 
 function loadSettings(): ConversionOptions {
   if (typeof window === "undefined") return DEFAULT_OPTIONS;
@@ -39,14 +44,6 @@ function loadSettings(): ConversionOptions {
 }
 function saveSettings(opts: ConversionOptions) {
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(opts)); } catch {}
-}
-function loadRecent(): RecentProject[] {
-  if (typeof window === "undefined") return [];
-  try { return JSON.parse(localStorage.getItem("epubmaker_recent_v1") ?? "[]"); } catch { return []; }
-}
-function pushRecent(filename: string, title?: string) {
-  const list = loadRecent().filter((r) => r.filename !== filename);
-  try { localStorage.setItem("epubmaker_recent_v1", JSON.stringify([{ filename, title, date: new Date().toISOString() }, ...list].slice(0, 6))); } catch {}
 }
 function getExtension(name: string) { const i = name.lastIndexOf("."); return i === -1 ? "" : name.slice(i).toLowerCase(); }
 function formatBytes(bytes: number) {
@@ -67,10 +64,11 @@ export default function ConvertFlow() {
 
   const [phase, setPhase] = useState<Phase>("landing");
   const [book, setBook] = useState<BookModel | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [parseProgress, setParseProgress] = useState<string>("");
-  const [recent, setRecent] = useState<RecentProject[]>([]);
+  const [recent, setRecent] = useState<ProjectSummary[]>([]);
 
   // Configure phase state
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
@@ -83,8 +81,17 @@ export default function ConvertFlow() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => { setRecent(loadRecent()); }, []);
+  const refreshRecent = useCallback(() => {
+    listProjects().then(setRecent).catch(() => {});
+  }, []);
+  useEffect(() => { refreshRecent(); }, [refreshRecent]);
   useEffect(() => { saveSettings(conversionOptions); }, [conversionOptions]);
+
+  // Persist the current project (called by the editor's debounced autosave).
+  const persistProject = useCallback(async (b: BookModel) => {
+    if (!projectId) return;
+    await saveProject(toProjectRecord(projectId, b));
+  }, [projectId]);
 
   // ── File processing ──────────────────────────────────────────────────────
 
@@ -137,19 +144,44 @@ export default function ConvertFlow() {
         customCss: opts.customCss,
       });
 
-      pushRecent(file.name, parsed.meta.title || opts.title);
-      setRecent(loadRecent());
+      const id = uid();
+      setProjectId(id);
       setBook(parsed);
       setPhase("editing");
+      // Persist immediately so it appears in recent projects right away.
+      saveProject(toProjectRecord(id, parsed)).then(refreshRecent).catch(() => {});
     } catch (e) {
       setError(e instanceof Error ? e.message : t("errorConversionFailed"));
       setPhase("landing");
     }
-  }, [conversionOptions, t]);
+  }, [conversionOptions, t, refreshRecent]);
+
+  // Import a .epubproj project file → restore + register in IndexedDB.
+  const importProject = useCallback(async (file: File) => {
+    setError(null);
+    setParseProgress(t("progressParsing"));
+    setPhase("parsing");
+    try {
+      const restored = await importProjectFile(file);
+      const id = uid();
+      setProjectId(id);
+      setBook(restored);
+      setPhase("editing");
+      await saveProject(toProjectRecord(id, restored));
+      refreshRecent();
+    } catch (e) {
+      const code = e instanceof ProjectFileError ? e.message : "";
+      setError(code === "unsupported-version" ? t("projectErrorVersion") : t("projectErrorCorrupt"));
+      setPhase("landing");
+    }
+  }, [t, refreshRecent]);
 
   const handleFiles = useCallback((fileList: FileList | null) => {
     if (!fileList?.length) return;
     const files = Array.from(fileList);
+    // .epubproj project files take the import path (DOCX/TXT logic untouched).
+    const projectFile = files.find((f) => isProjectFileName(f.name));
+    if (projectFile) { void importProject(projectFile); return; }
     const invalidFile = files.find((f) => !isValidFile(f));
     if (invalidFile) {
       setError(t("errorFileType", { name: invalidFile.name }));
@@ -159,7 +191,7 @@ export default function ConvertFlow() {
     setPendingFiles(files);
     setConfigTitle(files[0].name.replace(/\.[^.]+$/, ""));
     setPhase("configure");
-  }, [t]);
+  }, [t, importProject]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragging(false);
@@ -214,16 +246,42 @@ export default function ConvertFlow() {
   }, [sourceFile, book, conversionOptions]);
 
   const startBlank = () => {
-    setBook(emptyBook(tEditor("firstChapterTitle")));
+    const id = uid();
+    const fresh = emptyBook(tEditor("firstChapterTitle"));
+    setProjectId(id);
+    setBook(fresh);
     setPhase("editing");
+    saveProject(toProjectRecord(id, fresh)).then(refreshRecent).catch(() => {});
   };
+
+  const openProject = useCallback(async (id: string) => {
+    try {
+      const record = await loadProject(id);
+      if (!record) { refreshRecent(); return; }
+      setProjectId(id);
+      setBook(readProjectBook(record));
+      setSourceFile(null);
+      setPhase("editing");
+    } catch {
+      setError(t("errorConversionFailed"));
+    }
+  }, [refreshRecent, t]);
+
+  const handleDeleteProject = useCallback(async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm(t("confirmDeleteProject"))) return;
+    await deleteProject(id);
+    refreshRecent();
+  }, [refreshRecent, t]);
 
   const goBack = () => {
     setBook(null);
+    setProjectId(null);
     setSourceFile(null);
     setPendingFiles([]);
     setPhase("landing");
     setError(null);
+    refreshRecent();
   };
 
   // ── Phase: Editing ────────────────────────────────────────────────────────
@@ -236,6 +294,7 @@ export default function ConvertFlow() {
         onBack={goBack}
         onReconvert={sourceFile ? handleReconvert : undefined}
         reconverting={reconverting}
+        onPersist={persistProject}
       />
     );
   }
@@ -650,18 +709,49 @@ export default function ConvertFlow() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {recent.map((r) => (
-                <div key={r.filename + r.date} style={{
-                  display: "flex", alignItems: "center", justifyContent: "space-between",
-                  padding: "9px 14px", borderRadius: 8, background: "var(--lib-bg-2)",
-                  fontSize: 13, color: "var(--lib-dusk)",
-                  fontFamily: "var(--font-sans), system-ui, sans-serif",
-                }}>
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {r.title || r.filename}
+                <div
+                  key={r.id}
+                  role="button"
+                  tabIndex={0}
+                  data-testid="recent-project"
+                  onClick={() => openProject(r.id)}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openProject(r.id); } }}
+                  style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "9px 14px", borderRadius: 8, background: "var(--lib-bg-2)",
+                    fontSize: 13, color: "var(--lib-dusk)", cursor: "pointer",
+                    border: "1px solid transparent", transition: "all 0.12s ease",
+                    fontFamily: "var(--font-sans), system-ui, sans-serif",
+                  }}
+                  onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--lib-wood)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.borderColor = "transparent"; }}
+                >
+                  <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {r.title || tEditor("untitled")}
                   </span>
                   <span style={{ fontSize: 11, color: "var(--lib-dust)", flexShrink: 0, marginLeft: 16 }}>
-                    {new Date(r.date).toLocaleDateString(locale, { month: "short", day: "numeric" })}
+                    {new Date(r.updatedAt).toLocaleDateString(locale, { month: "short", day: "numeric" })}
                   </span>
+                  <button
+                    type="button"
+                    title={t("deleteProject")}
+                    aria-label={t("deleteProject")}
+                    data-testid="delete-project-btn"
+                    onClick={(e) => handleDeleteProject(r.id, e)}
+                    style={{
+                      flexShrink: 0, marginLeft: 12, width: 26, height: 26, borderRadius: 6,
+                      border: "none", background: "transparent", color: "var(--lib-dust)",
+                      cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+                      transition: "all 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = "#ef4444"; e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = "var(--lib-dust)"; e.currentTarget.style.background = "transparent"; }}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                  </button>
                 </div>
               ))}
             </div>
