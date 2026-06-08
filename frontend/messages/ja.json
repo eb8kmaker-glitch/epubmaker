@@ -522,6 +522,8 @@
     "deleteChapter": "削除",
     "confirmDeleteChapter": "章「{title}」を削除しますか？",
     "chapterSidebarHint": "ドラッグで並べ替え · ダブルクリックで名前変更",
+    "statsTotal": "全体 {chars, number}字 · 約 {pages}ページ",
+    "statsCurrent": "現在の章 {chars, number}字",
     "chapterTitlePlaceholder": "章のタイトルを入力…",
     "addBlock": "ブロックを追加",
     "addBlockHint": "ブロックを追加 (または / コマンド)",

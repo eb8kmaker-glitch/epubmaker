@@ -522,6 +522,8 @@
     "deleteChapter": "删除",
     "confirmDeleteChapter": "删除章节\"{title}\"？",
     "chapterSidebarHint": "拖动以重新排序 · 双击以重命名",
+    "statsTotal": "共 {chars, number} 字 · 约 {pages} 页",
+    "statsCurrent": "当前章节 {chars, number} 字",
     "chapterTitlePlaceholder": "输入章节标题…",
     "addBlock": "添加块",
     "addBlockHint": "添加块（或 / 命令）",

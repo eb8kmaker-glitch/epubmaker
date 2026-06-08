@@ -522,6 +522,8 @@
     "deleteChapter": "Excluir",
     "confirmDeleteChapter": "Excluir o capítulo \"{title}\"?",
     "chapterSidebarHint": "Arraste para reordenar · Duplo clique para renomear",
+    "statsTotal": "{chars, number} caracteres · ~{pages} páginas",
+    "statsCurrent": "Capítulo atual: {chars, number} caracteres",
     "chapterTitlePlaceholder": "Título do capítulo…",
     "addBlock": "Adicionar bloco",
     "addBlockHint": "Adicionar bloco (ou comando /)",

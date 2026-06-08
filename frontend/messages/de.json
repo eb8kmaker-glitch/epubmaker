@@ -522,6 +522,8 @@
     "deleteChapter": "Löschen",
     "confirmDeleteChapter": "Kapitel \"{title}\" löschen?",
     "chapterSidebarHint": "Ziehen zum Neuanordnen · Doppelklick zum Umbenennen",
+    "statsTotal": "{chars, number} Zeichen · ~{pages} Seiten",
+    "statsCurrent": "Aktuelles Kapitel: {chars, number} Zeichen",
     "chapterTitlePlaceholder": "Kapiteltitel eingeben…",
     "addBlock": "Block hinzufügen",
     "addBlockHint": "Block hinzufügen (oder / Befehl)",

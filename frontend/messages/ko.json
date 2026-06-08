@@ -324,6 +324,8 @@
     "deleteChapter": "삭제",
     "confirmDeleteChapter": "\"{title}\" 챕터를 삭제하시겠어요?",
     "chapterSidebarHint": "드래그로 챕터 순서 변경 · 더블클릭으로 이름 변경",
+    "statsTotal": "전체 {chars, number}자 · 약 {pages}페이지",
+    "statsCurrent": "현재 챕터 {chars, number}자",
     "chapterTitlePlaceholder": "챕터 제목을 입력하세요...",
     "addBlock": "블록 추가",
     "addBlockHint": "블록 추가 (또는 / 명령어)",

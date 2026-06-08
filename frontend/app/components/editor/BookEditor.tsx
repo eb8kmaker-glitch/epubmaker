@@ -15,6 +15,7 @@ import { useTranslations } from "next-intl";
 import {
   type BookModel, type BookMeta, type Chapter, type Block,
   uid, newChapter, splitChapter, mergeChapters,
+  chapterCharCount, estimatePages,
 } from "@/app/lib/bookModel";
 import { buildEpubFromBook } from "@/app/lib/epubBuilder";
 import ChapterSidebar from "./ChapterSidebar";
@@ -44,6 +45,7 @@ export default function BookEditor({
   const [exporting, setExporting] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
+  const [stats, setStats] = useState({ total: 0, current: 0, pages: 0 });
   const resizeDragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   const handleResizeMouseDown = useCallback((e: { clientX: number; preventDefault: () => void }) => {
@@ -70,6 +72,20 @@ export default function BookEditor({
       setActiveChapterId(book.chapters[0]?.id ?? "");
     }
   }, [book.chapters, activeChapterId]);
+
+  // Character/page stats — debounced so typing doesn't recompute on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const total = book.chapters.reduce((sum, c) => sum + chapterCharCount(c), 0);
+      const cur = book.chapters.find((c) => c.id === activeChapterId);
+      setStats({
+        total,
+        current: cur ? chapterCharCount(cur) : 0,
+        pages: estimatePages(total, book.meta.language),
+      });
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [book, activeChapterId]);
 
   const triggerSave = useCallback(() => {
     setSaveStatus("saving");
@@ -306,6 +322,7 @@ export default function BookEditor({
           }
           onMerge={handleMerge}
           onReorder={reorderChapters}
+          stats={stats}
         />
 
         <BlockCanvas

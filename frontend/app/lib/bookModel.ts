@@ -95,6 +95,28 @@ export function emptyBook(firstChapterTitle = ""): BookModel {
   };
 }
 
+// ── Statistics ───────────────────────────────────────────────────────────────
+
+const PAGE_CHARS_CJK = 600;    // ko/ja: ~600 characters per page
+const PAGE_CHARS_LATIN = 1500; // en etc.: ~1,500 characters (~250 words) per page
+
+/** Character count of a chapter's text blocks — spaces included, HTML stripped. */
+export function chapterCharCount(ch: Chapter): number {
+  let n = 0;
+  for (const b of ch.blocks) {
+    if (b.type === "image") continue;
+    n += b.html.replace(/<[^>]+>/g, "").length;
+  }
+  return n;
+}
+
+/** Estimated page count from a character total — branches on language. */
+export function estimatePages(chars: number, language: BookMeta["language"]): number {
+  if (chars <= 0) return 0;
+  const perPage = language === "ko" || language === "ja" ? PAGE_CHARS_CJK : PAGE_CHARS_LATIN;
+  return Math.max(1, Math.round(chars / perPage));
+}
+
 // ── Chapter operations ───────────────────────────────────────────────────────
 
 export function splitChapter(chapters: Chapter[], chapterId: string, blockIndex: number): Chapter[] {
