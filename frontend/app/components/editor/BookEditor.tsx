@@ -18,6 +18,7 @@ import {
   chapterCharCount, estimatePages,
 } from "@/app/lib/bookModel";
 import { buildEpubFromBook } from "@/app/lib/epubBuilder";
+import { exportProjectFile } from "@/app/lib/projectFile";
 import ChapterSidebar from "./ChapterSidebar";
 import BlockCanvas from "./BlockCanvas";
 import PreviewPanel from "./PreviewPanel";
@@ -78,6 +79,7 @@ export default function BookEditor({
   );
   const [rightPanel, setRightPanel] = useState<RightPanel>("preview");
   const [exporting, setExporting] = useState(false);
+  const [exportingProject, setExportingProject] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
   const [stats, setStats] = useState({ total: 0, current: 0, pages: 0 });
@@ -224,20 +226,36 @@ export default function BookEditor({
     [activeChapterId, updateChapter],
   );
 
+  const triggerDownload = (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
       const { blob, filename } = await buildEpubFromBook(book);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
+      triggerDownload(blob, filename);
     } catch (e) {
       console.error("Export failed", e);
     } finally {
       setExporting(false);
+    }
+  };
+
+  const handleExportProject = async () => {
+    setExportingProject(true);
+    try {
+      const { blob, filename } = await exportProjectFile(book);
+      triggerDownload(blob, filename);
+    } catch (e) {
+      console.error("Project export failed", e);
+    } finally {
+      setExportingProject(false);
     }
   };
 
@@ -339,6 +357,24 @@ export default function BookEditor({
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          data-testid="editor-save-project-btn"
+          onClick={handleExportProject}
+          disabled={exportingProject}
+          title={t("saveProjectFile")}
+          style={{ ...topBtnSt, opacity: exportingProject ? 0.6 : 1 }}
+        >
+          {exportingProject ? <SpinIcon size={13} /> : (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+          )}
+          {t("saveProjectFile")}
+        </button>
 
         <button
           type="button"

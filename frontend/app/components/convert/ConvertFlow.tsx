@@ -17,6 +17,9 @@ import { toProjectRecord, readProjectBook } from "@/app/lib/projectSchema";
 import {
   saveProject, listProjects, loadProject, deleteProject, type ProjectSummary,
 } from "@/app/lib/projectStore";
+import {
+  importProjectFile, isProjectFileName, ProjectFileError, PROJECT_FILE_EXTENSION,
+} from "@/app/lib/projectFile";
 import AdBanner from "@/app/components/ads/AdBanner";
 
 // ── Constants ────────────────────────────────────────────────────────────────
@@ -26,7 +29,7 @@ const ACCEPTED_TYPES: Record<string, string> = {
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx",
   "text/plain": ".txt",
 };
-const ACCEPTED_STRING = ".docx, .txt";
+const ACCEPTED_STRING = `.docx, .txt, ${PROJECT_FILE_EXTENSION}`;
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 const MAX_TEXT_CHARS = 30_000;
 const SETTINGS_KEY = "epubmaker_settings_v2";
@@ -153,9 +156,32 @@ export default function ConvertFlow() {
     }
   }, [conversionOptions, t, refreshRecent]);
 
+  // Import a .epubproj project file → restore + register in IndexedDB.
+  const importProject = useCallback(async (file: File) => {
+    setError(null);
+    setParseProgress(t("progressParsing"));
+    setPhase("parsing");
+    try {
+      const restored = await importProjectFile(file);
+      const id = uid();
+      setProjectId(id);
+      setBook(restored);
+      setPhase("editing");
+      await saveProject(toProjectRecord(id, restored));
+      refreshRecent();
+    } catch (e) {
+      const code = e instanceof ProjectFileError ? e.message : "";
+      setError(code === "unsupported-version" ? t("projectErrorVersion") : t("projectErrorCorrupt"));
+      setPhase("landing");
+    }
+  }, [t, refreshRecent]);
+
   const handleFiles = useCallback((fileList: FileList | null) => {
     if (!fileList?.length) return;
     const files = Array.from(fileList);
+    // .epubproj project files take the import path (DOCX/TXT logic untouched).
+    const projectFile = files.find((f) => isProjectFileName(f.name));
+    if (projectFile) { void importProject(projectFile); return; }
     const invalidFile = files.find((f) => !isValidFile(f));
     if (invalidFile) {
       setError(t("errorFileType", { name: invalidFile.name }));
@@ -165,7 +191,7 @@ export default function ConvertFlow() {
     setPendingFiles(files);
     setConfigTitle(files[0].name.replace(/\.[^.]+$/, ""));
     setPhase("configure");
-  }, [t]);
+  }, [t, importProject]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); setIsDragging(false);
