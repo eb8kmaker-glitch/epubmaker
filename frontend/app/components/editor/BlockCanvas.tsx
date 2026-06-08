@@ -320,7 +320,7 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
               )}
 
               {/* Block content */}
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div data-block-id={block.id} style={{ flex: 1, minWidth: 0 }}>
                 {block.type === "image" ? (
                   <ImageBlockView
                     block={block as ImageBlock}

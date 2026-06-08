@@ -22,9 +22,43 @@ import ChapterSidebar from "./ChapterSidebar";
 import BlockCanvas from "./BlockCanvas";
 import PreviewPanel from "./PreviewPanel";
 import MetaPanel from "./MetaPanel";
+import FindReplacePanel from "./FindReplacePanel";
+import type { SearchMatch } from "@/app/lib/findReplace";
 import { Divider, SpinIcon, CheckIcon } from "./EditorMicro";
 import { topBtnSt } from "./editorShared";
 type RightPanel = "preview" | "meta";
+
+// Switch to the match's chapter, then scroll + highlight the occurrence in the DOM.
+function highlightMatch(match: SearchMatch) {
+  const wrap = document.querySelector(`[data-block-id="${match.blockId}"]`) as HTMLElement | null;
+  if (!wrap) return;
+  const el = (wrap.querySelector(".be-editable") as HTMLElement | null) ?? wrap;
+  el.scrollIntoView({ block: "center", behavior: "smooth" });
+  try {
+    const range = document.createRange();
+    const start = match.start;
+    const end = match.start + match.length;
+    let cum = 0, started = false, ended = false;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let node = walker.nextNode() as Text | null;
+    while (node) {
+      const len = (node.nodeValue ?? "").length;
+      if (!started && start >= cum && start <= cum + len) { range.setStart(node, start - cum); started = true; }
+      if (started && end <= cum + len) { range.setEnd(node, end - cum); ended = true; break; }
+      cum += len;
+      node = walker.nextNode() as Text | null;
+    }
+    if (started && ended) {
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+    }
+  } catch { /* selection is best-effort; the flash below is the reliable cue */ }
+  wrap.style.transition = "box-shadow 0.2s ease";
+  wrap.style.borderRadius = "8px";
+  wrap.style.boxShadow = "0 0 0 2px var(--lib-wood)";
+  window.setTimeout(() => { wrap.style.boxShadow = ""; }, 1400);
+}
 
 interface Props {
   book: BookModel;
@@ -46,6 +80,7 @@ export default function BookEditor({
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [rightPanelWidth, setRightPanelWidth] = useState(300);
   const [stats, setStats] = useState({ total: 0, current: 0, pages: 0 });
+  const [findOpen, setFindOpen] = useState(false);
   const resizeDragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   const handleResizeMouseDown = useCallback((e: { clientX: number; preventDefault: () => void }) => {
@@ -86,6 +121,24 @@ export default function BookEditor({
     }, 300);
     return () => clearTimeout(timer);
   }, [book, activeChapterId]);
+
+  // Ctrl/Cmd+F opens the find/replace bar.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === "f" || e.key === "F")) {
+        e.preventDefault();
+        setFindOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const handleFindNavigate = useCallback((match: SearchMatch) => {
+    setActiveChapterId(match.chapterId);
+    // Wait for the chapter switch to render, then highlight.
+    requestAnimationFrame(() => requestAnimationFrame(() => highlightMatch(match)));
+  }, []);
 
   const triggerSave = useCallback(() => {
     setSaveStatus("saving");
@@ -306,6 +359,16 @@ export default function BookEditor({
           {exporting ? t("generating") : t("downloadEpub")}
         </button>
       </div>
+
+      {/* ── Find / Replace bar (pinned below topbar) ── */}
+      {findOpen && (
+        <FindReplacePanel
+          book={book}
+          onBookChange={(b) => updateBook(() => b)}
+          onNavigate={handleFindNavigate}
+          onClose={() => setFindOpen(false)}
+        />
+      )}
 
       {/* ── Main 3-panel area ── */}
       <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
