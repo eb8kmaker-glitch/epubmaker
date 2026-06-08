@@ -30,6 +30,7 @@ export interface SerializedChapter {
   title: string;
   collapsed: boolean;
   blocks: SerializedBlock[];
+  footnotes?: Record<string, string>;
 }
 
 export interface SerializedBook {
@@ -69,6 +70,7 @@ export function serializeBook(book: BookModel): SerializedBook {
       id: ch.id,
       title: ch.title,
       collapsed: ch.collapsed,
+      footnotes: ch.footnotes ? { ...ch.footnotes } : undefined,
       blocks: ch.blocks.map((b): SerializedBlock =>
         b.type === "image" ? serializeImage(b as ImageBlock) : { ...(b as TextBlock) },
       ),
@@ -101,6 +103,7 @@ export function deserializeBook(s: SerializedBook): BookModel {
       id: ch.id,
       title: ch.title,
       collapsed: ch.collapsed,
+      footnotes: ch.footnotes ? { ...ch.footnotes } : {},
       blocks: ch.blocks.map((b): Block =>
         b.type === "image" ? deserializeImage(b) : { ...(b as TextBlock) },
       ),

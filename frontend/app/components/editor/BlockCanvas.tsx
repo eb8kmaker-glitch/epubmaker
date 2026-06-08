@@ -1,10 +1,13 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import type React from "react";
 import {
   type Block, type TextBlock, type ImageBlock, type BlockType, type Chapter, uid,
 } from "@/app/lib/bookModel";
+import {
+  buildMarkerHtml, stripMarker, chapterFootnoteIds, footnoteNumberMap, FOOTNOTE_COUNTER_CSS,
+} from "@/app/lib/footnotes";
 import ContentEditable from "./ContentEditable";
 import { BLOCK_TYPE_ICONS, BLOCK_TAG, BLOCK_STYLES } from "./editorShared";
 
@@ -57,9 +60,15 @@ interface CanvasProps {
   onBlocksChange: (blocks: Block[]) => void;
   onChapterTitleChange: (title: string) => void;
   onSplit: (blockIndex: number) => void;
+  onInsertFootnote: (blockId: string, html: string, fnId: string) => void;
+  onUpdateFootnoteText: (fnId: string, text: string) => void;
+  onDeleteFootnote: (blockId: string, html: string, fnId: string) => void;
 }
 
-export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleChange, onSplit }: CanvasProps) {
+export default function BlockCanvas({
+  chapter, onBlocksChange, onChapterTitleChange, onSplit,
+  onInsertFootnote, onUpdateFootnoteText, onDeleteFootnote,
+}: CanvasProps) {
   const t = useTranslations("Editor");
   const BLOCK_TYPES = [
     { type: "paragraph" as const, label: t("blockTypeParagraph"), hint: t("blockHintParagraph") },
@@ -77,6 +86,57 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
   const [focusedId, setFocusedId] = useState<string | null>(null);
   const [cmdMenuId, setCmdMenuId] = useState<string | null>(null);
   const [hoverBetween, setHoverBetween] = useState<number | null>(null);
+  const [fnEditor, setFnEditor] = useState<{ id: string; blockId: string; top: number; left: number } | null>(null);
+
+  // Close the footnote popover on Escape.
+  useEffect(() => {
+    if (!fnEditor) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setFnEditor(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [fnEditor]);
+
+  const openFnEditorAt = (id: string, blockId: string, rect: DOMRect) => {
+    setFnEditor({ id, blockId, top: rect.bottom + 4, left: Math.max(8, Math.min(rect.left, window.innerWidth - 288)) });
+  };
+
+  const insertFootnote = (blockId: string) => {
+    const editable = document.querySelector(`[data-block-id="${blockId}"] .be-editable`) as HTMLElement | null;
+    if (!editable) return;
+    const sel = window.getSelection();
+    let range: Range;
+    if (sel && sel.rangeCount && editable.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+      range = sel.getRangeAt(0);
+    } else {
+      range = document.createRange();
+      range.selectNodeContents(editable);
+    }
+    range.collapse(false); // insert at the caret / end of selection
+    const id = uid();
+    const tmp = document.createElement("div");
+    tmp.innerHTML = buildMarkerHtml(id);
+    const sup = tmp.firstChild as HTMLElement;
+    range.insertNode(sup);
+    const after = document.createRange();
+    after.setStartAfter(sup);
+    after.collapse(true);
+    sel?.removeAllRanges();
+    sel?.addRange(after);
+    const rect = sup.getBoundingClientRect();
+    onInsertFootnote(blockId, editable.innerHTML, id);
+    openFnEditorAt(id, blockId, rect);
+  };
+
+  const deleteFootnote = () => {
+    if (!fnEditor) return;
+    const block = chapter.blocks.find((b) => b.id === fnEditor.blockId);
+    if (block && block.type !== "image") {
+      onDeleteFootnote(fnEditor.blockId, stripMarker((block as TextBlock).html, fnEditor.id), fnEditor.id);
+    }
+    setFnEditor(null);
+  };
+
+  const fnNumbers = footnoteNumberMap(chapterFootnoteIds(chapter));
 
   const updateBlock = (id: string, patch: Partial<Block>) => {
     onBlocksChange(chapter.blocks.map((b) => (b.id === id ? { ...b, ...patch } as Block : b)));
@@ -140,7 +200,16 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
         background: "var(--lib-panel)",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 660, padding: "0 24px" }}>
+      <div
+        className="be-fn-blocks"
+        style={{ width: "100%", maxWidth: 660, padding: "0 24px" }}
+        onClick={(e) => {
+          const sup = (e.target as HTMLElement).closest?.("sup.fn-ref") as HTMLElement | null;
+          const id = sup?.getAttribute("data-fn");
+          const blockId = sup?.closest("[data-block-id]")?.getAttribute("data-block-id");
+          if (sup && id && blockId) openFnEditorAt(id, blockId, sup.getBoundingClientRect());
+        }}
+      >
 
         {/* Chapter title */}
         <div style={{ marginBottom: 36 }}>
@@ -241,6 +310,23 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
                 >
                   {BLOCK_TYPE_ICONS[block.type]}
                 </button>
+                {/* Insert footnote (text blocks only) — mousedown keeps the caret in the block */}
+                {block.type !== "image" && (
+                  <button
+                    type="button"
+                    title={t("insertFootnote")}
+                    onMouseDown={(e) => { e.preventDefault(); insertFootnote(block.id); }}
+                    style={{
+                      width: 22, height: 22, borderRadius: 5,
+                      border: "1px solid var(--lib-border)",
+                      background: "var(--lib-bg-2)", cursor: "pointer",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 9, fontWeight: 700, color: "var(--lib-dust)",
+                    }}
+                  >
+                    fn
+                  </button>
+                )}
                 {/* Delete */}
                 <button
                   type="button"
@@ -383,6 +469,65 @@ export default function BlockCanvas({ chapter, onBlocksChange, onChapterTitleCha
           onClick={() => setCmdMenuId(null)}
         />
       )}
+
+      {/* Footnote editor popover */}
+      {fnEditor && (
+        <>
+          <div style={{ position: "fixed", inset: 0, zIndex: 59 }} onClick={() => setFnEditor(null)} />
+          <div
+            style={{
+              position: "fixed", top: fnEditor.top, left: fnEditor.left, zIndex: 60,
+              width: 280, background: "var(--lib-bg)",
+              border: "1px solid var(--lib-border)", borderRadius: 10,
+              boxShadow: "0 8px 24px rgba(0,0,0,0.16)", padding: 12,
+              animation: "be-fadeIn 0.15s ease",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "var(--lib-dust)", fontFamily: "var(--font-sans), system-ui, sans-serif" }}>
+                {t("footnoteLabel", { n: fnNumbers[fnEditor.id] ?? 0 })}
+              </span>
+              <button
+                type="button"
+                onClick={deleteFootnote}
+                style={{ fontSize: 11, color: "var(--lib-dust)", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 2, fontFamily: "var(--font-sans), system-ui, sans-serif" }}
+              >
+                {t("footnoteDelete")}
+              </button>
+            </div>
+            <textarea
+              autoFocus
+              value={chapter.footnotes?.[fnEditor.id] ?? ""}
+              onChange={(e) => onUpdateFootnoteText(fnEditor.id, e.target.value)}
+              placeholder={t("footnotePlaceholder")}
+              rows={3}
+              style={{
+                width: "100%", boxSizing: "border-box", resize: "vertical",
+                padding: "8px 10px", borderRadius: 7, border: "1px solid var(--lib-border)",
+                background: "var(--lib-bg-2)", color: "var(--lib-ink)", fontSize: 13, outline: "none",
+                fontFamily: "var(--font-sans), system-ui, sans-serif", lineHeight: 1.5,
+              }}
+            />
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+              <button
+                type="button"
+                onClick={() => setFnEditor(null)}
+                style={{
+                  padding: "5px 14px", borderRadius: 7, border: "none",
+                  background: "var(--lib-wood-dim)", color: "#F8F5F0",
+                  fontSize: 12, fontWeight: 600, cursor: "pointer",
+                  fontFamily: "var(--font-sans), system-ui, sans-serif",
+                }}
+              >
+                {t("footnoteDone")}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      <style>{FOOTNOTE_COUNTER_CSS}</style>
     </main>
   );
 }

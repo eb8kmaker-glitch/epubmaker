@@ -32,6 +32,7 @@ interface JsonBook {
   };
   chapters: Array<{
     id: string; title: string; collapsed: boolean;
+    footnotes?: Record<string, string>;
     blocks: Array<JsonImageBlock | { id: string; type: string; html: string }>;
   }>;
 }
@@ -66,6 +67,7 @@ export async function exportProjectFile(book: BookModel): Promise<{ blob: Blob; 
       id: ch.id,
       title: ch.title,
       collapsed: ch.collapsed,
+      footnotes: ch.footnotes,
       blocks: ch.blocks.map((b) => {
         if (b.type !== "image") return { ...b };
         const img = b as SerializedImageBlock;
@@ -152,7 +154,7 @@ export async function importProjectFile(file: File | Blob): Promise<BookModel> {
         });
       }
     }
-    chapters.push({ id: ch.id, title: ch.title, collapsed: ch.collapsed, blocks });
+    chapters.push({ id: ch.id, title: ch.title, collapsed: ch.collapsed, footnotes: ch.footnotes, blocks });
   }
 
   const serialized: SerializedBook = { meta: { ...jb.meta, coverImage }, chapters };

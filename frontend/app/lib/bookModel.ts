@@ -34,6 +34,7 @@ export interface Chapter {
   title: string;      // displayed as H1 in the EPUB chapter
   blocks: Block[];
   collapsed: boolean;
+  footnotes?: Record<string, string>; // footnote id -> plain text (referenced inline in block HTML)
 }
 
 export interface BookMeta {
@@ -93,6 +94,7 @@ export function newChapter(title = ""): Chapter {
     title,
     blocks: [{ id: uid(), type: "paragraph", html: "" }],
     collapsed: false,
+    footnotes: {},
   };
 }
 
@@ -140,6 +142,8 @@ export function splitChapter(chapters: Chapter[], chapterId: string, blockIndex:
       : "",
     blocks: after.length > 0 ? after : [{ id: uid(), type: "paragraph", html: "" }],
     collapsed: false,
+    // Copy footnotes to both halves; the EPUB build only emits ids actually referenced.
+    footnotes: { ...(ch.footnotes ?? {}) },
   };
   const updated = [...chapters];
   updated[idx] = { ...ch, blocks: before.length > 0 ? before : [{ id: uid(), type: "paragraph", html: "" }] };
@@ -188,6 +192,7 @@ export function mergeChapters(chapters: Chapter[], chapterId: string): Chapter[]
     blocks: mergedBlocks.length > 0
       ? mergedBlocks
       : [{ id: uid(), type: "paragraph", html: "" }],
+    footnotes: { ...(prev.footnotes ?? {}), ...(curr.footnotes ?? {}) },
   };
   const updated = [...chapters];
   updated.splice(idx - 1, 2, merged);

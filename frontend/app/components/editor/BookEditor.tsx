@@ -440,6 +440,30 @@ export default function BookEditor({
             updateChapter(activeChapterId, (c) => ({ ...c, title }))
           }
           onSplit={handleSplit}
+          onInsertFootnote={(blockId, html, fnId) =>
+            updateChapter(activeChapterId, (c) => ({
+              ...c,
+              blocks: c.blocks.map((b) => (b.id === blockId ? ({ ...b, html } as Block) : b)),
+              footnotes: { ...(c.footnotes ?? {}), [fnId]: "" },
+            }))
+          }
+          onUpdateFootnoteText={(fnId, text) =>
+            updateChapter(activeChapterId, (c) => ({
+              ...c,
+              footnotes: { ...(c.footnotes ?? {}), [fnId]: text },
+            }))
+          }
+          onDeleteFootnote={(blockId, html, fnId) =>
+            updateChapter(activeChapterId, (c) => {
+              const fn = { ...(c.footnotes ?? {}) };
+              delete fn[fnId];
+              return {
+                ...c,
+                blocks: c.blocks.map((b) => (b.id === blockId ? ({ ...b, html } as Block) : b)),
+                footnotes: fn,
+              };
+            })
+          }
         />
 
         <div

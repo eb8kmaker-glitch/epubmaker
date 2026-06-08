@@ -5,6 +5,9 @@ import JSZip from "jszip";
 import { BookModel, Chapter, Block, ImageBlock, uid } from "./bookModel";
 import { EPUB_STYLES, IMAGE_BASE_CSS } from "./epubStyles";
 import { buildTitlePageXhtml, buildColophonXhtml } from "./frontMatter";
+import {
+  chapterFootnoteIds, footnoteNumberMap, renderFootnoteRefs, footnoteSectionHtml, FOOTNOTE_CSS,
+} from "./footnotes";
 
 // ── Image helpers ─────────────────────────────────────────────────────────────
 
@@ -104,7 +107,7 @@ export async function buildEpubFromBook(
     const ch = book.chapters[i];
     const fn = `chapter${String(i + 1).padStart(3, "0")}.xhtml`;
     chapterFiles.push(fn);
-    zip.file(`OEBPS/${fn}`, chapterToXhtml(ch, imageMap));
+    zip.file(`OEBPS/${fn}`, chapterToXhtml(ch, imageMap, isEpub3));
   }
 
   // 6. toc.ncx (EPUB2 & EPUB3 compat)
@@ -136,8 +139,12 @@ export async function buildEpubFromBook(
 
 // ── Chapter → XHTML ──────────────────────────────────────────────────────────
 
-function chapterToXhtml(ch: Chapter, imageMap: Map<string, ImageEntry>): string {
-  const bodyBlocks = ch.blocks.map((b) => blockToXhtml(b, imageMap)).filter(Boolean).join("\n  ");
+function chapterToXhtml(ch: Chapter, imageMap: Map<string, ImageEntry>, isEpub3: boolean): string {
+  const fnIds = chapterFootnoteIds(ch);
+  const fnNumbers = footnoteNumberMap(fnIds);
+  const fnMode = isEpub3 ? "epub3" : "epub2";
+  const bodyBlocks = ch.blocks.map((b) => blockToXhtml(b, imageMap, fnNumbers, fnMode)).filter(Boolean).join("\n  ");
+  const fnSection = footnoteSectionHtml(ch, fnIds, fnNumbers, fnMode);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -152,25 +159,31 @@ function chapterToXhtml(ch: Chapter, imageMap: Map<string, ImageEntry>): string 
     figure { margin: 1.5em 0; padding: 0; max-width: 100%; }
     figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
     figcaption { font-size: 0.85em; color: #666; text-align: center; margin-top: 0.4em; line-height: 1.4; }
-  </style>
+${FOOTNOTE_CSS}  </style>
 </head>
 <body>
   <h1>${esc(ch.title)}</h1>
   ${bodyBlocks}
-</body>
+${fnSection ? "  " + fnSection + "\n" : ""}</body>
 </html>`;
 }
 
-function blockToXhtml(block: Block, imageMap: Map<string, ImageEntry>): string {
+function blockToXhtml(
+  block: Block,
+  imageMap: Map<string, ImageEntry>,
+  fnNumbers: Record<string, number>,
+  fnMode: "epub3" | "epub2",
+): string {
+  const text = (html: string) => sanitize(renderFootnoteRefs(html, fnNumbers, fnMode));
   switch (block.type) {
     case "paragraph":
-      return block.html ? `<p>${sanitize(block.html)}</p>` : "";
+      return block.html ? `<p>${text(block.html)}</p>` : "";
     case "h2":
-      return block.html ? `<h2>${sanitize(block.html)}</h2>` : "";
+      return block.html ? `<h2>${text(block.html)}</h2>` : "";
     case "h3":
-      return block.html ? `<h3>${sanitize(block.html)}</h3>` : "";
+      return block.html ? `<h3>${text(block.html)}</h3>` : "";
     case "quote":
-      return block.html ? `<blockquote><p>${sanitize(block.html)}</p></blockquote>` : "";
+      return block.html ? `<blockquote><p>${text(block.html)}</p></blockquote>` : "";
     case "image": {
       const entry = imageMap.get(block.id);
       if (!entry && !block.src) return "";
