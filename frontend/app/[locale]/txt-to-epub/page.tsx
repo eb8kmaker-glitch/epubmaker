@@ -16,9 +16,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Confirmed English copy is used for every locale for now.
   // TODO: translate (ko) — Korean metadata is a separate translation queue task.
-  const title = "Convert TXT to EPUB Online Free — No Upload | epubmaker";
+  const title = "Convert TXT to EPUB Online Free — Chapters & Table of Contents | epubmaker";
   const description =
-    "Turn a plain TXT file into a clean EPUB ebook, free and in your browser. No upload — split chapters, build a table of contents, and set the cover and metadata before you export for Kobo, Apple Books, or Calibre.";
+    "Turn a plain TXT file into a clean EPUB ebook, free — no account, no limits, no watermark. Split chapters, build a table of contents, and set the cover and metadata before you export for Kobo, Apple Books, or Calibre.";
   const url = `${BASE_URL}/${locale}/txt-to-epub`;
 
   return {
@@ -45,12 +45,12 @@ export default async function TxtToEpubPage({ params }: Props) {
     eyebrow: "Free EPUB Conversion · TXT → EPUB",
     h1: "Convert TXT to EPUB — with chapters and a table of contents",
     subhead:
-      "No file upload, no account, no watermark. Turn a plain text file into a structured EPUB: split it into chapters, generate a table of contents, and add a cover.",
+      "No account, no limits, no watermark. Turn a plain text file into a structured EPUB: split it into chapters, generate a table of contents, and add a cover.",
     ctaLabel: "Convert TXT to EPUB — Free",
     stepsHeading: "How to convert TXT to EPUB",
     howToName: "How to Convert TXT to EPUB",
     steps: [
-      "Open the converter and choose your TXT file. It is processed in your browser and never uploaded.",
+      "Open the converter and choose your TXT file. No account or sign-up required.",
       "Split the text into chapters and generate a table of contents.",
       "Add a cover, set the title and author, then export your EPUB.",
     ],
@@ -61,8 +61,8 @@ export default async function TxtToEpubPage({ params }: Props) {
         a: "Yes. It is completely free — no sign-up, no watermark, and no file-size paywall.",
       },
       {
-        q: "Do you upload my file?",
-        a: "No. The conversion runs in your browser, so your file never leaves your device.",
+        q: "Is my file kept after conversion?",
+        a: "No. Your file is processed on the server only to run the conversion and is not stored or shared. You can also delete it from your browser after downloading.",
       },
       {
         q: "Can I edit the file before exporting?",
