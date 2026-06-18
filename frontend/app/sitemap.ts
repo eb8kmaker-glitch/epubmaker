@@ -30,6 +30,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const seoLandingPaths = [
     "/word-to-epub",
     "/pdf-to-epub",
+    "/doc-to-epub",
+    "/txt-to-epub",
     "/sigil-alternative",
     "/how-to-make-epub",
     "/free-ebook-creator",
