@@ -57,6 +57,8 @@ export default async function ContactPage({ params }: Props) {
   );
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }

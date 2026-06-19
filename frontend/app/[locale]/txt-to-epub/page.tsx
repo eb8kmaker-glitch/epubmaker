@@ -3,6 +3,8 @@ import ConversionLanding, { type ConversionLandingData } from "@/app/components/
 
 export const dynamic = "force-static";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return [{ locale: "ko" }, { locale: "en" }];
 }

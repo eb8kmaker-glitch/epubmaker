@@ -3,6 +3,8 @@ import { Link } from "@/i18n/navigation";
 
 export const dynamic = "force-static";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return [{ locale: "ko" }, { locale: "en" }];
 }

@@ -220,6 +220,8 @@ export default async function AnnouncementPage({ params }: Props) {
   );
 }
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }

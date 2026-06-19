@@ -43,6 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const params: { locale: string; slug: string }[] = [];
   for (const locale of routing.locales) {
