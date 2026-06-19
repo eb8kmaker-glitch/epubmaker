@@ -11,6 +11,8 @@ export function generateStaticParams() {
 
 type Props = { params: Promise<{ locale: string }> };
 
+const BASE_URL = "https://www.epubmaker.org";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isKo = locale === "ko";
@@ -23,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: `${BASE_URL}/${locale}/how-to-make-epub` },
     openGraph: { title, description, type: "article" },
     twitter: { card: "summary_large_image", title, description },
   };
