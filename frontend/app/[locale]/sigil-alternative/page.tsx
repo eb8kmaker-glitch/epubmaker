@@ -3,11 +3,15 @@ import { Link } from "@/i18n/navigation";
 
 export const dynamic = "force-static";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return [{ locale: "ko" }, { locale: "en" }];
 }
 
 type Props = { params: Promise<{ locale: string }> };
+
+const BASE_URL = "https://www.epubmaker.org";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -21,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: `${BASE_URL}/${locale}/sigil-alternative` },
     openGraph: { title, description, type: "website" },
     twitter: { card: "summary_large_image", title, description },
   };
